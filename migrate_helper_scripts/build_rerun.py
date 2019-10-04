@@ -3,7 +3,7 @@ import shutil
 
 RERUN_SCRIPT = '/tmp/migrate.rerun'
 MIGRATION_DIR = '/var/migration/'
-IGNORE = ['scan', 'restore']
+IGNORE = ['--scan', '--restore']
 
 
 def rerun(volumes):
