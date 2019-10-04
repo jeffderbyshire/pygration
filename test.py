@@ -1,4 +1,4 @@
-import list_logs as list_logs
+from migrate_helper_scripts import list_logs as list_logs
 import archive_logs as archive_logs
 import pprint
 
