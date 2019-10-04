@@ -1,4 +1,4 @@
-from . import list_logs as list_logs
+import list_logs as list_logs
 import archive_logs as archive_logs
 import pprint
 
