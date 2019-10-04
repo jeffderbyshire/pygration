@@ -17,7 +17,7 @@ source ~enstore/.bashrc"
         file_name = MIGRATION_DIR + log
         with open(file_name, 'rb') as fh:
             first = next(fh).decode().split()
-            command = " ".join(first[7:-1])
+            command = " ".join(first[7:])
             return command
     return logs
 
