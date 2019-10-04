@@ -30,9 +30,10 @@ def rerun(volumes):
         if command != '':
             file.write(command + '\n')
             volumes_rerun.append(command.split()[-1])
-    return volumes_rerun
 
+    os.system('screen -d -m ' + RERUN_SCRIPT)
     file.close()
+    return len(volumes_rerun)
 
 
 if __name__ == '__main__':
