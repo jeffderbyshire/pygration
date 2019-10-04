@@ -9,10 +9,7 @@ IGNORE = ['scan', 'restore']
 def rerun(volumes):
     os.remove(RERUN_SCRIPT)
     file = open(RERUN_SCRIPT, "w")
-    header = " \
-#!/usr/bin/env bash \
-cd /var/migration \
-source ~enstore/.bashrc"
+    header = "#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc"
     file.write(header)
     logs = list_logs.get_logs('errors', volumes)
     for log in logs:
@@ -22,7 +19,7 @@ source ~enstore/.bashrc"
             command = " ".join(first[7:])
             for keywords in IGNORE:
                 if keywords not in command:
-                    file.write(command)
+                    file.write("\n" + command)
                     return command
     return logs
 
