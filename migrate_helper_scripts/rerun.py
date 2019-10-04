@@ -1,6 +1,5 @@
 import os
 import shutil
-from . import list_logs
 
 RERUN_SCRIPT = '/tmp/migrate.rerun'
 
@@ -21,3 +20,5 @@ source ~enstore/.bashrc"
 if __name__ == '__main__':
     from migrate_helper_scripts import list_logs
     rerun(False)
+else:
+    from . import list_logs
