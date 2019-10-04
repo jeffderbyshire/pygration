@@ -10,10 +10,6 @@ PYTHON_PATH = "/home/users/jeffderb/python3/bin/python3 "
 SCRIPT_DIR = "/root/migrate_helper_scripts/"
 
 
-def rerun_logs(server, rerun_list):
-    process(server, "rerun", " '" + '|'.join(rerun_list) + "'")
-
-
 def too_many_logs(server, too_many_list, counter):
     f = open("migrate_errors/" + server + ".log", "w+")
     for volume, message in counter:

@@ -2,7 +2,7 @@ import os
 import shutil
 
 RERUN_SCRIPT = '/tmp/migrate.rerun'
-
+MIGRATION_DIR = '/var/migration/'
 
 def rerun(volumes):
     os.remove(RERUN_SCRIPT)
@@ -13,6 +13,12 @@ cd /var/migration \
 source ~enstore/.bashrc"
     file.write(header)
     logs = list_logs.get_logs('errors', volumes)
+    for log in logs:
+        file_name = MIGRATION_DIR + log
+        with open(file_name, 'rb') as fh:
+            first = next(fh).decode().split()
+            command = " ".join(first[7:-1])
+            return command
     return logs
 
 
