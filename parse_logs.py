@@ -111,6 +111,9 @@ def parse_logs(server, logs):
             # too many errors to rerun
             too_many_errors_list.append(vol)
 
+    archive_logs_list = list(set(archive_logs_list))
+    rerun_logs_list = list(set(rerun_logs_list))
+    too_many_errors_list = list(set(too_many_errors_list))
     return sorted(archive_logs_list), sorted(rerun_logs_list), sorted(too_many_errors_list), counter
 
     """ Do some action based on log findings """
