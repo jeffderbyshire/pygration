@@ -24,7 +24,7 @@ TODO: figure out how to use classes / split into modules
 import argparse
 import textwrap
 import syncBashScripts
-import showLogs
+import os
 from migrate_helper_scripts import migrationLogs
 from migrate_helper_scripts import list_logs
 import pprint
@@ -85,7 +85,8 @@ def main():
     args = get_args()
     print(args)
     if args.server == 'all':  # default
-        servers = build_migration_node_list()
+        servers = os.gethostname()
+        # servers = build_migration_node_list()
     else:
         servers = args.server
     for server in servers:
