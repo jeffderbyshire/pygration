@@ -46,9 +46,9 @@ def print_logs(server, item, command, output):
                 print("Archive")
                 pprint.pprint(archive_count, indent=1)
             if len(rerun) > 0:
-                build_rerun.rerun(rerun)
+                rerun_logs = build_rerun.rerun(rerun)
                 print("Rerun")
-                pprint.pprint(rerun, indent=1)
+                pprint.pprint(rerun_logs, indent=1)
             if len(too_many) > 0:
                 print("More than 2 errors:")
                 pprint.pprint(too_many, indent=1)
