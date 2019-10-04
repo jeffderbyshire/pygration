@@ -2,7 +2,7 @@ import sshCommand
 import parse_logs
 import pprint
 import syncBashScripts
-import archive_logs as archive_logs
+from . import archive_logs
 from . import list_logs
 
 PYTHON_PATH = "/home/users/jeffderb/python3/bin/python3 "
