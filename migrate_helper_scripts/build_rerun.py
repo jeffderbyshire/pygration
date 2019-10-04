@@ -7,7 +7,6 @@ IGNORE = ['--scan', '--restore']
 
 
 def rerun(volumes):
-    command = ''
     volumes_added = []
     os.chmod(RERUN_SCRIPT, 0o700)
     file = open(RERUN_SCRIPT, "w")
@@ -15,6 +14,7 @@ def rerun(volumes):
     file.write(header)
     logs = list_logs.get_logs('errors', volumes)
     for log in logs:
+        command = ''
         file_name = MIGRATION_DIR + log
         with open(file_name, 'rb') as fh:
             first = next(fh).decode().split()
