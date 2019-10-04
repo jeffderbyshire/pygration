@@ -39,6 +39,7 @@ def print_logs(server, item, command, output):
             print("rerun: " + str(len(rerun)))
             print("too many: " + str(len(too_many)))
             if len(archive) > 0:
+                pprint.pprint(archive)
                 archive_count = archive_logs.archive("archive-with-errors", sorted(archive))
                 pprint.pprint(list_logs.get_logs('archive-with-errors', sorted(archive)))
                 print("Archive")
