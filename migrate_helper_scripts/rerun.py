@@ -19,4 +19,5 @@ source ~enstore/.bashrc"
 
 
 if __name__ == '__main__':
+    from migrate_helper_scripts import list_logs
     rerun(False)
