@@ -8,6 +8,7 @@ IGNORE = ['--scan', '--restore']
 
 def rerun(volumes):
     command = ''
+    volumes_added = []
     os.remove(RERUN_SCRIPT)
     file = open(RERUN_SCRIPT, "w")
     header = "#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc\n"
@@ -17,11 +18,14 @@ def rerun(volumes):
         file_name = MIGRATION_DIR + log
         with open(file_name, 'rb') as fh:
             first = next(fh).decode().split()
-            command = " ".join(first[7:])
-            for keyword in IGNORE:
-                if keyword in command:
-                    command = ''
-                    break
+            volume = first[-1]
+            if volume not in volumes_added:
+                command = " ".join(first[7:])
+                for keyword in IGNORE:
+                    if keyword in command:
+                        command = ''
+                        break
+                volumes_added.append(volume)
         if command != '':
             file.write(command + '\n')
 
