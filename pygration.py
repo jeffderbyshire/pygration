@@ -25,6 +25,8 @@ import textwrap
 import syncBashScripts
 import showLogs
 from migrate_helper_scripts import migrationLogs
+from migrate_helper_scripts import list_logs
+import pprint
 
 
 def build_migration_node_list():
@@ -86,8 +88,9 @@ def main():
     else:
         servers = args.server
     for server in servers:
-        syncBashScripts.rsync(server, "migrate_helper_scripts")
-        showLogs.migration_logs(server, args.logs[0])
+        # syncBashScripts.rsync(server, "migrate_helper_scripts")
+        pprint.pprint(list_logs.get_logs(args.logs[0]))
+        # showLogs.migration_logs(server, args.logs[0])
         if args.process:
             migrationLogs.process(server, args.process[0])
 
