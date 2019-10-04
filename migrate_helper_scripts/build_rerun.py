@@ -8,6 +8,7 @@ IGNORE = ['--scan', '--restore']
 
 def rerun(volumes):
     volumes_added = []
+    volumes_rerun = []
     os.chmod(RERUN_SCRIPT, 0o700)
     file = open(RERUN_SCRIPT, "w")
     header = "#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc\n"
@@ -28,7 +29,8 @@ def rerun(volumes):
                 volumes_added.append(volume)
         if command != '':
             file.write(command + '\n')
-    return volumes_added
+            volumes_rerun.append(command.split()[-1])
+    return volumes_rerun
 
     file.close()
 
