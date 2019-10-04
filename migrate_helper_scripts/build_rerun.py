@@ -19,7 +19,6 @@ def rerun(volumes):
         with open(file_name, 'rb') as fh:
             first = next(fh).decode().split()
             volume = first[-1]
-            return volume
             if volume not in volumes_added:
                 command = " ".join(first[7:])
                 for keyword in IGNORE:
@@ -29,6 +28,7 @@ def rerun(volumes):
                 volumes_added.append(volume)
         if command != '':
             file.write(command + '\n')
+    return volumes_added
 
     file.close()
 
