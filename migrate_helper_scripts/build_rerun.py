@@ -13,8 +13,7 @@ cd /var/migration \
 source ~enstore/.bashrc"
     file.write(header)
     logs = list_logs.get_logs('errors', volumes)
-    for log in logs:
-        print(log)
+    return logs
 
 
 if __name__ == '__main__':

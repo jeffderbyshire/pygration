@@ -4,6 +4,7 @@ import pprint
 import syncBashScripts
 from . import archive_logs
 from . import list_logs
+from . import build_rerun
 
 PYTHON_PATH = "/home/users/jeffderb/python3/bin/python3 "
 SCRIPT_DIR = "/root/migrate_helper_scripts/"
@@ -45,7 +46,7 @@ def print_logs(server, item, command, output):
                 print("Archive")
                 pprint.pprint(archive_count, indent=1)
             if len(rerun) > 0:
-                rerun_logs(server, sorted(rerun))
+                build_rerun.rerun(rerun)
                 print("Rerun")
                 pprint.pprint(rerun, indent=1)
             if len(too_many) > 0:
