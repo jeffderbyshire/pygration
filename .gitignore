@@ -1,4 +1,4 @@
-.idea
+.idea/
 __pycache__
-migrate_errors
+migrate_errors/
 
