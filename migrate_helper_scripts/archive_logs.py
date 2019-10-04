@@ -18,7 +18,6 @@ def get_year_month(log_name):
 
 
 def archive(command="archive", volumes=False):
-    pprint.pprint(volumes)
     logs = list_logs.get_logs(command, volumes)
     log_total = archived = removed = 0
     for log in logs:

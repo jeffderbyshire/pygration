@@ -3,6 +3,7 @@ import parse_logs
 import pprint
 import syncBashScripts
 import archive_logs as archive_logs
+import list_logs as list_logs
 
 PYTHON_PATH = "/home/users/jeffderb/python3/bin/python3 "
 SCRIPT_DIR = "/root/migrate_helper_scripts/"
@@ -39,7 +40,7 @@ def print_logs(server, item, command, output):
             print("too many: " + str(len(too_many)))
             if len(archive) > 0:
                 archive_count = archive_logs.archive("archive-with-errors", sorted(archive))
-                pprint.pprint(archive)
+                pprint.pprint(list_logs.get_logs('archive-with-errors', sorted(archive)))
                 print("Archive")
                 pprint.pprint(archive_count, indent=1)
             if len(rerun) > 0:
