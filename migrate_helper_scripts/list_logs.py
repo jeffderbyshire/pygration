@@ -35,7 +35,7 @@ def find_files(volume_serials, file_age):
     for file in file_names:
         if LOG_PREFIX in file:
             if check_file_mtime(file, file_age):
-                if volume_serials:
+                if len(volume_serials) > 0:
                     for volume in volume_serials:
                         if volume in file:
                             files_found.append(file)
@@ -79,6 +79,8 @@ def select_files(selection, file_list):
 
 
 def get_logs(command="all", volumes=False):
+    if not volumes:
+        volumes = []
     file_modified = FILE_MTIME_SHORT
     if command in ['archive', 'archive-with-errors']:
         file_modified = FILE_MTIME_LONG
