@@ -3,6 +3,8 @@ import shutil
 
 RERUN_SCRIPT = '/tmp/migrate.rerun'
 MIGRATION_DIR = '/var/migration/'
+IGNORE = ['scan', 'restore']
+
 
 def rerun(volumes):
     os.remove(RERUN_SCRIPT)
@@ -18,7 +20,10 @@ source ~enstore/.bashrc"
         with open(file_name, 'rb') as fh:
             first = next(fh).decode().split()
             command = " ".join(first[7:])
-            return command
+            for keywords in IGNORE:
+                if keywords not in command:
+                    file.write(command)
+                    return command
     return logs
 
 
