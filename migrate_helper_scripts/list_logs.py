@@ -86,7 +86,7 @@ def get_logs(command="all", volumes=False):
         file_modified = FILE_MTIME_LONG
     selected_files = select_files(command, find_files(volumes, file_modified))
 
-    return selected_files
+    return sorted(selected_files, reverse=True)
 
 
 if __name__ == '__main__':
