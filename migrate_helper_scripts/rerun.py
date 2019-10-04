@@ -1,7 +1,6 @@
 import os
 import shutil
-import migrate_helper_scripts.list_logs as list_logs
-
+from . import list_logs
 
 RERUN_SCRIPT = '/tmp/migrate.rerun'
 
