@@ -2,7 +2,7 @@ import sshCommand
 import parse_logs
 import pprint
 import syncBashScripts
-import migrate_helper_scripts.archive_logs as archive_logs
+import archive_logs as archive_logs
 
 PYTHON_PATH = "/home/users/jeffderb/python3/bin/python3 "
 SCRIPT_DIR = "/root/migrate_helper_scripts/"
