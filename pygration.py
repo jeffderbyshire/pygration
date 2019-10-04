@@ -83,18 +83,21 @@ def get_args() -> argparse:
 def main():
     """ Parse command arguments, build server list and run commands """
     args = get_args()
-    print(args)
-    if args.server == 'all':  # default
-        servers = socket.gethostname()
+    server = socket.gethostname()
+    pprint.pprint(list_logs.get_logs(args.logs[0]))
+    if args.process:
+        migrationLogs.process(server, args.process[0])
+    """    
+    # if args.server == 'all':  # default
+        # servers = socket.gethostname()
         # servers = build_migration_node_list()
-    else:
+    # else:
         servers = args.server
-    for server in servers:
+    # for server in servers:
         # syncBashScripts.rsync(server, "migrate_helper_scripts")
-        pprint.pprint(list_logs.get_logs(args.logs[0]))
+    pprint.pprint(list_logs.get_logs(args.logs[0]))
         # showLogs.migration_logs(server, args.logs[0])
-        if args.process:
-            migrationLogs.process(server, args.process[0])
+    """
 
 
 main()
