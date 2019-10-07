@@ -1,4 +1,4 @@
-import migrate_helper_scripts.migrationLogs
+from ..migrate_helper_scripts import migrationLogs
 
-migrate_helper_scripts.migrationLogs.too_many_logs('test', list('VPV008'))
+migrationLogs.too_many_logs('test', list('VPV008'))
 
