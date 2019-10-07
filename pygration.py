@@ -28,6 +28,10 @@ import socket
 from migrate_helper_scripts import migrationLogs
 from migrate_helper_scripts import list_logs
 import pprint
+import sys
+
+sys.path.append('/home/users/jeffderb/bin/tape-migration/')
+sys.path.append('/home/users/jeffderb/bin/tape-migration/migrate_helper_scripts')
 
 
 def build_migration_node_list():
