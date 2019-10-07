@@ -3,6 +3,9 @@
 import os
 import gzip
 import shutil
+import sys
+import pprint
+pprint.pprint(sys.path)
 from . import list_logs
 
 LOG_DIRECTORY = "/var/migration/"
