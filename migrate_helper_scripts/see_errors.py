@@ -1,8 +1,6 @@
 #!/home/users/jeffderb/python3/bin/python3
 
-
-import list_logs as list_logs
-import pprint
+from . import list_logs
 import re
 
 
@@ -24,7 +22,6 @@ def see_errors():
                     error_message = message
                     break
         error = volume + " ---- " + file_name + " ---- " + error_message
-        print(error)
         all_errors.append(error)
 
     # pprint.pprint(all_errors)
