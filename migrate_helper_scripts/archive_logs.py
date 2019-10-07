@@ -3,8 +3,7 @@
 import os
 import gzip
 import shutil
-import migrate_helper_scripts.list_logs as list_logs
-
+from . import list_logs
 
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog@"
