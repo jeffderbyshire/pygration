@@ -7,6 +7,17 @@ import re
 MIGRATION_DIR = "/var/migration/"
 
 
+def error_messages(file_name):
+    errors = []
+    with open(file_name, 'rb') as fh:
+        for line in fh.readlines():
+            message = line.decode()
+            if re.search('ERR', message):
+                errors.append(message)
+
+    return errors
+
+
 def see_errors():
     error_files = list_logs.get_logs("errors")
     all_errors = []

@@ -1,6 +1,7 @@
 import parse_logs
 import pprint
 import syncBashScripts
+import sqlite3
 from . import archive_logs
 from . import list_logs
 from . import build_rerun
@@ -8,15 +9,30 @@ from . import error_check
 from . import see_errors
 
 
-def too_many_logs(server, too_many_list, counter):
-    f = open("migrate_errors/" + server + ".log", "w+")
-    for volume, message in counter:
-        if counter[(volume, message)] > 2:
-            f.write("Volume: " + volume + " Message snippet: " + message + " Count: "
-                    + str(counter[(volume, message)]) + "\n")
-    f.close()
-    syncBashScripts.rsync(server, "migrate_errors")
-    process(server, "mail", " '" + '|'.join(too_many_list) + "'")
+def too_many_logs(server, too_many_list):
+    conn = sqlite3.connect('/home/users/jeffderb/db/migration.sqlite')
+    cursor = conn.cursor()
+    cursor.execute("SELECT rowid FROM servers WHERE server=?", (server, ))
+    server_id = cursor.fetchone()
+    if server_id is None:
+        cursor.execute("INSERT INTO servers VALUES (?)", (server, ))
+        server_id = cursor.lastrowid
+    for volume in too_many_list:
+        # select first then insert
+        cursor.execute("SELECT rowid FROM volumes WHERE volume = ?", (volume, ))
+        volume_id = cursor.fetchone()
+        if volume_id is None:
+            cursor.execute("INSERT INTO volumes VALUES(?)", (volume, ))
+            volume_id = cursor.lastrowid
+        error_logs = list_logs.get_logs(volumes=volume)
+        for log_file in error_logs:
+            date = log_file.split("MigrationLog@")[1].split("#")[0].split(".")[0]
+            cursor.execute("INSERT INTO log_files VALUES(?)", (server_id, volume_id, log_file, date))
+            log_file_id = cursor.lastrowid
+            error_messages = see_errors.error_messages(log_file)
+            for message in error_messages:
+                cursor.execute("INSERT INTO log_file_detail VALUES(?)",
+                               (log_file_id, parse_logs.interpret_error_message(message), message))
 
 
 def process(server, item, volume=False):
@@ -60,7 +76,7 @@ def process(server, item, volume=False):
             pprint.pprint(too_many, indent=1)
             pprint.pprint(counter, indent=1)
             # TODO put errors into sqlite3 db
-            # too_many_logs(server, sorted(too_many), counter)
+            too_many_logs(server, sorted(too_many))
 
     elif item == "mail":
         command = "bash /root/migrate_helper_scripts/mailErrors.sh " + volume
