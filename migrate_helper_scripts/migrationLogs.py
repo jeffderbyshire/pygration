@@ -29,12 +29,13 @@ def too_many_logs(server, too_many_list):
         error_logs = list_logs.get_logs(volumes=volume)
         for log_file in error_logs:
             date = log_file.split("MigrationLog@")[1].split("#")[0].split(".")[0]
-            cursor.execute("INSERT INTO log_files VALUES(?)", (server_id, volume_id, log_file, date))
+            cursor.execute("INSERT INTO log_files VALUES(?, ?, ?, ?)",
+                           (server_id, volume_id, log_file, date))
             log_file_id = cursor.lastrowid
             conn.commit()
             error_messages = see_errors.error_messages(log_file)
             for message in error_messages:
-                cursor.execute("INSERT INTO log_file_detail VALUES(?)",
+                cursor.execute("INSERT INTO log_file_detail VALUES(?, ?, ?)",
                                (log_file_id, parse_logs.interpret_error_message(message), message))
                 conn.commit()
 
