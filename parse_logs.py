@@ -65,8 +65,7 @@ def parse_logs(server, logs):
     message_list = []
     parsed_log_dict = {}
     archive_flag = {}
-    lines = logs.splitlines()
-    for line in lines:
+    for line in logs:
         if len(line) > 10:
             volume_serial, log_file_name, log_error_message = line.split(" ---- ")
             # print(split_line)
