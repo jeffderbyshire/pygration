@@ -3,10 +3,7 @@
 import os
 import gzip
 import shutil
-import sys
-import pprint
-pprint.pprint(sys.path)
-from . import list_logs
+from .list_logs import *
 
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog@"
@@ -19,7 +16,7 @@ def get_year_month(log_name):
 
 
 def archive(command="archive", volumes=False):
-    logs = list_logs.get_logs(command, volumes)
+    logs = get_logs(command, volumes)
     log_total = archived = removed = 0
     if len(logs) > 0:
         for log in logs:
