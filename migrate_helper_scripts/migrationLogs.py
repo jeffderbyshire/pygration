@@ -29,8 +29,8 @@ def too_many_logs(server, too_many_list):
         error_logs = list_logs.get_logs(volumes=volume)
         for log_file in error_logs:
             date = log_file.split("MigrationLog@")[1].split("#")[0].split(".")[0]
-            print(server_id)
-            print(volume_id)
+            print(server_id[0])
+            print(volume_id[0])
             print(log_file)
             print(date)
             cursor.execute("INSERT INTO log_files VALUES(?, ?, ?, ?)",
