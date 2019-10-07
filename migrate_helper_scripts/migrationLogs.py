@@ -13,19 +13,23 @@ def too_many_logs(server, too_many_list):
     conn = sqlite3.connect('/home/users/jeffderb/db/migration.sqlite')
     cursor = conn.cursor()
     cursor.execute("SELECT rowid FROM servers WHERE server=?", (server, ))
-    server_id = cursor.fetchone()[0]
+    server_id = cursor.fetchone()
     if server_id is None:
         cursor.execute("INSERT INTO servers VALUES (?)", (server, ))
         server_id = cursor.lastrowid
         conn.commit()
+    else:
+        server_id = server_id[0]
     for volume in too_many_list:
         # select first then insert
         cursor.execute("SELECT rowid FROM volumes WHERE volume = ?", (volume, ))
-        volume_id = cursor.fetchone()[0]
+        volume_id = cursor.fetchone()
         if volume_id is None:
             cursor.execute("INSERT INTO volumes VALUES(?)", (volume, ))
             volume_id = cursor.lastrowid
             conn.commit()
+        else:
+            volume_id = volume_id[0]
         error_logs = list_logs.get_logs(volumes=volume)
         for log_file in error_logs:
             date = log_file.split("MigrationLog@")[1].split("#")[0].split(".")[0]
