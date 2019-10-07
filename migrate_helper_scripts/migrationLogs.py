@@ -70,4 +70,5 @@ def process(server, item, volume=False):
 
     print(server)
     print(item)
-    pprint.pprint(output, indent=4)
+    if item != "see_errors":
+        pprint.pprint(output, indent=4)
