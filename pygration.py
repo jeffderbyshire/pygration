@@ -32,6 +32,7 @@ import sys
 
 sys.path.append('/home/users/jeffderb/bin/tape-migration/')
 sys.path.append('/home/users/jeffderb/bin/tape-migration/migrate_helper_scripts')
+pprint.pprint(sys.path, indent=4)
 
 
 def build_migration_node_list():
