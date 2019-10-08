@@ -4,9 +4,9 @@ import pprint
 
 
 def push():
-    gc = pygsheets.authorize(client_secret='/home/users/jeffderb/.client_secret.json')
-    sh = gc.open_by_key('1Ij-ci1RjQG-w7Qhy1wMITZNi_KAbJz7q_RMf_ju9XS4')
-    wks = sh.sheet1
+    # gc = pygsheets.authorize(client_secret='/home/users/jeffderb/.client_secret.json')
+    # sh = gc.open_by_key('1Ij-ci1RjQG-w7Qhy1wMITZNi_KAbJz7q_RMf_ju9XS4')
+    # wks = sh.sheet1
     conn = sqlite3.connect('/home/users/jeffderb/db/migration.sqlite')
     cursor = conn.cursor()
     cursor.execute("SELECT a.server, b.volume, c.log_file, c.date, d.snippet, d.message "
@@ -16,10 +16,14 @@ def push():
                    "GROUP BY a.server, b.volume "
                    "ORDER BY a.server, b.volume ")
     results = cursor.fetchall()
+    report_file = open('/home/users/jeffderb/db/error_report', 'w')
+    for row in results:
+        report_file.write(row)
+    report_file.close()
     # pprint.pprint(results)
-    wks.insert_rows(row=2, number=len(results), values=results)
+    # wks.insert_rows(row=2, number=len(results), values=results)
     # wks.update_values('A2', results)
-    return 'report sent to gsheets'
+    return 'report to /home/users/jeffderb/db/error_report'
 
 
 if __name__ == '__main__':
