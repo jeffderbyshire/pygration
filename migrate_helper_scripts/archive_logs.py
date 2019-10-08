@@ -38,13 +38,15 @@ def archive(command="archive", volumes=False):
                         volume = first[-1]
                     conn = sqlite3.connect('/home/users/jeffderb/db/migration.sqlite')
                     cursor = conn.cursor()
-                    cursor.execute("DELETE FROM log_file_detail a "
+                    cursor.execute("DELETE FROM log_file_detail WHERE log_file_id IN ( "
+                                   "SELECT a.log_file_id FROM log_file_detail a "
                                    "INNER JOIN log_files b ON b.rowid = a.log_file_id  "
                                    "INNER JOIN volumes c ON b.volume_id = c.rowid "
-                                   "WHERE c.volume=?", (volume, ))
-                    cursor.execute("DELETE FROM log_files a "
+                                   "WHERE c.volume=?)", (volume, ))
+                    cursor.execute("DELETE FROM log_files WHERE volume_id IN ( "
+                                   "SELECT a.volume_id FROM log_files a "
                                    "INNER JOIN volumes b ON a.volume_id = b.rowid "
-                                   "WHERE b.volume=?", (volume, ))
+                                   "WHERE b.volume=?)", (volume, ))
                     cursor.execute("DELETE FROM volumes "
                                    "WHERE volume=?", (volume, ))
                     conn.commit()
