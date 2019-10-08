@@ -21,7 +21,6 @@ def too_many_logs(server, too_many_list):
     else:
         server_id = server_id[0]
     for volume in too_many_list:
-        print(volume)
         # select first then insert
         cursor.execute("SELECT rowid FROM volumes WHERE volume = ?", (volume, ))
         volume_id = cursor.fetchone()
@@ -33,7 +32,6 @@ def too_many_logs(server, too_many_list):
             volume_id = volume_id[0]
         error_logs = list_logs.get_logs("errors", [volume])
         for log_file in error_logs:
-            print(log_file)
             date = log_file.split("MigrationLog@")[1].split("#")[0].split(".")[0]
             cursor.execute("INSERT INTO log_files VALUES(?, ?, ?, ?)",
                            (server_id, volume_id, log_file, date))
@@ -41,7 +39,6 @@ def too_many_logs(server, too_many_list):
             conn.commit()
             error_messages = see_errors.error_messages('/var/migration/' + log_file)
             log_details = []
-            print(len(error_messages))
             for message in error_messages:
                 log_details.append((log_file_id, parse_logs.interpret_error_message(message),
                                    message))
