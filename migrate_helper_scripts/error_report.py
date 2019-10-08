@@ -18,7 +18,9 @@ def push():
     results = cursor.fetchall()
     report_file = open('/home/users/jeffderb/db/error_report', 'w')
     for row in results:
-        report_file.write(row)
+        for field in row:
+            report_file.write(field + '|')
+        report_file.write('\n')
     report_file.close()
     # pprint.pprint(results)
     # wks.insert_rows(row=2, number=len(results), values=results)
