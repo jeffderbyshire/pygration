@@ -1,5 +1,6 @@
 import pygsheets
 import sqlite3
+import pprint
 
 
 def push():
@@ -15,7 +16,8 @@ def push():
                    "GROUP BY a.server, b.volume "
                    "ORDER BY a.server, b.volume ")
     results = cursor.fetchall()
-    wks.update_values('A2', results)
+    pprint.pprint(results)
+    # wks.update_values('A2', results)
     return 'report sent to gsheets'
 
 
