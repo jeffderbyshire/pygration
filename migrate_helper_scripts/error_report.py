@@ -29,12 +29,9 @@ def push():
         all_values.append(row_values)
     #    report_file.write("|".join(row) + "\n")
     # pprint.pprint(results)
-    try:
-        wks.update_values('A2', all_values, extend=True)
-    except:
-        cells = 'A2:N' + str(len(all_values) + 10)
-        wks.update_values(cells, all_values, extend=True)
-    # wks.update_values('A2', results)
+    for x in range(len(all_values)):
+        wks.update_values('A' + str(2 + x), all_values[x], extend=True)
+
     return 'report to /home/users/jeffderb/db/error_report'
 
 
