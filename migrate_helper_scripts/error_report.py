@@ -16,6 +16,7 @@ def push():
                    "ORDER BY a.server, b.volume ")
     results = cursor.fetchall()
     wks.update_values('A2', results)
+    return 'report sent to gsheets'
 
 
 if __name__ == '__main__':

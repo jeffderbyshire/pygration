@@ -54,7 +54,7 @@ def get_args() -> argparse:
     """ Parse command line arguments and return object"""
     parser = argparse.ArgumentParser(description='Process Migration Logs',
                                      formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('--logs', metavar='log_type', nargs=1, default='all',
+    parser.add_argument('--logs', metavar='log_type', nargs=1, default=False,
                         help=textwrap.dedent('''\
                             no-errors:    list logs without errors
                             errors:       show logs with errors
@@ -84,7 +84,8 @@ def main():
     """ Parse command arguments, build server list and run commands """
     args = get_args()
     server = socket.gethostname()
-    pprint.pprint(list_logs.get_logs(args.logs[0]))
+    if args.logs:
+        pprint.pprint(list_logs.get_logs(args.logs[0]))
     if args.process:
         migrationLogs.process(server, args.process[0])
     """    

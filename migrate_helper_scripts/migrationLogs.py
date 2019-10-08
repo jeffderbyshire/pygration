@@ -93,7 +93,7 @@ def process(server, item, volume=False):
             too_many_logs(server, sorted(too_many))
 
     elif item == "report":
-        error_report.push()
+        output = error_report.push()
 
     else:
         command = "echo 'do nothing'"
