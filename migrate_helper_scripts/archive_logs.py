@@ -52,6 +52,7 @@ def archive(command="archive", volumes=False):
                     conn.commit()
                     os.remove(log_file_path)
                     removed += 1
+                    conn.close()
 
     else:
         return {'logs found': logs}
