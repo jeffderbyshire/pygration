@@ -38,10 +38,13 @@ def too_many_logs(server, too_many_list):
             log_file_id = cursor.lastrowid
             conn.commit()
             error_messages = see_errors.error_messages('/var/migration/' + log_file)
+            log_details = []
             for message in error_messages:
-                cursor.execute("INSERT INTO log_file_detail VALUES(?, ?, ?)",
-                               (log_file_id, parse_logs.interpret_error_message(message), message))
-                conn.commit()
+                log_details.append(log_file_id, parse_logs.interpret_error_message(message),
+                                   message)
+
+            cursor.executemany("INSERT INTO log_file_detail VALUES(?, ?, ?)", log_details)
+            conn.commit()
 
     conn.close()
 
