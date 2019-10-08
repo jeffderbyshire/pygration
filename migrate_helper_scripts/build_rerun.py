@@ -30,7 +30,8 @@ def rerun(volumes):
         if command != '':
             file.write(command + '\n')
             volumes_rerun.append(command.split()[-1])
-
+    # TODO before running check to see if migrate_chimera running < 2
+    #  and volume running is not in list
     os.system('screen -d -m ' + RERUN_SCRIPT)
     file.close()
     return len(volumes_rerun)
