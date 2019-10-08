@@ -11,7 +11,7 @@ def rerun(volumes):
     volumes_rerun = []
     os.chmod(RERUN_SCRIPT, 0o700)
     file = open(RERUN_SCRIPT, "w")
-    header = "#!/opt/enstore/Python/bin/python bash\ncd /var/migration\nsource ~enstore/.bashrc\n"
+    header = "#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc\n"
     file.write(header)
     logs = list_logs.get_logs('errors', volumes)
     for log in logs:
@@ -21,7 +21,7 @@ def rerun(volumes):
             first = next(fh).decode().split()
             volume = first[-1]
             if volume not in volumes_added:
-                command = " ".join(first[7:])
+                command = "/opt/enstore/Python/bin/python " + " ".join(first[7:])
                 for keyword in IGNORE:
                     if keyword in command:
                         command = ''
