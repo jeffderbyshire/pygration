@@ -2,4 +2,8 @@
 __pycache__
 migrate_errors/
 init.sh
+client_secret.json
+sheets.googleapis.com-python.json
+db/
+*.sqlite
 
