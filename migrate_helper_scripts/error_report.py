@@ -20,7 +20,7 @@ def push():
     #for row in results:
     #    report_file.write("|".join(row) + "\n")
     #report_file.close()
-    # pprint.pprint(results)
+    pprint.pprint(results)
     try:
         wks.update_values('A2', results, extend=True)
     except:
