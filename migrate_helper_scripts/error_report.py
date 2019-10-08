@@ -16,7 +16,7 @@ def push():
                    "ORDER BY a.server, b.volume ")
     results = cursor.fetchall()
     wks.clear('A2')
-    row_values = []
+    row_values = {}
     all_values = []
     # report_file = open('/home/users/jeffderb/db/error_report.csv', 'w')
     for row in results:
