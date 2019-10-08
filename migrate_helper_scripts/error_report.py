@@ -16,7 +16,8 @@ def push():
                    "GROUP BY a.server, b.volume "
                    "ORDER BY a.server, b.volume ")
     results = cursor.fetchall()
-    pprint.pprint(results)
+    # pprint.pprint(results)
+    wks.insert_rows(row=2, number=len(results), values=results)
     # wks.update_values('A2', results)
     return 'report sent to gsheets'
 
