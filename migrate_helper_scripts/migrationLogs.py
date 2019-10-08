@@ -33,7 +33,7 @@ def too_many_logs(server, too_many_list):
         error_logs = list_logs.get_logs("errors", [volume])
         for log_file in error_logs:
             date = log_file.split("MigrationLog@")[1].split("#")[0].split(".")[0]
-            cursor.execute("INSERT INTO log_files VALUES(?, ?, ?, ?)",
+            cursor.execute("INSERT OR IGNORE INTO log_files VALUES(?, ?, ?, ?)",
                            (server_id, volume_id, log_file, date))
             log_file_id = cursor.lastrowid
             conn.commit()
@@ -43,7 +43,7 @@ def too_many_logs(server, too_many_list):
                 log_details.append((log_file_id, parse_logs.interpret_error_message(message),
                                    message))
 
-            cursor.executemany("INSERT INTO log_file_detail VALUES(?, ?, ?)", log_details)
+            cursor.executemany("INSERT OR IGNORE INTO log_file_detail VALUES(?, ?, ?)", log_details)
             conn.commit()
 
     conn.close()
