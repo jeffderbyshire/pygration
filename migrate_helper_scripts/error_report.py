@@ -15,12 +15,17 @@ def push():
                    "INNER JOIN log_file_detail d ON d.log_file_id = c.rowid "
                    "ORDER BY a.server, b.volume ")
     results = cursor.fetchall()
+    wks.clear('A2')
     # report_file = open('/home/users/jeffderb/db/error_report.csv', 'w')
     #for row in results:
     #    report_file.write("|".join(row) + "\n")
     #report_file.close()
     # pprint.pprint(results)
-    wks.insert_rows(row=2, number=len(results), values=results)
+    try:
+        wks.update_values('A2', results, extend=True)
+    except:
+        cells = 'A2:N' + str(len(results) + 10)
+        wks.update_values(cells, results, extend=True)
     # wks.update_values('A2', results)
     return 'report to /home/users/jeffderb/db/error_report'
 
