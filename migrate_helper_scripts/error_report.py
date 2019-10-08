@@ -13,7 +13,6 @@ def push():
                    "FROM servers a, volumes b "
                    "INNER JOIN log_files c ON c.server_id = a.rowid AND c.volume_id = b.rowid "
                    "INNER JOIN log_file_detail d ON d.log_file_id = c.rowid "
-                   "GROUP BY a.server, b.volume "
                    "ORDER BY a.server, b.volume ")
     results = cursor.fetchall()
     report_file = open('/home/users/jeffderb/db/error_report', 'w')
