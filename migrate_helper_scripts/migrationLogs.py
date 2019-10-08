@@ -7,6 +7,7 @@ from . import list_logs
 from . import build_rerun
 from . import error_check
 from . import see_errors
+from . import error_report
 
 
 def too_many_logs(server, too_many_list):
@@ -91,8 +92,8 @@ def process(server, item, volume=False):
             pprint.pprint(counter, indent=1)
             too_many_logs(server, sorted(too_many))
 
-    elif item == "mail":
-        command = "bash /root/migrate_helper_scripts/mailErrors.sh " + volume
+    elif item == "report":
+        error_report.push()
 
     else:
         command = "echo 'do nothing'"
