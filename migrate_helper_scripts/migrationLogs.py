@@ -31,7 +31,7 @@ def too_many_logs(server, too_many_list):
             conn.commit()
         else:
             volume_id = volume_id[0]
-        error_logs = list_logs.get_logs(volumes=volume)
+        error_logs = list_logs.get_logs("errors", [volume])
         for log_file in error_logs:
             print(log_file)
             date = log_file.split("MigrationLog@")[1].split("#")[0].split(".")[0]
