@@ -15,11 +15,9 @@ def push():
                    "INNER JOIN log_file_detail d ON d.log_file_id = c.rowid "
                    "ORDER BY a.server, b.volume ")
     results = cursor.fetchall()
-    report_file = open('/home/users/jeffderb/db/error_report', 'w')
+    report_file = open('/home/users/jeffderb/db/error_report.csv', 'w')
     for row in results:
-        for field in row:
-            report_file.write(field + '|')
-        report_file.write('\n')
+        report_file.write("|".join(row) + "\n")
     report_file.close()
     # pprint.pprint(results)
     # wks.insert_rows(row=2, number=len(results), values=results)
