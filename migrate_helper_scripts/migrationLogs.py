@@ -86,7 +86,6 @@ def process(server, item, volume=False):
             print("More than 2 errors:")
             pprint.pprint(too_many, indent=1)
             pprint.pprint(counter, indent=1)
-            # TODO put errors into sqlite3 db
             too_many_logs(server, sorted(too_many))
 
     elif item == "mail":

@@ -4,6 +4,7 @@ import os
 import gzip
 import shutil
 from .list_logs import *
+import sqlite3
 
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog@"
@@ -16,6 +17,7 @@ def get_year_month(log_name):
 
 
 def archive(command="archive", volumes=False):
+    # TODO remove sqlite entries when archived
     logs = get_logs(command, volumes)
     log_total = archived = removed = 0
     if len(logs) > 0:
@@ -31,8 +33,24 @@ def archive(command="archive", volumes=False):
                         shutil.copyfileobj(f_in, f_out)
                         archived += 1
                 if os.path.exists(gz_file_path):
+                    with open(log_file_path, 'rb') as fh:
+                        first = next(fh).decode().split()
+                        volume = first[-1]
+                    conn = sqlite3.connect('/home/users/jeffderb/db/migration.sqlite')
+                    cursor = conn.cursor()
+                    cursor.execute("DELETE FROM log_file_detail a "
+                                   "INNER JOIN log_files b ON b.rowid = a.log_file_id  "
+                                   "INNER JOIN volumes c ON b.volume_id = c.rowid "
+                                   "WHERE c.volume=?", (volume, ))
+                    cursor.execute("DELETE FROM log_files a "
+                                   "INNER JOIN volumes b ON a.volume_id = b.rowid "
+                                   "WHERE b.volume=?", (volume, ))
+                    cursor.execute("DELETE FROM volumes "
+                                   "WHERE volume=?", (volume, ))
+                    conn.commit()
                     os.remove(log_file_path)
                     removed += 1
+
     else:
         return {'logs found': logs}
 
