@@ -11,7 +11,7 @@ def rerun(volumes):
     volumes_rerun = []
     os.chmod(RERUN_SCRIPT, 0o700)
     file = open(RERUN_SCRIPT, "w")
-    header = "#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc\n"
+    header = "#!/opt/enstore/Python/bin/python bash\ncd /var/migration\nsource ~enstore/.bashrc\n"
     file.write(header)
     logs = list_logs.get_logs('errors', volumes)
     for log in logs:
