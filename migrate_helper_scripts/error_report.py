@@ -18,6 +18,7 @@ def push():
     wks.clear('A2')
     row_values = {}
     all_values = []
+
     # report_file = open('/home/users/jeffderb/db/error_report.csv', 'w')
     for row in results:
         row_values['server'] = row[0]
@@ -26,11 +27,18 @@ def push():
         row_values['message'] = row[3]
         row_values['date'] = row[4]
         row_values['snippet'] = row[5]
-        all_values.append(row_values)
+        all_values.append([[row[0]], [row[1]], [row[2]], [row[3]], [row[4]], [row[5]]])
     #    report_file.write("|".join(row) + "\n")
     # pprint.pprint(results)
+    columns = ['A', 'B', 'C', 'D', 'E', 'F']
+    cell_list = []
     for x in range(len(all_values)):
-        wks.update_values('A' + str(2 + x), all_values[x], extend=True)
+        width = str(2 + x)
+        for y in columns:
+            cell_list.append(pygsheets.Cell(y + width))
+
+        wks.update_values(cell_list=cell_list, values=all_values[x], extend=True)
+        # pprint.pprint(all_values[x])
 
     return 'report to /home/users/jeffderb/db/error_report'
 
