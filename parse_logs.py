@@ -21,6 +21,19 @@ def is_vol_archived(volume_serial):
     return False
 
 
+def archive_error_message(message):
+    archive_messages = [
+        "is NOTALLOWED",
+        "does not exist in db"
+    ]
+
+    for archive in archive_messages:
+        if archive in message:
+            return True
+
+    return False
+
+
 def rerun_error_message(message):
     rerun_messages = [
         "TOO MANY RETRIES",
@@ -56,7 +69,9 @@ def interpret_error_message(message):
         "GET_INPUT_TARGETS can not find bfid of file-family-width",
         "READ_0 COPYING_TO_DISK failed to copy",
         "Error after transferring 0 bytes in 1 files",
-        "TIMEDOUT"
+        "TIMEDOUT",
+        "is NOTALLOWED",
+        "does not exist in db"
     ]
     if message == "":
         return False
@@ -106,7 +121,7 @@ def parse_logs(server, logs):
     """ 1. Archive Logs if No errors found """
     for vol, msg in list(counter):
         vol_archived = is_vol_archived(vol)
-        if no_error == msg or vol_archived:
+        if no_error == msg or vol_archived or archive_error_message(msg):
             # print(vol)
             archive_logs_list.append(vol)
             for vol_2, msg_2 in list(counter):
