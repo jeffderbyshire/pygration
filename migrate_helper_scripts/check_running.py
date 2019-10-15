@@ -3,7 +3,7 @@ import subprocess
 
 def main():
     volumes_running = []
-    with subprocess.Popen(["ps ww |grep migrate_chimera"],
+    with subprocess.Popen(['ps', 'ww', '|grep', 'migrate_chimera'],
                           stdout=subprocess.PIPE) as proc:
         volumes_running.append(proc.stdout.read())
 
