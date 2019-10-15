@@ -4,7 +4,7 @@ import subprocess
 def main():
     volumes_running = []
     process = subprocess.run(['/var/migration/migration-bin/dmPs.sh'], check=True,
-                             shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+                             stdout=subprocess.PIPE, text=True)
 
     return process.stdout
 
