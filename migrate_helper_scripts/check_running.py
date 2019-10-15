@@ -3,9 +3,8 @@ import subprocess
 
 def main():
     volumes_running = []
-    with subprocess.Popen(['ps', 'waux'],
-                          stdout=subprocess.PIPE) as proc:
-        volumes_running = proc.stdout.readlines()
+    with subprocess.run(['ps', 'waux'], capture_output=True) as proc:
+        volumes_running.append(proc.stdout)
 
     return volumes_running
 
