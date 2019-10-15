@@ -3,7 +3,8 @@ import subprocess
 
 def main():
     volumes_running = []
-    process = subprocess.run(['/var/migration/migration-bin/dmPs.sh'], capture_output=True)
+    process = subprocess.run(['/var/migration/migration-bin/dmPs.sh'], check=True,
+                             stdout=subprocess.PIPE, universal_newlines=True)
 
     return process.stdout
 
