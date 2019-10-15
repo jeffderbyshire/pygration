@@ -3,7 +3,7 @@ import subprocess
 
 def main():
     volumes_running = []
-    process = subprocess.run(['ls', '-ltr'], check=True,
+    process = subprocess.run(['ps', '-aux'], check=True,
                              stdout=subprocess.PIPE, text=True)
 
     return process.stdout.split('\n')
