@@ -3,7 +3,7 @@ from subprocess import Popen, PIPE
 
 def main():
     volumes_running = []
-    process_ps = Popen(['ps', 'w'],
+    process_ps = Popen(['ps', '-ww'],
                        stdout=PIPE)
     process_grep = Popen(['grep', 'migrate_chimera'], stdin=process_ps.stdout, stdout=PIPE)
 
