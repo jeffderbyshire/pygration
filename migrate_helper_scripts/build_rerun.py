@@ -1,5 +1,6 @@
 import os
 import shutil
+from . import check_running
 
 RERUN_SCRIPT = '/tmp/migrate.rerun'
 MIGRATION_DIR = '/var/migration/'
@@ -7,7 +8,10 @@ IGNORE = ['--scan', '--restore']
 
 
 def rerun(volumes):
-    volumes_added = []
+    run_ok = True
+    volumes_added = check_running.main()
+    if len(volumes_added) > 1:
+        run_ok = False
     volumes_rerun = []
     os.chmod(RERUN_SCRIPT, 0o700)
     file = open(RERUN_SCRIPT, "w")
@@ -30,9 +34,10 @@ def rerun(volumes):
         if command != '':
             file.write(command + '\n')
             volumes_rerun.append(command.split()[-1])
-    # TODO before running check to see if migrate_chimera running < 2
-    #  and volume running is not in list
-    os.system('screen -d -m ' + RERUN_SCRIPT)
+    if run_ok:
+        os.system('screen -d -m ' + RERUN_SCRIPT)
+    else:
+        print('too many migrate_chimera processes running')
     file.close()
     return len(volumes_rerun)
 
