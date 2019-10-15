@@ -21,6 +21,20 @@ def is_vol_archived(volume_serial):
     return False
 
 
+def rerun_error_message(message):
+    rerun_messages = [
+        "TOO MANY RETRIES",
+        "TIMEOUT",
+        "COPYING_TO_DISK"
+    ]
+
+    for rerun in rerun_messages:
+        if rerun in message:
+            return True
+
+    return False
+
+
 def interpret_error_message(message):
     matched_knowns = []
     known_messages = [
@@ -103,25 +117,17 @@ def parse_logs(server, logs):
 
     # leave for debugging pprint.pprint(counter, indent=1)
     for vol, msg in list(counter):
-        print(msg)
-        if counter[(vol, msg)] < 3:
-            # rerun_vol_ser(vol)
+        if rerun_error_message(msg):
             rerun_logs_list.append(vol)
         else:
-            # too many errors to rerun
-            too_many_errors_list.append(vol)
+            if counter[(vol, msg)] < 3:
+                # rerun_vol_ser(vol)
+                rerun_logs_list.append(vol)
+            else:
+                # too many errors to rerun
+                too_many_errors_list.append(vol)
 
     archive_logs_list = list(set(archive_logs_list))
     rerun_logs_list = list(set(rerun_logs_list))
     too_many_errors_list = list(set(too_many_errors_list))
     return sorted(archive_logs_list), sorted(rerun_logs_list), sorted(too_many_errors_list), counter
-
-    """ Do some action based on log findings """
-    # TODO count error entries in log
-    # TODO check if latest error is False or "No Error Found in Log File"
-    # TODO If no error, then archive all logs associated with volume serial
-    # TODO Else add latest run command statement to rerun script instead of adding
-    #  all statements from all error files
-    # TODO bigger picture record the rerun volume serials in a centralized way
-    # TODO notify if same volume is being rerun more than X times.
-
