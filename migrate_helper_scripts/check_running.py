@@ -5,9 +5,9 @@ def main():
     volumes_running = []
     process = sh.grep(sh.ps('ww'), 'migrate_chimera')
     for line in process:
-        print(line)
+        volumes_running.append(line.split()[-1])
 
-    return process
+    return volumes_running
 
 
 if __name__ == "__main__":
