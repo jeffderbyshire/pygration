@@ -4,6 +4,8 @@ import sh
 def main():
     volumes_running = []
     process = sh.grep(sh.ps('ww'), 'migrate_chimera')
+    for line in process:
+        print(line)
 
     return process
 
