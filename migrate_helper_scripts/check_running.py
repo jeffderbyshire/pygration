@@ -3,9 +3,9 @@ import subprocess
 
 def main():
     volumes_running = []
-    with subprocess.Popen(['ps', 'ww', '|grep', 'migrate_chimera'],
+    with subprocess.Popen(['/var/migration/migration-bin/dmPs.sh'],
                           stdout=subprocess.PIPE) as proc:
-        volumes_running.append(proc.stdout.read())
+        volumes_running.append(proc.stdout.read().decode())
 
     return volumes_running
 
