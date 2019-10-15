@@ -1,12 +1,13 @@
-import subprocess
+from subprocess import Popen, PIPE
 
 
 def main():
     volumes_running = []
-    process = subprocess.run(['ps', '-aux'], check=True,
-                             stdout=subprocess.PIPE, text=True)
+    process_ps = Popen(['ps', 'w'], check=True,
+                    stdout=PIPE, text=True)
+    process_grep = Popen(['grep', 'migrate_chimera'], stdin=process_ps.stdout, stdout=PIPE)
 
-    return process.stdout.split('\n')
+    return process_grep.stdout
 
 
 if __name__ == "__main__":
