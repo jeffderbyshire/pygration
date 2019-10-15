@@ -3,7 +3,7 @@ import sh
 
 def main():
     volumes_running = []
-    process = sh.grep(sh.ps('w'), 'migrate_chimera')
+    process = sh.grep(sh.ps('ww'), 'migrate_chimera')
 
     return process
 
