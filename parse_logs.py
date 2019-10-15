@@ -103,6 +103,7 @@ def parse_logs(server, logs):
 
     # leave for debugging pprint.pprint(counter, indent=1)
     for vol, msg in list(counter):
+        print(msg)
         if counter[(vol, msg)] < 3:
             # rerun_vol_ser(vol)
             rerun_logs_list.append(vol)
