@@ -5,7 +5,7 @@ def main():
     volumes_running = []
     with subprocess.Popen(["/var/migration/migration-bin/dmPs.sh"],
                           stdout=subprocess.PIPE) as proc:
-        volumes_running.append(proc.stdout.read()[-1])
+        volumes_running.append(proc.stdout.read())
 
     return volumes_running
 
