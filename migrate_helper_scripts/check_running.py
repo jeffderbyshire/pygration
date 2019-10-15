@@ -6,7 +6,7 @@ def main():
     process = subprocess.run(['/var/migration/migration-bin/dmPs.sh'], check=True,
                              stdout=subprocess.PIPE, text=True)
 
-    return process.stdout
+    return process.stdout.split('\n')
 
 
 if __name__ == "__main__":
