@@ -98,7 +98,8 @@ def process(server, item, volume=False, quiet=False):
     else:
         command = "echo 'do nothing'"
 
-    print(server)
-    print(item)
-    if item != "see_errors" and not quiet:
-        pprint.pprint(output, indent=4)
+    if not quiet:
+        print(server)
+        print(item)
+        if item != "see_errors":
+            pprint.pprint(output, indent=4)
