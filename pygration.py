@@ -73,7 +73,7 @@ def get_args() -> argparse:
                             '''))
     parser.add_argument('--server', dest='server', metavar='node', nargs=1, default='all',
                         help='run command(s) on single node')
-    parser.add_argument('--quiet', action='store_const', const=True, default=False,
+    parser.add_argument('--quiet', action='store_true',
                         help='suppress output for cron job')
     parser.add_argument('--volumes', metavar='volume_serials', nargs='+', default=False,
                         help='volume serials [ VPXXXX1 VPXXXX2 ... VPXXXXN ]')
@@ -85,6 +85,7 @@ def main():
     """ Parse command arguments, build server list and run commands """
     args = get_args()
     server = socket.gethostname()
+    print(args.quiet)
     if args.logs:
         pprint.pprint(list_logs.get_logs(args.logs[0]))
     if args.process:
