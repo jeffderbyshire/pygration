@@ -73,7 +73,7 @@ def get_args() -> argparse:
                             '''))
     parser.add_argument('--server', dest='server', metavar='node', nargs=1, default='all',
                         help='run command(s) on single node')
-    parser.add_argument('--quiet', dest='quiet', metavar='quiet', nargs=0, default=False,
+    parser.add_argument('--quiet', dest='quiet', metavar='quiet', nargs=1, default=False,
                         help='suppress output for cron job')
     parser.add_argument('--volumes', metavar='volume_serials', nargs='+', default=False,
                         help='volume serials [ VPXXXX1 VPXXXX2 ... VPXXXXN ]')
