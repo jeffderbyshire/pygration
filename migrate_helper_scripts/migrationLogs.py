@@ -50,7 +50,7 @@ def too_many_logs(server, too_many_list):
     conn.close()
 
 
-def process(server, item, volume=False):
+def process(server, item, volume=False, quiet=False):
 
     if item == "check":
         output = error_check.main()
@@ -100,5 +100,5 @@ def process(server, item, volume=False):
 
     print(server)
     print(item)
-    if item != "see_errors":
+    if item != "see_errors" and not quiet:
         pprint.pprint(output, indent=4)

@@ -29,7 +29,6 @@ from migrate_helper_scripts import list_logs
 import pprint
 
 
-
 def build_migration_node_list():
     """ built migration node and return list of nodes
     Luckily the nodes are in numbered sequentially
@@ -74,6 +73,8 @@ def get_args() -> argparse:
                             '''))
     parser.add_argument('--server', dest='server', metavar='node', nargs=1, default='all',
                         help='run command(s) on single node')
+    parser.add_argument('--quiet', dest='quiet', metavar='node', nargs=1, default=False,
+                        help='suppress output for cron job')
     parser.add_argument('--volumes', metavar='volume_serials', nargs='+', default=False,
                         help='volume serials [ VPXXXX1 VPXXXX2 ... VPXXXXN ]')
 
@@ -84,10 +85,12 @@ def main():
     """ Parse command arguments, build server list and run commands """
     args = get_args()
     server = socket.gethostname()
+    if args.quiet:
+        quiet = True
     if args.logs:
         pprint.pprint(list_logs.get_logs(args.logs[0]))
     if args.process:
-        migrationLogs.process(server, args.process[0])
+        migrationLogs.process(server, args.process[0], quiet)
     """    
     # if args.server == 'all':  # default
         # servers = socket.gethostname()
