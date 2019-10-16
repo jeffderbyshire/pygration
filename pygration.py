@@ -85,12 +85,10 @@ def main():
     """ Parse command arguments, build server list and run commands """
     args = get_args()
     server = socket.gethostname()
-    if args.quiet:
-        quiet = True
     if args.logs:
         pprint.pprint(list_logs.get_logs(args.logs[0]))
     if args.process:
-        migrationLogs.process(server, args.process[0], quiet)
+        migrationLogs.process(server, args.process[0], args.quiet)
     """    
     # if args.server == 'all':  # default
         # servers = socket.gethostname()
