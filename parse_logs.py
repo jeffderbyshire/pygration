@@ -23,8 +23,8 @@ def is_vol_archived(volume_serial):
 
 def archive_error_message(message):
     archive_messages = [
+        "does not exist in db",
         "is NOTALLOWED",
-        "does not exist in db"
     ]
 
     for archive in archive_messages:
@@ -36,9 +36,11 @@ def archive_error_message(message):
 
 def rerun_error_message(message):
     rerun_messages = [
-        "TOO MANY RETRIES",
+        "COPYING_TO_DISK",
+        "COPYING_TO_TAPE",
+        "Error after transferring 0 bytes in 1 files",
         "TIMEOUT",
-        "COPYING_TO_DISK"
+        "TOO MANY RETRIES",
     ]
 
     for rerun in rerun_messages:
@@ -51,27 +53,30 @@ def rerun_error_message(message):
 def interpret_error_message(message):
     matched_knowns = []
     known_messages = [
-        "[Errno 2] No such file or directory: PNFS ID not found:",
-        "Destination directory writes 19 copies; only 19 libraries specified for",
-        "are inconsistent on bfid ... ERROR",
         "[1] metadata",
         "[2] metadata",
-        "COPYING_TO_TAPE failed to copy",
-        "SWAPPING_METADATA no file record found",
-        "TOO MANY RETRIES",
-        "skipping volume metadata update since not all files have been scanned",
-        "FINAL_SCAN FINAL_SCAN_VOLUME",
-        "has not been swapped",
-        "is not a migration destination volume",
-        "is not a migration bfid",
-        "FINAL_SCAN LOG_HISTORY_CLOSED did not set",
+        "[Errno 2] No such file or directory: PNFS ID not found:",
+        "are inconsistent on bfid ... ERROR",
         "COPYING_TO_DISK trying to migrate file",
-        "GET_INPUT_TARGETS can not find bfid of file-family-width",
-        "READ_0 COPYING_TO_DISK failed to copy",
+        "COPYING_TO_TAPE failed to copy",
+        "COPYING_TO_TAPE cleanup lists are not empty",
+        "Destination directory writes 19 copies; only 19 libraries specified for",
+        "does not exist in db",
         "Error after transferring 0 bytes in 1 files",
-        "TIMEDOUT",
+        "FINAL_SCAN FINAL_SCAN_VOLUME",
+        "FINAL_SCAN LOG_HISTORY_CLOSED did not set",
+        "GET_INPUT_TARGETS can not find bfid of file-family-width",
+        "has not been swapped",
         "is NOTALLOWED",
-        "does not exist in db"
+        "is not a migration bfid",
+        "is not a migration destination volume",
+        "MainThread MIGRATING_VOLUME do not set",
+        "READ_0 COPYING_TO_DISK failed to copy",
+        "skipping volume metadata update since not all files have been scanned",
+        "SWAPPING_METADATA no file record found",
+        "TIMEDOUT",
+        "to migrated due to previous error",
+        "TOO MANY RETRIES",
     ]
     if message == "":
         return False
