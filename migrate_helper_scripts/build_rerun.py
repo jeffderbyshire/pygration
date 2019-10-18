@@ -9,6 +9,7 @@ IGNORE = ['--scan', '--restore']
 
 def rerun(volumes):
     volumes_added = check_running.main()
+    # TODO check for disk space used < 60%?
     if len(volumes_added) < 2:
         volumes_rerun = []
         os.chmod(RERUN_SCRIPT, 0o700)
