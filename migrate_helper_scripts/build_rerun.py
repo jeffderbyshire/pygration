@@ -5,12 +5,19 @@ from . import check_running
 RERUN_SCRIPT = '/tmp/migrate.rerun'
 MIGRATION_DIR = '/var/migration/'
 IGNORE = ['--scan', '--restore']
+SPOOL_DIR_FDM = '/data/data3'
+SPOOL_DIR_STK = '/data/data1'
 
 
 def rerun(volumes):
     volumes_added = check_running.main()
     # TODO check for disk space used < 60%?
-    total, used, free = shutil.disk_usage("/data/data3")
+    if os.path.exists(SPOOL_DIR_FDM):
+        total, used, free = shutil.disk_usage(SPOOL_DIR_FDM)
+    elif os.path.exists(SPOOL_DIR_STK):
+        total, used, free = shutil.disk_usage(SPOOL_DIR_STK)
+    else:
+        total = used = 1
     if used/total < 0.60:
         if len(volumes_added) < 2:
             volumes_rerun = []
