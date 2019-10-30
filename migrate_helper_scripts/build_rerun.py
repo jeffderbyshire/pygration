@@ -26,6 +26,8 @@ def rerun(volumes):
                     if '/data/data' in argument:
                         spool = argument.split('/')
                         total, used, free = shutil.disk_usage("/".join(spool[0:3]))
+                    else:
+                        total, used, free = shutil.disk_usage("/data/data3")
                 if volume not in volumes_added and used/total < 0.60:
                     command = "/opt/enstore/Python/bin/python " + " ".join(first[7:])
                     for keyword in IGNORE:
