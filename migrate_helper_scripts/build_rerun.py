@@ -1,5 +1,6 @@
 import os
 import shutil
+from pathlib import Path
 from . import check_running
 
 RERUN_SCRIPT = '/tmp/migrate.rerun'
@@ -14,6 +15,8 @@ def rerun(volumes):
     volumes_added = check_running.main()
     if len(volumes_added) < 2:
         volumes_rerun = []
+        if not os.path.exists(RERUN_SCRIPT):
+            Path(RERUN_SCRIPT).touch()
         os.chmod(RERUN_SCRIPT, 0o700)
         file = open(RERUN_SCRIPT, "w")
         header = "#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc\n"
