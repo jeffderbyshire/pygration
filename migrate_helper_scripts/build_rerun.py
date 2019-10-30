@@ -5,6 +5,9 @@ from . import check_running
 RERUN_SCRIPT = '/tmp/migrate.rerun'
 MIGRATION_DIR = '/var/migration/'
 IGNORE = ['--scan', '--restore']
+DATA3 = '/data/data3'
+DATA2 = '/data/data2'
+DATA1 = '/data/data1'
 
 
 def rerun(volumes):
@@ -18,6 +21,8 @@ def rerun(volumes):
         logs = list_logs.get_logs('errors', volumes)
         for log in logs:
             command = ''
+            ignore = False
+            spool_full = False
             file_name = MIGRATION_DIR + log
             with open(file_name, 'rb') as fh:
                 first = next(fh).decode().split()
@@ -26,14 +31,15 @@ def rerun(volumes):
                     if '/data/data' in argument:
                         spool = argument.split('/')
                         total, used, free = shutil.disk_usage("/".join(spool[0:3]))
-                    else:
-                        total, used, free = shutil.disk_usage("/data/data3")
-                if volume not in volumes_added and used/total < 0.60:
-                    command = "/opt/enstore/Python/bin/python " + " ".join(first[7:])
-                    for keyword in IGNORE:
-                        if keyword in command:
-                            command = ''
+                        if used/total < 0.60:
+                            spool_full = True
                             break
+                    else:
+                        if argument in IGNORE:
+                            ignore = True
+                            break
+                if volume not in volumes_added and not ignore and not spool_full:
+                    command = "/opt/enstore/Python/bin/python " + " ".join(first[7:])
                     volumes_added.append(volume)
             if command != '':
                 file.write(command + '\n')
