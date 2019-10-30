@@ -31,7 +31,8 @@ def rerun(volumes):
                     if '/data/data' in argument:
                         spool = argument.split('/')
                         total, used, free = shutil.disk_usage("/".join(spool[0:3]))
-                        if used/total < 0.60:
+                        if used/total > 0.60:
+                            print("/".join(spool[0:3]) + ' is more than 60% full')
                             spool_full = True
                             break
                     else:
