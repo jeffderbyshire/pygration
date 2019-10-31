@@ -137,6 +137,7 @@ def parse_logs(server, logs):
                     # print(vol_2, msg_2)
                     key = (vol_2, msg_2)
                     del counter[key]
+    pprint.pprint(archive_logs_list)
     sys.exit()
     # leave for debugging pprint.pprint(counter, indent=1)
     for vol, msg in list(counter):
