@@ -23,9 +23,8 @@ def check_migration_status(volumes):
     for volume in volumes:
         status = subprocess.run(['/opt/enstore/Python/bin/python', '/opt/enstore/bin/enstore',
                                 'info', '--vol', volume], capture_output=True)
-        check = status.stdout.decode()
-        check_json = json.encoder(check)
-        print(check_json['system_inhibit'])
+        check = json.loads(status.stdout.decode())
+        print(check['system_inhibit'])
         sys.exit()
 
 
