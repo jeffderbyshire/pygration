@@ -25,8 +25,10 @@ def check_migration_status(volumes):
     for volume in volumes:
         status = subprocess.run(['/opt/enstore/Python/bin/python', '/opt/enstore/bin/enstore',
                                 'info', '--vol', volume], capture_output=True)
-        check = dict(status.stdout.decode().replace("'", '').replace('\n', ''))
+        check = status.stdout.decode().replace("'", '').replace('\n', '')
         pprint.pprint(check)
+        pprint.pprint(list(check))
+        pprint.pprint(dict(check))
         sys.exit()
 
 
