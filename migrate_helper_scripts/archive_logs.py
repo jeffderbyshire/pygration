@@ -8,6 +8,8 @@ import sqlite3
 import subprocess
 import sys
 import json
+import pprint
+
 
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog@"
@@ -25,7 +27,7 @@ def check_migration_status(volumes):
                                 'info', '--vol', volume], capture_output=True)
         print(status.stdout.decode())
         check = json.dumps(status.stdout.decode())
-        print(check['system_inhibit'])
+        pprint.pprint(check)
         sys.exit()
 
 
