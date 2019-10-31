@@ -6,6 +6,7 @@ import shutil
 from .list_logs import *
 import sqlite3
 import subprocess
+import sys
 
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog@"
