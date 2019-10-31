@@ -133,7 +133,7 @@ def parse_logs(server, logs):
             if volume_serial not in volume_serial_list:
                 volume_serial_list.append(volume_serial)
             message_list.append([volume_serial, date_str, time_str, log_error_message_condensed])
-        pb.print_progress_bar(i, len(logs), prefix='Read Errors:', suffix='Complete', length=50)
+        pb.print_progress_bar(i, len(logs), prefix='Analyze Errors:', suffix='Complete', length=50)
 
     vol_error = []
     for vol_ser, date_str, time_str, msg in message_list:
@@ -144,12 +144,11 @@ def parse_logs(server, logs):
         counter[vol, error] += 1
     # leave for debugging pprint.pprint(counter, indent=1)
     """ 1. Archive Logs if No errors found """
+    pb.print_progress_bar(0, len(logs), prefix='Archive Check:', suffix='Complete', length=50)
+    i = 0
     for vol, msg in list(counter):
         vol_archived = is_vol_archived(vol)
         migrated = check_migration_status(vol)
-        print(vol_archived)
-        print(msg)
-        print(archive_error_message(msg))
         if migrated or vol_archived or archive_error_message(msg):
             # print(vol)
             archive_logs_list.append(vol)
@@ -158,6 +157,7 @@ def parse_logs(server, logs):
                     # print(vol_2, msg_2)
                     key = (vol_2, msg_2)
                     del counter[key]
+        pb.print_progress_bar(i, len(logs), prefix='Archive Check:', suffix='Complete', length=50)
     pprint.pprint(archive_logs_list)
     sys.exit()
     # leave for debugging pprint.pprint(counter, indent=1)
