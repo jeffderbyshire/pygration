@@ -7,6 +7,7 @@ from .list_logs import *
 import sqlite3
 import subprocess
 import sys
+import json
 
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog@"
@@ -22,7 +23,9 @@ def check_migration_status(volumes):
     for volume in volumes:
         status = subprocess.run(['/opt/enstore/Python/bin/python', '/opt/enstore/bin/enstore',
                                 'info', '--vol', volume], capture_output=True)
-        print(status.stdout.decode()['system_inhibit'][1])
+        check = status.stdout.decode()
+        check_json = json.encoder(check)
+        print(check_json['system_inhibit'])
         sys.exit()
 
 
