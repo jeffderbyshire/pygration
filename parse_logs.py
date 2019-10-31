@@ -90,6 +90,19 @@ def interpret_error_message(message):
     return "Unknown Error " + message
 
 
+def check_migration_status(volume):
+    print(volume)
+    status = subprocess.run(['/opt/enstore/Python/bin/python', '/opt/enstore/bin/enstore',
+                            'info', '--check', volume], capture_output=True)
+    check = status.stdout.decode()
+    if 'migrated' in check:
+        print(volume + ' migrated')
+        return True
+    else:
+        print(check)
+        return False
+
+
 def parse_logs(server, logs):
     no_error = "No Error Found in Log File"
     archive_logs_list = []
@@ -126,10 +139,11 @@ def parse_logs(server, logs):
     """ 1. Archive Logs if No errors found """
     for vol, msg in list(counter):
         vol_archived = is_vol_archived(vol)
+        migrated = check_migration_status(vol)
         print(vol_archived)
         print(msg)
         print(archive_error_message(msg))
-        if no_error == msg or vol_archived or archive_error_message(msg):
+        if migrated or vol_archived or archive_error_message(msg):
             # print(vol)
             archive_logs_list.append(vol)
             for vol_2, msg_2 in list(counter):

@@ -21,26 +21,11 @@ def get_year_month(log_name):
     return "/".join(log_name.split('-')[0:2])
 
 
-def check_migration_status(unchecked_volumes):
-    checked_volumes = []
-    for volume in unchecked_volumes:
-        print(volume)
-        status = subprocess.run(['/opt/enstore/Python/bin/python', '/opt/enstore/bin/enstore',
-                                'info', '--vol', volume], capture_output=True)
-        check = status.stdout.decode().replace("'", '').replace('\n', '')
-        if 'migrated' in check:
-            checked_volumes.append(volume)
-            print(volume + ' migrated')
 
-    sys.exit()
-
-    return checked_volumes, unchecked_volumes
 
 
 def archive(command="archive", volumes=False):
     logs = get_logs(command, volumes)
-    if volumes:
-        volumes, original_volumes = check_migration_status(volumes)
     log_total = archived = removed = 0
     if len(logs) > 0:
         for log in logs:
