@@ -24,6 +24,7 @@ def get_year_month(log_name):
 def check_migration_status(unchecked_volumes):
     checked_volumes = []
     for volume in unchecked_volumes:
+        print(volume)
         status = subprocess.run(['/opt/enstore/Python/bin/python', '/opt/enstore/bin/enstore',
                                 'info', '--vol', volume], capture_output=True)
         check = status.stdout.decode().replace("'", '').replace('\n', '')
