@@ -5,6 +5,7 @@ import gzip
 import shutil
 from .list_logs import *
 import sqlite3
+import subprocess
 
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog@"
@@ -16,9 +17,18 @@ def get_year_month(log_name):
     return "/".join(log_name.split('-')[0:2])
 
 
+def check_migration_status(volumes):
+    for volume in volumes:
+        status = subprocess.run(['/opt/enstore/Python/bin/python', '/opt/enstore/bin/enstore',
+                                'info', '--vol', volume], capture_output=True)
+        print(status.stdout)
+        sys.exit()
+
+
 def archive(command="archive", volumes=False):
-    # TODO remove sqlite entries when archived
     logs = get_logs(command, volumes)
+    if volumes:
+        volumes = check_migration_status(volumes)
     log_total = archived = removed = 0
     if len(logs) > 0:
         for log in logs:
