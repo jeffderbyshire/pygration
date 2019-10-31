@@ -84,9 +84,9 @@ def process(server, item, volume=False, quiet=False):
         print("rerun: " + str(len(rerun)))
         print("too many: " + str(len(too_many)))
         if len(archive) > 0:
-            pprint.pprint(archive)
+            # pprint.pprint(archive)
             archive_count = archive_logs.archive("archive-with-errors", sorted(archive))
-            pprint.pprint(list_logs.get_logs('archive-with-errors', sorted(archive)))
+            # pprint.pprint(list_logs.get_logs('archive-with-errors', sorted(archive)))
             print("Archive")
             pprint.pprint(archive_count, indent=1)
         if len(rerun) > 0:
@@ -94,9 +94,9 @@ def process(server, item, volume=False, quiet=False):
             print("Rerun")
             pprint.pprint(rerun_logs, indent=1)
         if len(too_many) > 0:
-            print("More than 2 errors:")
-            pprint.pprint(too_many, indent=1)
-            pprint.pprint(counter, indent=1)
+            # print("More than 2 errors:")
+            # pprint.pprint(too_many, indent=1)
+            # pprint.pprint(counter, indent=1)
             too_many_logs(server, sorted(too_many))
 
     elif item == "report":
