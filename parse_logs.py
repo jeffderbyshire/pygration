@@ -141,7 +141,7 @@ def parse_logs(server, logs):
         counter[vol, error] += 1
     # leave for debugging pprint.pprint(counter, indent=1)
     """ 1. Archive Logs if No errors found """
-    pb.print_progress_bar(0, len(logs), prefix='Archive Check:', suffix='Complete', length=50)
+    pb.print_progress_bar(0, len(counter), prefix='Archive Check:', suffix='Complete', length=50)
     i = 0
     for vol, msg in list(counter):
         i += 1
@@ -155,7 +155,7 @@ def parse_logs(server, logs):
                     # print(vol_2, msg_2)
                     key = (vol_2, msg_2)
                     del counter[key]
-        pb.print_progress_bar(i, len(logs), prefix='Archive Check:', suffix='Complete', length=50)
+        pb.print_progress_bar(i, len(counter), prefix='Archive Check:', suffix='Complete', length=50)
     pprint.pprint(archive_logs_list)
     sys.exit()
     # leave for debugging pprint.pprint(counter, indent=1)
