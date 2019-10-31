@@ -22,6 +22,9 @@ def usage():
 def check_file_mtime(file_name, age):
     now = datetime.datetime.now()
     mtime = os.stat(LOG_DIRECTORY + file_name).st_mtime
+    print(now.timestamp())
+    print(age)
+    print(mtime)
     if now.timestamp() - age > mtime:
         return True
 
