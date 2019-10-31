@@ -84,6 +84,9 @@ def get_logs(command="all", volumes=False):
     file_modified = FILE_MTIME_SHORT
     if command in ['archive', 'archive-with-errors']:
         file_modified = FILE_MTIME_LONG
+    print(FILE_MTIME_SHORT)
+    print(FILE_MTIME_LONG)
+    print(file_modified)
     selected_files = select_files(command, find_files(volumes, file_modified))
 
     return sorted(selected_files, reverse=True)
