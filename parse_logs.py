@@ -126,6 +126,9 @@ def parse_logs(server, logs):
     """ 1. Archive Logs if No errors found """
     for vol, msg in list(counter):
         vol_archived = is_vol_archived(vol)
+        print(vol_archived)
+        print(msg)
+        print(archive_error_message(msg))
         if no_error == msg or vol_archived or archive_error_message(msg):
             # print(vol)
             archive_logs_list.append(vol)
@@ -134,7 +137,7 @@ def parse_logs(server, logs):
                     # print(vol_2, msg_2)
                     key = (vol_2, msg_2)
                     del counter[key]
-
+    sys.exit()
     # leave for debugging pprint.pprint(counter, indent=1)
     for vol, msg in list(counter):
         if rerun_error_message(msg):
