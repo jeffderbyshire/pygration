@@ -4,6 +4,7 @@ import gzip
 import shutil
 from .list_logs import *
 import sqlite3
+from .progress_bar import print_progress_bar
 
 
 LOG_DIRECTORY = "/var/migration/"
@@ -16,14 +17,14 @@ def get_year_month(log_name):
     return "/".join(log_name.split('-')[0:2])
 
 
-
-
-
 def archive(command="archive", volumes=False):
     logs = get_logs(command, volumes)
     log_total = archived = removed = 0
     if len(logs) > 0:
+        print_progress_bar(0, len(logs), prefix='Archive Logs:', suffix='Complete', length=50)
+        i = 0
         for log in logs:
+            i += 1
             year_month = get_year_month(log)
             os.makedirs(LOG_DIRECTORY + ARCHIVE_DIR + year_month, exist_ok=True)
             log_file_path = LOG_DIRECTORY + log
@@ -55,6 +56,7 @@ def archive(command="archive", volumes=False):
                     os.remove(log_file_path)
                     removed += 1
                     conn.close()
+            print_progress_bar(i, len(logs), prefix='Archive Logs:', suffix='Complete', length=50)
 
     else:
         return {'logs found': logs}

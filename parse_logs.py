@@ -178,5 +178,4 @@ def parse_logs(server, logs):
     archive_logs_list = list(set(archive_logs_list))
     rerun_logs_list = list(set(rerun_logs_list))
     too_many_errors_list = list(set(too_many_errors_list))
-    sys.exit()
     return sorted(archive_logs_list), sorted(rerun_logs_list), sorted(too_many_errors_list), counter

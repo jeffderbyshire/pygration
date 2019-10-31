@@ -8,6 +8,7 @@ from . import build_rerun
 from . import error_check
 from . import see_errors
 from . import error_report
+from . import progress_bar as pb
 
 
 def too_many_logs(server, too_many_list):
@@ -21,7 +22,10 @@ def too_many_logs(server, too_many_list):
         conn.commit()
     else:
         server_id = server_id[0]
+    pb.print_progress_bar(0, len(too_many_list), prefix='> 2 Errors:', suffix='Complete', length=50)
+    i = 0
     for volume in too_many_list:
+        i += 1
         # select first then insert
         cursor.execute("SELECT rowid FROM volumes WHERE volume = ?", (volume, ))
         volume_id = cursor.fetchone()
@@ -46,6 +50,8 @@ def too_many_logs(server, too_many_list):
 
             cursor.executemany("INSERT OR IGNORE INTO log_file_detail VALUES(?, ?, ?)", log_details)
             conn.commit()
+        pb.print_progress_bar(i, len(too_many_list), prefix='> 2 Errors:', suffix='Complete',
+                              length=50)
 
     conn.close()
 

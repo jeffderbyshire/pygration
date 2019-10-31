@@ -1,6 +1,8 @@
 import os
 import shutil
 from . import check_running
+from .progress_bar import print_progress_bar
+
 
 RERUN_SCRIPT = '/tmp/migrate.rerun'
 MIGRATION_DIR = '/var/migration/'
@@ -14,11 +16,15 @@ def rerun(volumes):
     volumes_added = check_running.main()
     if len(volumes_added) < 2:
         volumes_rerun = []
+        msg = []
         file = open(RERUN_SCRIPT, "w")
         header = "#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc\n"
         file.write(header)
         logs = list_logs.get_logs('errors', volumes)
+        print_progress_bar(0, len(logs), prefix='Build Rerun:', suffix='Complete', length=50)
+        i = 0
         for log in logs:
+            i += 1
             command = ''
             ignore = False
             spool_full = False
@@ -31,7 +37,7 @@ def rerun(volumes):
                         spool = argument.split('/')
                         total, used, free = shutil.disk_usage("/".join(spool[0:3]))
                         if used/total > 0.60:
-                            print("/".join(spool[0:3]) + ' is more than 60% full')
+                            msg.append("/".join(spool[0:3]) + ' is more than 60% full ' + volume)
                             spool_full = True
                             break
                     else:
@@ -44,7 +50,10 @@ def rerun(volumes):
             if command != '':
                 file.write(command + '\n')
                 volumes_rerun.append(command.split()[-1])
+            print_progress_bar(i, len(logs), prefix='Build Rerun:', suffix='Complete', length=50)
         file.close()
+        if len(msg) > 0:
+            print(msg)
         os.chmod(RERUN_SCRIPT, 0o700)
         os.system('screen -d -m ' + RERUN_SCRIPT)
         return len(volumes_rerun)
