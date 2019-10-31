@@ -3,6 +3,7 @@ import sys
 import collections
 import glob
 import subprocess
+from migrate_helper_scripts import progress_bar as pb
 
 
 LOG_DIRECTORY = '/var/migration/'
@@ -114,8 +115,11 @@ def parse_logs(server, logs):
     message_list = []
     parsed_log_dict = {}
     archive_flag = {}
+    pb.print_progress_bar(0, len(logs), prefix='Read Errors:', suffix='Complete', length=50)
+    i = 0
     for line in logs:
         if len(line) > 10:
+            i += 1
             volume_serial, log_file_name, log_error_message = line.split(" ---- ")
             # print(split_line)
             # if len(x) > 0:
@@ -129,6 +133,7 @@ def parse_logs(server, logs):
             if volume_serial not in volume_serial_list:
                 volume_serial_list.append(volume_serial)
             message_list.append([volume_serial, date_str, time_str, log_error_message_condensed])
+        pb.print_progress_bar(i, len(logs), prefix='Read Errors:', suffix='Complete', length=50)
 
     vol_error = []
     for vol_ser, date_str, time_str, msg in message_list:
