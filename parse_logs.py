@@ -144,6 +144,7 @@ def parse_logs(server, logs):
     pb.print_progress_bar(0, len(logs), prefix='Archive Check:', suffix='Complete', length=50)
     i = 0
     for vol, msg in list(counter):
+        i += 1
         vol_archived = is_vol_archived(vol)
         migrated = check_migration_status(vol)
         if migrated or vol_archived or archive_error_message(msg):
