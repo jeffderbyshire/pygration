@@ -71,6 +71,7 @@ def process(server, item, volume=False, quiet=False):
         command = "bash /root/migrate_helper_scripts/groupErrorsByExperiments.sh"
 
     elif item == "see_errors":
+        archive_logs.archive("archive")
         output = see_errors.see_errors()
         archive, rerun, too_many, counter = parse_logs.parse_logs(server, output)
         print("archive: " + str(len(archive)))
