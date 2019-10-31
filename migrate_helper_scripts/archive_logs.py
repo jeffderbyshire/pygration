@@ -27,7 +27,7 @@ def check_migration_status(volumes):
                                 'info', '--vol', volume], capture_output=True)
         check = status.stdout.decode().replace("'", '').replace('\n', '')
         pprint.pprint(check)
-        pprint.pprint(list(check))
+        pprint.pprint(check.split(','))
         pprint.pprint(dict(check))
         sys.exit()
 
