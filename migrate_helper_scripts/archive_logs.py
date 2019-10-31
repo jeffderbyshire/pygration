@@ -1,14 +1,9 @@
 #!/home/users/jeffderb/python3/bin/python3
 
-import os
 import gzip
 import shutil
 from .list_logs import *
 import sqlite3
-import subprocess
-import sys
-import json
-import pprint
 
 
 LOG_DIRECTORY = "/var/migration/"

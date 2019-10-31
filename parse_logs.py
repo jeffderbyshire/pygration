@@ -2,6 +2,8 @@ import pprint
 import sys
 import collections
 import glob
+import subprocess
+
 
 LOG_DIRECTORY = '/var/migration/'
 
