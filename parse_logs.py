@@ -141,7 +141,8 @@ def parse_logs(server, logs):
         counter[vol, error] += 1
     # leave for debugging pprint.pprint(counter, indent=1)
     """ 1. Archive Logs if No errors found """
-    pb.print_progress_bar(0, len(list(counter)), prefix='Archive Check:', suffix='Complete', length=50)
+    pb.print_progress_bar(0, len(list(counter)), prefix='Archive Check:', suffix='Complete',
+                          length=50)
     i = 0
     for vol, msg in list(counter):
         i += 1
@@ -155,11 +156,14 @@ def parse_logs(server, logs):
                     # print(vol_2, msg_2)
                     key = (vol_2, msg_2)
                     del counter[key]
-        pb.print_progress_bar(i, len(list(counter)), prefix='Archive Check:', suffix='Complete', length=50)
-    pprint.pprint(archive_logs_list)
-    sys.exit()
+        pb.print_progress_bar(i, len(list(counter)), prefix='Archive Check:', suffix='Complete',
+                              length=50)
     # leave for debugging pprint.pprint(counter, indent=1)
+    pb.print_progress_bar(0, len(list(counter)), prefix='Rerun Check:', suffix='Complete',
+                          length=50)
+    i = 0
     for vol, msg in list(counter):
+        i += 1
         if rerun_error_message(msg):
             rerun_logs_list.append(vol)
         else:
@@ -169,8 +173,10 @@ def parse_logs(server, logs):
             else:
                 # too many errors to rerun
                 too_many_errors_list.append(vol)
-
+        pb.print_progress_bar(i, len(list(counter)), prefix='Rerun Check:', suffix='Complete',
+                              length=50)
     archive_logs_list = list(set(archive_logs_list))
     rerun_logs_list = list(set(rerun_logs_list))
     too_many_errors_list = list(set(too_many_errors_list))
+    sys.exit()
     return sorted(archive_logs_list), sorted(rerun_logs_list), sorted(too_many_errors_list), counter
