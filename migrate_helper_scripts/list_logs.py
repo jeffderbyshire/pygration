@@ -10,8 +10,8 @@ import sys
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog"
 VOLUME_SERIAL_PREFIX = ["-V", "-P", "-I"]
-FILE_MTIME_SHORT = datetime.timedelta(hours=12).microseconds
-FILE_MTIME_LONG = datetime.timedelta(days=2).microseconds
+FILE_MTIME_SHORT = datetime.timedelta(hours=12)
+FILE_MTIME_LONG = datetime.timedelta(days=2)
 
 
 def usage():
