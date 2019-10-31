@@ -94,15 +94,12 @@ def interpret_error_message(message):
 
 
 def check_migration_status(volume):
-    print(volume)
     status = subprocess.run(['/opt/enstore/Python/bin/python', '/opt/enstore/bin/enstore',
                             'info', '--check', volume], capture_output=True)
     check = status.stdout.decode()
     if 'migrated' in check:
-        print(volume + ' migrated')
         return True
     else:
-        print(check)
         return False
 
 
