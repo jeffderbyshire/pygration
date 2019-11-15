@@ -1,7 +1,9 @@
+""" build rerun script """
+
 import os
 import shutil
-from . import check_running
-from .progress_bar import print_progress_bar
+import migrate_helper_scripts.check_running as check_running
+import migrate_helper_scripts.progress_bar as progress_bar
 
 
 RERUN_SCRIPT = '/tmp/migrate.rerun'
@@ -13,6 +15,7 @@ DATA1 = '/data/data1'
 
 
 def rerun(volumes):
+    """ build rerun script and run if disk space free > 60 % and < 2 processes running """
     volumes_added = check_running.main()
     if len(volumes_added) < 2:
         volumes_rerun = []
@@ -21,10 +24,8 @@ def rerun(volumes):
         header = "#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc\n"
         file.write(header)
         logs = list_logs.get_logs('errors', volumes)
-        print_progress_bar(0, len(logs), prefix='Build Rerun:', suffix='Complete', length=50)
-        i = 0
-        for log in logs:
-            i += 1
+        for i, log in enumerate(logs):
+            progress_bar.print_progress_bar(i, len(logs), prefix='Build Rerun:')
             command = ''
             ignore = False
             spool_full = False
@@ -50,7 +51,6 @@ def rerun(volumes):
             if command != '':
                 file.write(command + '\n')
                 volumes_rerun.append(command.split()[-1])
-            print_progress_bar(i, len(logs), prefix='Build Rerun:', suffix='Complete', length=50)
         file.close()
         if len(msg) > 0:
             print(msg)

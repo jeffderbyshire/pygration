@@ -1,35 +1,27 @@
-#!/home/users/jeffderb/python3/bin/python3
+""" list log files in migration directory """
 
-import os
-import argparse
-import textwrap
-import pprint
-import datetime
-import sys
+from os import stat, listdir
+from pprint import pprint
+from datetime import datetime, timedelta
+from sys import argv
 
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog"
-VOLUME_SERIAL_PREFIX = ["-V", "-P", "-I"]
-FILE_MTIME_SHORT = datetime.timedelta(hours=12).total_seconds()
-FILE_MTIME_LONG = datetime.timedelta(days=2).total_seconds()
-
-
-def usage():
-    print("usage: list_logs.py [ all | errors | no-errors | archive | archive_with_errors "
-          + "| volumes A [B C ... N]]")
+VOLUME_SERIAL_PREFIX = {"-V", "-P", "-I"}
+FILE_MTIME_SHORT = timedelta(hours=12).total_seconds()
+FILE_MTIME_LONG = timedelta(days=2).total_seconds()
 
 
 def check_file_mtime(file_name, age):
-    now = datetime.datetime.now()
-    mtime = os.stat(LOG_DIRECTORY + file_name).st_mtime
-    if now.timestamp() - age > mtime:
-        return True
-
-    return False
+    """ check modified time of file """
+    now = datetime.now()
+    mtime = stat(LOG_DIRECTORY + file_name).st_mtime
+    return bool(now.timestamp() - age > mtime)
 
 
 def find_files(volume_serials, file_age):
-    file_names = os.listdir(LOG_DIRECTORY)
+    """ find files """
+    file_names = listdir(LOG_DIRECTORY)
     file_names.sort()
     files_found = []
     for file in file_names:
@@ -47,10 +39,7 @@ def find_files(volume_serials, file_age):
 
 def vol_prefix_in_file(file_name):
     for vol_prefix in VOLUME_SERIAL_PREFIX:
-        if vol_prefix in file_name:
-            return True
-
-    return False
+        return bool(vol_prefix in file_name)
 
 
 def select_files(selection, file_list):
@@ -80,9 +69,9 @@ def select_files(selection, file_list):
 
 def get_logs(command="all", volumes=False):
     if not volumes:
-        volumes = []
+        volumes = set()
     file_modified = FILE_MTIME_SHORT
-    if command in ['archive', 'archive-with-errors']:
+    if command in {'archive', 'archive-with-errors'}:
         file_modified = FILE_MTIME_LONG
     selected_files = select_files(command, find_files(volumes, file_modified))
 
@@ -90,5 +79,5 @@ def get_logs(command="all", volumes=False):
 
 
 if __name__ == '__main__':
-    files = get_logs(sys.argv[1])
-    pprint.pprint(files, indent=1)
+    files = get_logs(argv[1])
+    pprint(files, indent=1)

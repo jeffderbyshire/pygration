@@ -1,10 +1,8 @@
-# Print iterations progress
+""" print progress bar to show progress on slow operations """
 
 
-def print_progress_bar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='█',
-                       print_end="\r"):
-    """
-    Call in a loop to create terminal progress bar
+def print_progress_bar(iteration, total, prefix=''):
+    """ Call in a loop to create terminal progress bar
     @params:
         iteration   - Required  : current iteration (Int)
         total       - Required  : total iterations (Int)
@@ -15,10 +13,15 @@ def print_progress_bar(iteration, total, prefix='', suffix='', decimals=1, lengt
         fill        - Optional  : bar fill character (Str)
         printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
     """
+    suffix = 'Complete'
+    decimals = 1
+    length = 100
+    fill = '█'
+    print_end = '\r'
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filled_length = int(length * iteration // total)
-    bar = fill * filled_length + '-' * (length - filled_length)
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end=print_end)
+    progress = fill * filled_length + '-' * (length - filled_length)
+    print('\r%s |%s| %s%% %s' % (prefix, progress, percent, suffix), end=print_end)
     # Print New Line on Complete
     if iteration == total:
         print()

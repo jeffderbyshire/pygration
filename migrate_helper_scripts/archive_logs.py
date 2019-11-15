@@ -21,7 +21,7 @@ def archive(command="archive", volumes=False):
     logs = get_logs(command, volumes)
     log_total = archived = removed = 0
     if len(logs) > 0:
-        print_progress_bar(0, len(logs), prefix='Archive Logs:', suffix='Complete', length=50)
+        print_progress_bar(0, len(logs), prefix='Archive Logs:')
         i = 0
         for log in logs:
             i += 1
@@ -56,7 +56,7 @@ def archive(command="archive", volumes=False):
                     os.remove(log_file_path)
                     removed += 1
                     conn.close()
-            print_progress_bar(i, len(logs), prefix='Archive Logs:', suffix='Complete', length=50)
+            print_progress_bar(i, len(logs), prefix='Archive Logs:')
 
     else:
         return {'logs found': logs}

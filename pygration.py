@@ -24,9 +24,9 @@ TODO: figure out how to use classes / split into modules
 import argparse
 import textwrap
 import socket
-from migrate_helper_scripts import migrationLogs
-from migrate_helper_scripts import list_logs
 import pprint
+from migrate_helper_scripts import migration_logs
+from migrate_helper_scripts import list_logs
 
 
 def build_migration_node_list():
@@ -88,18 +88,7 @@ def main():
     if args.logs:
         pprint.pprint(list_logs.get_logs(args.logs[0]))
     if args.process:
-        migrationLogs.process(server=server, item=args.process[0], quiet=args.quiet)
-    """    
-    # if args.server == 'all':  # default
-        # servers = socket.gethostname()
-        # servers = build_migration_node_list()
-    # else:
-        servers = args.server
-    # for server in servers:
-        # syncBashScripts.rsync(server, "migrate_helper_scripts")
-    pprint.pprint(list_logs.get_logs(args.logs[0]))
-        # showLogs.migration_logs(server, args.logs[0])
-    """
+        migration_logs.process(server=server, item=args.process[0], quiet=args.quiet)
 
 
 main()

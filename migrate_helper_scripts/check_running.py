@@ -1,7 +1,12 @@
+""" check running migration processes """
+
 import sh
 
 
 def main():
+    """
+    :return: volume serials if other migrate_chimera process found
+    """
     volumes_running = []
     try:
         process = sh.grep(sh.ps('ww'), 'migrate_chimera')
