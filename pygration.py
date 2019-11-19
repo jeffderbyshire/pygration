@@ -1,4 +1,3 @@
-#!/home/users/jeffderb/python3/bin/python3
 """ pygration doc string
 
 This program is created to help build automation for tape migration.
