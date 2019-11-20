@@ -39,6 +39,8 @@ def find_files(volume_serials, file_age):
 def vol_prefix_in_file(file_name):
     """ search volume in set of prefixes"""
     for vol_prefix in VOLUME_SERIAL_PREFIX:
+        print(vol_prefix)
+        print(file_name)
         return bool(vol_prefix in file_name)
 
 
