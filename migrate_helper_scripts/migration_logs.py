@@ -6,13 +6,13 @@ store too many errors in sqlite db
 """
 import pprint
 import sqlite3
+from tqdm import tqdm
 import migrate_helper_scripts.archive_logs as archive_logs
 import migrate_helper_scripts.parse_logs as parse_logs
 import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.build_rerun as build_rerun
 import migrate_helper_scripts.error_check as error_check
 import migrate_helper_scripts.see_errors as see_errors
-import migrate_helper_scripts.progress_bar as pb
 
 
 def too_many_logs(server, too_many_list):
@@ -27,10 +27,7 @@ def too_many_logs(server, too_many_list):
         conn.commit()
     else:
         server_id = server_id[0]
-    pb.print_progress_bar(0, len(too_many_list), prefix='> 2 Errors:')
-    i = 0
-    for volume in too_many_list:
-        i += 1
+    for volume in tqdm(too_many_list, desc='> 2 Errors:'):
         # select first then insert
         cursor.execute("SELECT rowid FROM volumes WHERE volume = ?", (volume, ))
         volume_id = cursor.fetchone()
@@ -55,7 +52,6 @@ def too_many_logs(server, too_many_list):
 
             cursor.executemany("INSERT OR IGNORE INTO log_file_detail VALUES(?, ?, ?)", log_details)
             conn.commit()
-        pb.print_progress_bar(i, len(too_many_list), prefix='> 2 Errors:')
 
     conn.close()
 

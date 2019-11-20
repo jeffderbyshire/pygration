@@ -2,8 +2,8 @@
 
 import os
 import shutil
+from tqdm import tqdm
 import migrate_helper_scripts.check_running as check_running
-import migrate_helper_scripts.progress_bar as progress_bar
 import migrate_helper_scripts.list_logs as list_logs
 
 
@@ -22,8 +22,7 @@ def rerun(volumes):
         file = open(RERUN_SCRIPT, "w")
         file.write("#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc\n")
         logs = list_logs.get_logs('errors', volumes)
-        for i, log in enumerate(logs):
-            progress_bar.print_progress_bar(i, len(logs), prefix='Build Rerun:')
+        for log in tqdm(logs, desc='Build Rerun:'):
             command = ''
             ignore = False
             spool_full = False

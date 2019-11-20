@@ -4,8 +4,8 @@ import shutil
 import sqlite3
 import collections
 import os
+from tqdm import tqdm
 import migrate_helper_scripts.list_logs as list_logs
-import migrate_helper_scripts.progress_bar as print_progress_bar
 
 
 LOG_DIRECTORY = "/var/migration/"
@@ -27,8 +27,7 @@ def archive(command="archive", volumes=False):
     logs = list_logs.get_logs(command, volumes)
     totals = collections.Counter()
     if logs:
-        for i, log in enumerate(logs):
-            print_progress_bar.print_progress_bar(i, len(logs), prefix='Archive Logs:')
+        for log in tqdm(logs, desc='Archive Logs:'):
             year_month = get_year_month(log)
             os.makedirs(LOG_DIRECTORY + ARCHIVE_DIR + year_month, exist_ok=True)
             log_file_path = LOG_DIRECTORY + log

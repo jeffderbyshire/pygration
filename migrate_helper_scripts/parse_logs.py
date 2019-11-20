@@ -3,7 +3,7 @@
 import collections
 import glob
 import subprocess
-from migrate_helper_scripts import progress_bar as pb
+from tqdm import tqdm
 
 
 LOG_DIRECTORY = '/var/migration/'
@@ -118,8 +118,7 @@ def parse_logs(logs):
     logs_list = {'archive': set([]), 'rerun': set([]), 'too_many': set([])}
     counter = collections.Counter()
 
-    for i, line in enumerate(logs):
-        pb.print_progress_bar(i, len(logs), prefix='Read Errors:')
+    for line in tqdm(logs, desc='Read Errors:'):
         if len(line) > 10:
             volume_serial, log_error_message = line.split(" ---- ")
             # print(split_line)
@@ -130,8 +129,7 @@ def parse_logs(logs):
             counter[volume_serial, log_error_message_snippet] += 1
     # leave for debugging pprint.pprint(counter, indent=1)
     # 1. Archive Logs if No errors found
-    for i, [vol, msg] in enumerate(list(counter)):
-        pb.print_progress_bar(i, len(list(counter)), prefix='Archive Check:')
+    for [vol, msg] in tqdm(list(counter), desc='Archive Check:'):
         if check_migration_status(vol) or is_vol_archived(vol) or archive_error_message(msg):
             # print(vol)
             logs_list['archive'].add(vol)
@@ -141,8 +139,7 @@ def parse_logs(logs):
                     key = (vol_2, msg_2)
                     del counter[key]
     # leave for debugging pprint.pprint(counter, indent=1)
-    for i, [vol, msg] in enumerate(list(counter)):
-        pb.print_progress_bar(i, len(list(counter)), prefix='Rerun Check:')
+    for [vol, msg] in tqdm(list(counter), desc='Rerun Check:'):
         if rerun_error_message(msg):
             logs_list['rerun'].add(vol)
         else:
