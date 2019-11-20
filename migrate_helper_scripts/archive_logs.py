@@ -19,6 +19,26 @@ def get_year_month(log_name):
     return "/".join(log_name.split('-')[0:2])
 
 
+def remove_db_entries(volumes):
+    """ connect to sqlite db and remove entries with volume serials that were archived """
+    conn = sqlite3.connect('/home/users/jeffderb/db/migration.sqlite')
+    cursor = conn.cursor()
+    for volume in tqdm(volumes, desc='Delete from db'):
+        cursor.execute("DELETE FROM log_file_detail WHERE log_file_id IN ( "
+                       "SELECT a.log_file_id FROM log_file_detail a "
+                       "INNER JOIN log_files b ON b.rowid = a.log_file_id  "
+                       "INNER JOIN volumes c ON b.volume_id = c.rowid "
+                       "WHERE c.volume=?)", (volume,))
+        cursor.execute("DELETE FROM log_files WHERE volume_id IN ( "
+                       "SELECT a.volume_id FROM log_files a "
+                       "INNER JOIN volumes b ON a.volume_id = b.rowid "
+                       "WHERE b.volume=?)", (volume,))
+        cursor.execute("DELETE FROM volumes "
+                       "WHERE volume=?", (volume,))
+        conn.commit()
+    conn.close()
+
+
 def archive(command="archive", volumes=False):
     """ main archive function
     make path with LOG Directory / year / month
@@ -33,6 +53,7 @@ def archive(command="archive", volumes=False):
             log_file_path = LOG_DIRECTORY + log
             if os.path.exists(log_file_path):
                 totals['log count'] += 1
+                volume = []
                 gz_file_path = LOG_DIRECTORY + ARCHIVE_DIR + year_month + '/' + log + '.gz'
                 with open(log_file_path, 'rb') as f_in:
                     with gzip.open(gz_file_path, 'wb') as f_out:
@@ -40,27 +61,15 @@ def archive(command="archive", volumes=False):
                         totals['archived'] += 1
                 if os.path.exists(gz_file_path):
                     with open(log_file_path, 'rb') as handle:
-                        volume = next(handle).decode().split()[-1]
-                    conn = sqlite3.connect('/home/users/jeffderb/db/migration.sqlite')
-                    cursor = conn.cursor()
-                    cursor.execute("DELETE FROM log_file_detail WHERE log_file_id IN ( "
-                                   "SELECT a.log_file_id FROM log_file_detail a "
-                                   "INNER JOIN log_files b ON b.rowid = a.log_file_id  "
-                                   "INNER JOIN volumes c ON b.volume_id = c.rowid "
-                                   "WHERE c.volume=?)", (volume, ))
-                    cursor.execute("DELETE FROM log_files WHERE volume_id IN ( "
-                                   "SELECT a.volume_id FROM log_files a "
-                                   "INNER JOIN volumes b ON a.volume_id = b.rowid "
-                                   "WHERE b.volume=?)", (volume, ))
-                    cursor.execute("DELETE FROM volumes "
-                                   "WHERE volume=?", (volume, ))
-                    conn.commit()
+                        volume.append(next(handle).decode().split()[-1])
+
                     os.remove(log_file_path)
                     totals['removed'] += 1
-                    conn.close()
 
     else:
         return {'logs found': logs}
+
+    remove_db_entries(volume)
 
     return totals
 
