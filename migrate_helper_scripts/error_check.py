@@ -1,6 +1,7 @@
 """ check log files for errors """
 
 import os
+import sys
 import migrate_helper_scripts.list_logs as list_logs
 
 MIGRATION_DIR = "/var/migration/"
@@ -10,6 +11,8 @@ def main():
     """ look for new log files and check for errors.  rename file with volume serial """
     output_renames = {}
     unchecked_files = list_logs.get_logs("no-errors")
+    print(unchecked_files)
+    sys.exit()
     for file in unchecked_files:
         file_name = MIGRATION_DIR + file
         output_renames[file_name] = ''
