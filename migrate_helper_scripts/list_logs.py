@@ -4,6 +4,7 @@ from os import stat, scandir
 from pprint import pprint
 from datetime import datetime, timedelta
 from sys import argv
+import sys
 
 LOG_DIRECTORY = "/var/migration/"
 LOG_PREFIX = "MigrationLog"
@@ -70,7 +71,9 @@ def select_files(selection, file_list):
 
     else:
         selected = select_specific_files(selection, file_list)
-
+    print(selection)
+    print(selected)
+    sys.exit()
     return selected
 
 
