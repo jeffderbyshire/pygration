@@ -46,6 +46,7 @@ def archive(command="archive", volumes=False):
     search and delete volume serial from sqlite error log db """
     logs = list_logs.get_logs(command, volumes)
     totals = collections.Counter()
+    volumes = []
     if logs:
         for log in tqdm(logs, desc='Archive Logs:'):
             year_month = get_year_month(log)
@@ -53,7 +54,6 @@ def archive(command="archive", volumes=False):
             log_file_path = LOG_DIRECTORY + log
             if os.path.exists(log_file_path):
                 totals['log count'] += 1
-                volume = []
                 gz_file_path = LOG_DIRECTORY + ARCHIVE_DIR + year_month + '/' + log + '.gz'
                 with open(log_file_path, 'rb') as f_in:
                     with gzip.open(gz_file_path, 'wb') as f_out:
@@ -61,7 +61,7 @@ def archive(command="archive", volumes=False):
                         totals['archived'] += 1
                 if os.path.exists(gz_file_path):
                     with open(log_file_path, 'rb') as handle:
-                        volume.append(next(handle).decode().split()[-1])
+                        volumes.append(next(handle).decode().split()[-1])
 
                     os.remove(log_file_path)
                     totals['removed'] += 1
@@ -69,7 +69,7 @@ def archive(command="archive", volumes=False):
     else:
         return {'logs found': logs}
 
-    remove_db_entries(volume)
+    remove_db_entries(volumes)
 
     return totals
 
