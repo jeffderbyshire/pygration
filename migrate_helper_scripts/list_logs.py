@@ -24,13 +24,13 @@ def find_files(volume_serials, file_age):
     files_found = []
     with scandir(LOG_DIRECTORY) as the_dir:
         for file in the_dir:
-            if LOG_PREFIX in file and check_file_mtime(file, file_age):
+            if LOG_PREFIX in file.name and check_file_mtime(file.name, file_age):
                 if volume_serials:
                     for volume in volume_serials:
-                        if volume in file:
-                            files_found.append(file)
+                        if volume in file.name:
+                            files_found.append(file.name)
                 else:
-                    files_found.append(file)
+                    files_found.append(file.name)
 
     return files_found
 
