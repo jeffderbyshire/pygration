@@ -41,6 +41,7 @@ def vol_prefix_in_file(file_name):
     for vol_prefix in VOLUME_SERIAL_PREFIX:
         print(vol_prefix)
         print(file_name)
+        print(bool(vol_prefix in file_name))
         return bool(vol_prefix in file_name)
 
 
