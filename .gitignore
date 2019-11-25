@@ -6,4 +6,5 @@ db/
 migrate_errors/
 *.sqlite
 migrate_helper_scripts.egg-info/
+migrate_helper.egg-info/
 *.conf
