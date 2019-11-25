@@ -21,31 +21,12 @@ TODO: figure out how to use classes / split into modules
 
 """
 import argparse
-import textwrap
-import socket
 import pprint
-from migrate_helper_scripts import migration_logs
-from migrate_helper_scripts import list_logs
+import socket
+import textwrap
 
-
-def build_migration_node_list():
-    """ built migration node and return list of nodes
-    Luckily the nodes are in numbered sequentially
-    TODO: replace with external configure file
-    """
-    server_prefix: str = "fdm18"
-    servers = []
-    for number in range(1, 9):
-        # servers fdm1801..08
-        servers.append(server_prefix+"{0:02d}".format(number))
-
-    server_prefix: str = "stkendm"
-    server_postfix: str = "a"
-    for number in range(1, 3):
-        # servers stkendm01..02a
-        servers.append(server_prefix+"{0:02d}".format(number)+server_postfix)
-
-    return servers
+import migrate_helper_scripts.migration_logs as migration_logs
+import migrate_helper_scripts.list_logs as list_logs
 
 
 def get_args() -> argparse:
@@ -91,9 +72,6 @@ def main():
 
 
 main()
-
-# log error messages
-# MIGRATING_VOLUME do not set VOV869 to migrated due to previous error
 
 
 exit()

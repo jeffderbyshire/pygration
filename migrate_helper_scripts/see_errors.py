@@ -1,10 +1,12 @@
 """ look for ERR in log files and get messages, volume serials, and file names """
 
 import re
+from configparser import ConfigParser
 import migrate_helper_scripts.list_logs as list_logs
 
-
-MIGRATION_DIR = "/var/migration/"
+CONFIG = ConfigParser()
+CONFIG.read('config/config.conf')
+MIGRATION_DIR = CONFIG['Default']['log_dir']
 
 
 def error_messages(file_name):

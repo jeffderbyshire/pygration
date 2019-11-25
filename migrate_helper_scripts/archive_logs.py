@@ -1,16 +1,18 @@
 """ archive logs """
 import gzip
 import shutil
-import sqlite3
 import collections
 import os
+from configparser import ConfigParser
 from tqdm import tqdm
 import migrate_helper_scripts.list_logs as list_logs
+import migrate_helper_scripts.database_schema as database
 
-
-LOG_DIRECTORY = "/var/migration/"
-LOG_PREFIX = "MigrationLog@"
-ARCHIVE_DIR = 'archive/'
+CONFIG = ConfigParser()
+CONFIG.read('config/config.conf')
+LOG_DIRECTORY = CONFIG['Default']['log_dir']
+LOG_PREFIX = CONFIG['Default']['log_prefix']
+ARCHIVE_DIR = CONFIG['Archive']['archive_dir']
 
 
 def get_year_month(log_name):
@@ -21,22 +23,10 @@ def get_year_month(log_name):
 
 def remove_db_entries(volumes):
     """ connect to sqlite db and remove entries with volume serials that were archived """
-    conn = sqlite3.connect('/home/users/jeffderb/db/migration.sqlite')
-    cursor = conn.cursor()
+    total = 0
     for volume in tqdm(volumes, desc='Delete from db'):
-        cursor.execute("DELETE FROM log_file_detail WHERE log_file_id IN ( "
-                       "SELECT a.log_file_id FROM log_file_detail a "
-                       "INNER JOIN log_files b ON b.rowid = a.log_file_id  "
-                       "INNER JOIN volumes c ON b.volume_id = c.rowid "
-                       "WHERE c.volume=?)", (volume,))
-        cursor.execute("DELETE FROM log_files WHERE volume_id IN ( "
-                       "SELECT a.volume_id FROM log_files a "
-                       "INNER JOIN volumes b ON a.volume_id = b.rowid "
-                       "WHERE b.volume=?)", (volume,))
-        cursor.execute("DELETE FROM volumes "
-                       "WHERE volume=?", (volume,))
-        conn.commit()
-    conn.close()
+        total += database.delete_volume_name(volume)
+    return total
 
 
 def archive(command="archive", volumes=False):
@@ -69,7 +59,7 @@ def archive(command="archive", volumes=False):
     else:
         return {'logs found': logs}
 
-    remove_db_entries(volumes)
+    totals['db_removed'] = remove_db_entries(volumes)
 
     return totals
 

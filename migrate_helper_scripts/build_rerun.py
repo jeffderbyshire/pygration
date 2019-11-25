@@ -2,17 +2,17 @@
 
 import os
 import shutil
+from configparser import ConfigParser
+from collections import namedtuple
 from tqdm import tqdm
 import migrate_helper_scripts.check_running as check_running
 import migrate_helper_scripts.list_logs as list_logs
 
-
-RERUN_SCRIPT = '/tmp/migrate.rerun'
-MIGRATION_DIR = '/var/migration/'
-IGNORE = ['--scan', '--restore']
-DATA3 = '/data/data3'
-DATA2 = '/data/data2'
-DATA1 = '/data/data1'
+CONFIG = ConfigParser()
+CONFIG.read('config/config.conf')
+RERUN_SCRIPT = CONFIG['Rerun']['rerun_script']
+MIGRATION_DIR = CONFIG['Default']['log_dir']
+IGNORE = CONFIG['Rerun']['ignore']
 
 
 def rerun(volumes):
@@ -32,7 +32,11 @@ def rerun(volumes):
                 for argument in first:
                     if '/data/data' in argument:
                         spool = argument.split('/')
-                        usage = shutil.disk_usage("/".join(spool[0:3]))
+                        try:
+                            usage = shutil.disk_usage("/".join(spool[0:3]))
+                        except FileNotFoundError:
+                            Usage = namedtuple('usage', ['used', 'total'])
+                            usage = Usage(1, 1)
                         if usage.used/usage.total > 0.60:
                             volumes_dict['msg'].append("/".join(spool[0:3]) +
                                                        ' is more than 60% full ' + volume)
@@ -50,7 +54,7 @@ def rerun(volumes):
                 volumes_dict['rerun'].append(command.split()[-1])
         file.close()
         if volumes_dict['msg']:
-            print(volumes_dict['msg'])
+            print(volumes_dict['msg'][0])
         os.chmod(RERUN_SCRIPT, 0o700)
         os.system('screen -d -m ' + RERUN_SCRIPT)
     else:

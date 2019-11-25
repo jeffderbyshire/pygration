@@ -1,9 +1,12 @@
 """ check log files for errors """
 
 import os
+import configparser
 import migrate_helper_scripts.list_logs as list_logs
 
-MIGRATION_DIR = "/var/migration/"
+CONFIG = configparser.ConfigParser()
+CONFIG.read('config/config.conf')
+MIGRATION_DIR = CONFIG['Default']['log_dir']
 
 
 def main():

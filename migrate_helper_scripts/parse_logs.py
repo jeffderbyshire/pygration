@@ -3,22 +3,26 @@
 import collections
 import glob
 import subprocess
+from configparser import ConfigParser
 from tqdm import tqdm
 
-
-LOG_DIRECTORY = '/var/migration/'
+CONFIG = ConfigParser()
+CONFIG.read('config/config.conf')
+LOG_PREFIX = CONFIG['Default']['log_prefix']
+LOG_DIRECTORY = CONFIG['Default']['log_dir']
+ARCHIVE_DIR = CONFIG['Archive']['archive_dir']
 
 
 def get_date_time(log_file):
     """ get date and time from log file name """
-    date_time_list = log_file.split("MigrationLog@")[1].split("#")[0].split(".")
+    date_time_list = log_file.split(LOG_PREFIX)[1].split("#")[0].split(".")
     date_time = {'date': date_time_list[0], 'time': date_time_list[1]}
     return date_time
 
 
 def is_vol_archived(volume_serial):
     """ check archives to see if volume serial is in archive as non-error migrated log file """
-    found = glob.glob(LOG_DIRECTORY + 'archive/*/*/*' + volume_serial + '.gz')
+    found = glob.glob(LOG_DIRECTORY + ARCHIVE_DIR + '*/*/*' + volume_serial + '.gz')
     if found:
         return True
 
@@ -99,16 +103,19 @@ def interpret_error_message(message):
 
 def check_migration_status(volume):
     """ Run enstore command and Return True if 'migrated' in result """
-    status = subprocess.run(
-        [
-            '/opt/enstore/Python/bin/python',
-            '/opt/enstore/bin/enstore',
-            'info',
-            '--check',
-            volume
-        ],
-        capture_output=True)
-    check = status.stdout.decode()
+    try:
+        status = subprocess.run(
+            [
+                '/opt/enstore/Python/bin/python',
+                '/opt/enstore/bin/enstore',
+                'info',
+                '--check',
+                volume
+            ],
+            capture_output=True)
+        check = status.stdout.decode()
+    except FileNotFoundError:
+        check = ''
     return bool('migrated' in check)
 
 

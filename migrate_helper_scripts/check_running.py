@@ -1,6 +1,11 @@
 """ check running migration processes """
 
+from configparser import ConfigParser
 import sh
+
+CONFIG = ConfigParser()
+CONFIG.read('config/config.conf')
+RUNNING = CONFIG['Process']['running']
 
 
 def main():
@@ -9,7 +14,7 @@ def main():
     """
     volumes_running = []
     try:
-        process = sh.grep(sh.ps('ww'), 'migrate_chimera')
+        process = sh.grep(sh.ps('ww'), RUNNING)
     except sh.ErrorReturnCode:
         return volumes_running
     for line in process:

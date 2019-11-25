@@ -5,7 +5,7 @@ Parses logs for volume serials to archive, rerun, and too many errors
 store too many errors in sqlite db
 """
 import pprint
-import sqlite3
+from configparser import ConfigParser
 from tqdm import tqdm
 import migrate_helper_scripts.archive_logs as archive_logs
 import migrate_helper_scripts.parse_logs as parse_logs
@@ -13,47 +13,30 @@ import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.build_rerun as build_rerun
 import migrate_helper_scripts.error_check as error_check
 import migrate_helper_scripts.see_errors as see_errors
+import migrate_helper_scripts.database_schema as database
+
+CONFIG = ConfigParser()
+CONFIG.read('config/config.conf')
+LOG_PREFIX = CONFIG['Default']['log_prefix']
+LOG_DIR = CONFIG['Default']['log_dir']
 
 
 def too_many_logs(server, too_many_list):
     """ Connect to sqlite db and insert server, volume serial, and log file details"""
-    conn = sqlite3.connect('/home/users/jeffderb/db/migration.sqlite')
-    cursor = conn.cursor()
-    cursor.execute("SELECT rowid FROM servers WHERE server=?", (server, ))
-    server_id = cursor.fetchone()
-    if server_id is None:
-        cursor.execute("INSERT INTO servers VALUES (?)", (server, ))
-        server_id = cursor.lastrowid
-        conn.commit()
-    else:
-        server_id = server_id[0]
+    server_id = database.get_node_id(server)
     for volume in tqdm(too_many_list, desc='> 2 Errors:'):
-        # select first then insert
-        cursor.execute("SELECT rowid FROM volumes WHERE volume = ?", (volume, ))
-        volume_id = cursor.fetchone()
-        if volume_id is None:
-            cursor.execute("INSERT INTO volumes VALUES(?)", (volume, ))
-            volume_id = cursor.lastrowid
-            conn.commit()
-        else:
-            volume_id = volume_id[0]
+        volume_id = database.get_volume_id(volume)
         error_logs = list_logs.get_logs("errors", {volume})
         for log_file in error_logs:
-            date = log_file.split("MigrationLog@")[1].split("#")[0].split(".")[0]
-            cursor.execute("INSERT OR IGNORE INTO log_files VALUES(?, ?, ?, ?)",
-                           (server_id, volume_id, log_file, date))
-            log_file_id = cursor.lastrowid
-            conn.commit()
-            error_messages = see_errors.error_messages('/var/migration/' + log_file)
+            date = log_file.split(LOG_PREFIX)[1].split("#")[0].split(".")[0]
+            log_file_id = database.get_log_file_id(server_id, volume_id, log_file, date)
+            error_messages = see_errors.error_messages(LOG_DIR + log_file)
             log_details = []
             for message in error_messages:
                 log_details.append((log_file_id, parse_logs.interpret_error_message(message),
                                     message))
 
-            cursor.executemany("INSERT OR IGNORE INTO log_file_detail VALUES(?, ?, ?)", log_details)
-            conn.commit()
-
-    conn.close()
+            database.insert_log_file_detail(log_details)
 
 
 def process(server, item, volume=False, quiet=False):

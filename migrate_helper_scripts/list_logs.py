@@ -4,10 +4,14 @@ from os import stat, scandir
 from pprint import pprint
 from datetime import datetime, timedelta
 from sys import argv
+from configparser import ConfigParser
 
-LOG_DIRECTORY = "/var/migration/"
-LOG_PREFIX = "MigrationLog"
-VOLUME_SERIAL_PREFIX = {"-V", "-P", "-I"}
+CONFIG = ConfigParser()
+CONFIG.read('config/config.conf')
+
+LOG_DIRECTORY = CONFIG['Default']['log_dir']
+LOG_PREFIX = CONFIG['Default']['log_prefix']
+VOLUME_SERIAL_PREFIX = CONFIG['List']['volume_serial_prefix']
 FILE_MTIME_SHORT = timedelta(hours=12).total_seconds()
 FILE_MTIME_LONG = timedelta(days=2).total_seconds()
 
