@@ -49,6 +49,8 @@ def rerun_error_message(message):
         "COPYING_TO_DISK",
         "COPYING_TO_TAPE",
         "Error after transferring 0 bytes in 1 files",
+        'Noticed the local file inode changed',
+        'pg.ProgrammingError',
         "TIMEOUT",
         "TOO MANY RETRIES",
         "Too many open files",

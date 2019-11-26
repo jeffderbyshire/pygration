@@ -31,7 +31,8 @@ def main(logs, process, quiet, check):
 
     if check:
         output = error_check.main()
-        pprint.pprint(output, indent=4)
+        if not quiet:
+            pprint.pprint(output, indent=4)
 
 
 main()
