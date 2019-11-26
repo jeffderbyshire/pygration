@@ -51,19 +51,12 @@ def process(server, item, volume=False, quiet=False):
         archive_logs.archive("archive")
         output = see_errors.see_errors()
         logs = parse_logs.parse_logs(output)
-        print("archive: " + str(len(logs['archive'])))
-        print("rerun: " + str(len(logs['rerun'])))
-        print("too many: " + str(len(logs['too_many'])))
         if logs['archive']:
             # pprint.pprint(archive)
             archive_count = archive_logs.archive("archive-with-errors", sorted(logs['archive']))
             # pprint.pprint(list_logs.get_logs('archive-with-errors', sorted(archive)))
-            print("Archive")
-            pprint.pprint(archive_count, indent=1)
         if logs['rerun']:
             rerun_logs = build_rerun.rerun(logs['rerun'])
-            print("Rerun")
-            pprint.pprint(rerun_logs, indent=1)
         if logs['too_many']:
             # print("More than 2 errors:")
             # pprint.pprint(too_many, indent=1)
@@ -73,5 +66,12 @@ def process(server, item, volume=False, quiet=False):
     if not quiet:
         print(server)
         print(item)
+        print("archive: " + str(len(logs['archive'])))
+        print("rerun: " + str(len(logs['rerun'])))
+        print("too many: " + str(len(logs['too_many'])))
+        print("Archive")
+        pprint.pprint(archive_count, indent=1)
+        print("Rerun")
+        pprint.pprint(rerun_logs, indent=1)
         if item != "see_errors":
             pprint.pprint(output, indent=4)

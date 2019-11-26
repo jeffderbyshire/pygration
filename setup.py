@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='migrate_helper',
-    version='1.1',
+    version='2.1.0',
     description='Migration Helpers',
     long_description='Check Logs for errors, Archive Logs, Parse logs, store errors, and rerun',
     author='Jeff Derbyshire',

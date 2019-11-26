@@ -15,6 +15,10 @@ pygration process archive:  archive processed logs to 'yyyy/mm' folder
 
 Examples: pygration logs --no-errors process check --server fdm1802
 
+TODO use click instead of argparse
+TODO add new command status to get disk usage, processes running, and # of logs in log file,
+    unprocessed, errors, etc
+TODO move prints to final report
 
 
 """
