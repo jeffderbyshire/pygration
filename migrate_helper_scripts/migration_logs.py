@@ -41,6 +41,9 @@ def too_many_logs(server, too_many_list):
 
 def process(server, item, volume=False, quiet=False):
     """ parse command line arguments and run functions """
+    archive_count = rerun_logs = 0
+    output = {}
+    logs = {}
     if item == "check":
         output = error_check.main()
 
