@@ -92,9 +92,11 @@ def get_node_id(node_name):
     """ add node name and return node id """
     session = SESSION()
     node = Servers(server=node_name)
-    session.add(node)
-    session.commit()
     server = session.query(Servers).filter_by(server=node_name).first()
+    if not server:
+        session.add(node)
+        session.commit()
+        server = session.query(Servers).filter_by(server=node_name).first()
     return server.server_id
 
 

@@ -5,7 +5,6 @@ This program is created to help build automation for tape migration.
 Currently, it's a collection of bash scripts with some Python wrapping.  The scripts are uploaded
 via rsync and run via ssh and python subprocess.
 
-TODO: add command line arguments
 pygration --server fdm1802 OR omit and parse all servers
 pygration logs --no-errors: show logs without errors
 pygration logs --errors:    show logs with errors
@@ -17,7 +16,6 @@ pygration process archive:  archive processed logs to 'yyyy/mm' folder
 Examples: pygration logs --no-errors process check --server fdm1802
 
 
-TODO: figure out how to use classes / split into modules
 
 """
 import argparse
