@@ -20,7 +20,7 @@ def rerun(volumes):
     volumes_dict = {'added': check_running.main(), 'rerun': [], 'msg': []}
     if len(volumes_dict['added']) < 2:
         file = open(RERUN_SCRIPT, "w")
-        file.write("#!/usr/bin/env bash\ncd /var/migration\nsource ~enstore/.bashrc\n")
+        file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
         logs = list_logs.get_logs('errors', volumes)
         for log in tqdm(logs, desc='Build Rerun:'):
             command = ''
@@ -52,15 +52,14 @@ def rerun(volumes):
             if command != '':
                 file.write(command + '\n')
                 volumes_dict['rerun'].append(command.split()[-1])
+        file.write('\nexit\n}\n')
         file.close()
-        if volumes_dict['msg']:
-            print(volumes_dict['msg'][0])
         os.chmod(RERUN_SCRIPT, 0o700)
         os.system('screen -d -m ' + RERUN_SCRIPT)
     else:
-        print('too many migrate_chimera processes running')
+        volumes_dict['msg'] = 'too many migrate_chimera processes running'
 
-    return len(volumes_dict['rerun'])
+    return volumes_dict
 
 
 if __name__ == '__main__':

@@ -67,14 +67,16 @@ def process(server, item, volume=False, quiet=False):
             too_many_logs(server, sorted(logs['too_many']))
 
     if not quiet:
-        print(server)
-        print(item)
+        print('Node: ' + server)
+        print('Process: ' + item)
         print("archive: " + str(len(logs['archive'])))
         print("rerun: " + str(len(logs['rerun'])))
         print("too many: " + str(len(logs['too_many'])))
-        print("Archive")
+        print("Archive processed")
         pprint.pprint(archive_count, indent=1)
-        print("Rerun")
-        pprint.pprint(rerun_logs, indent=1)
+        print("Rerun processed")
+        pprint.pprint(rerun_logs['msg'][0], indent=1)
+        pprint.pprint(rerun_logs['rerun'], indent=1)
         if item != "see_errors":
             pprint.pprint(output, indent=4)
+        print('End of line.')
