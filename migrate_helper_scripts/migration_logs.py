@@ -11,7 +11,6 @@ import migrate_helper_scripts.archive_logs as archive_logs
 import migrate_helper_scripts.parse_logs as parse_logs
 import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.build_rerun as build_rerun
-import migrate_helper_scripts.error_check as error_check
 import migrate_helper_scripts.see_errors as see_errors
 import migrate_helper_scripts.database_schema as database
 
@@ -39,36 +38,22 @@ def too_many_logs(server, too_many_list):
             database.insert_log_file_detail(log_details)
 
 
-def process(server, item, volume=False, quiet=False):
+def process(server, quiet=False):
     """ parse command line arguments and run functions """
-    archive_count = rerun_logs = 0
-    output = {}
-    logs = {}
-    if item == "check":
-        output = error_check.main()
-
-    elif item in {'archive', 'archive_with_errors'}:
-        output = archive_logs.archive(item, volume)
-
-    elif item == "see_errors":
-        archive_logs.archive("archive")
-        output = see_errors.see_errors()
-        logs = parse_logs.parse_logs(output)
-        if logs['archive']:
-            # pprint.pprint(archive)
-            archive_count = archive_logs.archive("archive-with-errors", sorted(logs['archive']))
-            # pprint.pprint(list_logs.get_logs('archive-with-errors', sorted(archive)))
-        if logs['rerun']:
-            rerun_logs = build_rerun.rerun(logs['rerun'])
-        if logs['too_many']:
-            # print("More than 2 errors:")
-            # pprint.pprint(too_many, indent=1)
-            # pprint.pprint(counter, indent=1)
-            too_many_logs(server, sorted(logs['too_many']))
+    archive_count = 0
+    rerun_logs = {}
+    archive_logs.archive("archive")
+    output = see_errors.see_errors()
+    logs = parse_logs.parse_logs(output)
+    if logs['archive']:
+        archive_count = archive_logs.archive("archive-with-errors", sorted(logs['archive']))
+    if logs['rerun']:
+        rerun_logs = build_rerun.rerun(logs['rerun'])
+    if logs['too_many']:
+        too_many_logs(server, sorted(logs['too_many']))
 
     if not quiet:
         print('Node: ' + server)
-        print('Process: ' + item)
         print("archive: " + str(len(logs['archive'])))
         print("rerun: " + str(len(logs['rerun'])))
         print("too many: " + str(len(logs['too_many'])))
@@ -77,6 +62,4 @@ def process(server, item, volume=False, quiet=False):
         print("Rerun processed")
         pprint.pprint(rerun_logs['msg'][0], indent=1)
         pprint.pprint(rerun_logs['rerun'], indent=1)
-        if item != "see_errors":
-            pprint.pprint(output, indent=4)
         print('End of line.')
