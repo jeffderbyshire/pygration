@@ -60,6 +60,6 @@ def process(server, quiet=False):
         print("Archive processed")
         pprint.pprint(archive_count, indent=1)
         print("Rerun processed")
-        pprint.pprint(rerun_logs['msg'][0], indent=1)
+        pprint.pprint(rerun_logs['msg'], indent=1)
         pprint.pprint(rerun_logs['rerun'], indent=1)
         print('End of line.')
