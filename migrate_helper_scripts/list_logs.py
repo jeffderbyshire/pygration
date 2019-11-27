@@ -35,13 +35,12 @@ def find_files(volume_serials, file_age):
                             files_found.append(file.name)
                 else:
                     files_found.append(file.name)
-
     return files_found
 
 
 def vol_prefix_in_file(file_name):
     """ search volume in set of prefixes"""
-    for vol_prefix in VOLUME_SERIAL_PREFIX:
+    for vol_prefix in VOLUME_SERIAL_PREFIX.split('|'):
         if vol_prefix in file_name:
             return True
 
