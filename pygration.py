@@ -4,6 +4,7 @@ This program is created to help build automation for tape migration.
 
 TODO add new command status to get disk usage, processes running, and # of logs in log file,
     unprocessed, errors, etc
+TODO add status to server, volume serials with errors and volume serial in archive/ save to db
 """
 import pprint
 import socket
