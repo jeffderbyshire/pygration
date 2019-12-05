@@ -152,7 +152,6 @@ def parse_logs(logs):
     # leave for debugging pprint.pprint(counter, indent=1)
     # 1. Archive Logs if No errors found
     for [vol, msg] in tqdm(list(counter), desc='Archive Check:'):
-        print(vol, check_migration_status(vol))
         if check_migration_status(vol) or is_vol_archived(vol) or archive_error_message(msg):
             # print(vol)
             logs_list['archive'].add(vol)
@@ -166,7 +165,7 @@ def parse_logs(logs):
         if rerun_error_message(msg):
             logs_list['rerun'].add(vol)
         else:
-            if counter[(vol, msg)] < 3:
+            if counter[(vol, msg)] < 10:
                 # rerun_vol_ser(vol)
                 logs_list['rerun'].add(vol)
             else:
