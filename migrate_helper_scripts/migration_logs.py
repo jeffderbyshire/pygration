@@ -23,7 +23,7 @@ LOG_DIR = CONFIG['Default']['log_dir']
 def too_many_logs(server, too_many_list):
     """ Connect to sqlite db and insert server, volume serial, and log file details"""
     server_id = database.get_node_id(server)
-    for volume in tqdm(too_many_list, desc='> 2 Errors:'):
+    for volume in tqdm(too_many_list, desc='> 9 Errors:'):
         volume_id = database.get_volume_id(volume)
         error_logs = list_logs.get_logs("errors", {volume})
         for log_file in error_logs:
