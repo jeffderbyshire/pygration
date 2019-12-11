@@ -26,7 +26,7 @@ def check_disk_space():
         path = '/data/data' + str(i)
         try:
             usage = disk_usage(path)
-            storage[path] = '{:3f}%'.format((usage.used / usage.total) * 100)
+            storage[path] = '{:2f} %'.format((usage.used / usage.total) * 100)
         except FileNotFoundError:
             pass
 
