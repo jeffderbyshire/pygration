@@ -22,7 +22,7 @@ ARCHIVE_DIR = CONFIG['Archive']['archive_dir']
 def check_disk_space():
     """ check disk space and return {path: disk space used} """
     storage = {}
-    for i in range(1, 3):
+    for i in range(1, 4):
         path = '/data/data' + str(i)
         try:
             usage = disk_usage(path)
@@ -44,8 +44,8 @@ def fetch_archived_logs():
 
 def report_status():
     """ print and call """
-    pprint({'running': check_running.main(),
+    pprint({'running': len(check_running.main()),
             'disk space': check_disk_space(),
-            'unprocessed logs': list_logs.get_logs('no-errors'),
+            'unprocessed logs': len(list_logs.get_logs('no-errors')),
             'archived': len(fetch_archived_logs()),
             'errors': len(list_logs.get_logs('errors'))})
