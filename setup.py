@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pygration',
-    version='3.0.0',
+    version='3.1.0',
     py_modules=['pygration', 'migrate_helper_scripts'],
     description='Migration Helpers',
     long_description='Check Logs for errors, Archive Logs, Parse logs, store errors, and rerun',

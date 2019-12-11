@@ -15,6 +15,7 @@ import click
 import migrate_helper_scripts.migration_logs as migration_logs
 import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.error_check as error_check
+import migrate_helper_scripts.migration_status as migration_status
 
 
 @click.command()
@@ -22,12 +23,16 @@ import migrate_helper_scripts.error_check as error_check
 @click.option('--process', is_flag=True)
 @click.option('--quiet', is_flag=True)
 @click.option('--check', is_flag=True)
-def main(logs, process, quiet, check):
+@click.option('--status', is_flag=True)
+def main(logs, process, quiet, check, status):
     """ Parse command arguments, build server list and run commands """
     server = socket.gethostname()
 
     if logs:
         pprint.pprint(list_logs.get_logs(logs))
+
+    if status:
+        migration_status.report_status()
 
     if process:
         migration_logs.process(server=server, quiet=quiet)
