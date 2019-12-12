@@ -42,10 +42,18 @@ def fetch_archived_logs():
     return archive
 
 
+def count_error_logs():
+    """ count distinct volume serials in error logs """
+    errors = set()
+    for log in list_logs.get_logs('errors'):
+        errors.add(log.split('-')[-1])
+    return errors
+
+
 def report_status():
     """ print and call """
     pprint({'running': len(check_running.main()),
             'disk space': check_disk_space(),
             'unprocessed logs': len(list_logs.get_logs('no-errors')),
             'archived': len(fetch_archived_logs()),
-            'errors': len(list_logs.get_logs('errors'))})
+            'errors': len(count_error_logs())})
