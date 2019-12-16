@@ -2,7 +2,6 @@
 
 This program is created to help build automation for tape migration.
 
-TODO message rerun as set for unique values
 """
 import pprint
 import socket

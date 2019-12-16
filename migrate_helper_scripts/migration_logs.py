@@ -32,6 +32,7 @@ def too_many_logs(server, too_many_list):
             error_messages = see_errors.error_messages(LOG_DIR + log_file)
             log_details = []
             for message in error_messages:
+                print(message.split())
                 log_details.append((log_file_id, parse_logs.interpret_error_message(message),
                                     message))
 
