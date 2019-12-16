@@ -17,7 +17,7 @@ IGNORE = CONFIG['Rerun']['ignore']
 
 def rerun(volumes):
     """ build rerun script and run if disk space free > 60 % and < 2 processes running """
-    volumes_dict = {'added': check_running.main(), 'rerun': [], 'msg': []}
+    volumes_dict = {'added': check_running.main(), 'rerun': set(), 'msg': set()}
     if len(volumes_dict['added']) < 2:
         file = open(RERUN_SCRIPT, "w")
         file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
@@ -38,8 +38,8 @@ def rerun(volumes):
                             Usage = namedtuple('usage', ['used', 'total'])
                             usage = Usage(1, 1)
                         if usage.used/usage.total > 0.60:
-                            volumes_dict['msg'].append("/".join(spool[0:3]) +
-                                                       ' is more than 60% full ' + volume)
+                            volumes_dict['msg'].add("/".join(spool[0:3]) +
+                                                    ' is more than 60% full ' + volume)
                             spool_full = True
                             break
                     else:
@@ -51,13 +51,13 @@ def rerun(volumes):
                     volumes_dict['added'].append(volume)
             if command != '':
                 file.write(command + '\n')
-                volumes_dict['rerun'].append(command.split()[-1])
+                volumes_dict['rerun'].add(command.split()[-1])
         file.write('\nexit\n}\n')
         file.close()
         os.chmod(RERUN_SCRIPT, 0o700)
         os.system('screen -d -m ' + RERUN_SCRIPT)
     else:
-        volumes_dict['msg'] = 'too many migrate_chimera processes running'
+        volumes_dict['msg'].add('too many migrate_chimera processes running')
 
     return volumes_dict
 
