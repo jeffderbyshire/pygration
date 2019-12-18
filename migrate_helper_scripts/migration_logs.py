@@ -48,9 +48,7 @@ def too_many_logs(server, too_many_list):
 def detail_error_messages(all_dict):
     """ receive error list and run enstore commands against volume serials, bfids, and pnfs """
     for volume in all_dict:
-        pprint.pprint(volume)
-        for a_value in volume:
-            pprint.pprint(a_value)
+        pprint.pprint(volume, all_dict[volume])
 
 
 def process(server, quiet=False):
