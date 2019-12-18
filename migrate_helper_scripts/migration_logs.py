@@ -35,8 +35,11 @@ def too_many_logs(server, too_many_list):
             log_details = []
             for message in error_messages:
                 # print(message.split())
-                volume_dict['bfid'].add(x for x in message.split() if 'CDMS' in x)
-                volume_dict['pnfs'].add(x for x in message.split() if '/pnfs' in x)
+                for log_word in message.split():
+                    if 'CDMS' in log_word:
+                        volume_dict['bfid'].add(log_word)
+                    if '/pnfs' in log_word:
+                        volume_dict['pnfs'].add(log_word)
                 log_details.append((log_file_id, parse_logs.interpret_error_message(message),
                                     message))
 
@@ -49,7 +52,7 @@ def detail_error_messages(all_dict):
     """ receive error list and run enstore commands against volume serials, bfids, and pnfs """
     for volume in all_dict:
         pprint.pprint(volume)
-        pprint.pprint(all_dict[volume])
+        # pprint.pprint(all_dict[volume])
         for bfid in all_dict[volume]['bfid']:
             pprint.pprint(bfid)
 
