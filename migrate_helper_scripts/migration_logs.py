@@ -49,10 +49,8 @@ def detail_error_messages(all_dict):
     """ receive error list and run enstore commands against volume serials, bfids, and pnfs """
     for volume in all_dict:
         pprint.pprint(volume)
-        for bfid in volume['bfid']:
-            pprint.pprint(bfid)
-        for pnfs in volume['pnfs']:
-            pprint.pprint(pnfs)
+        for a_value in volume:
+            pprint.pprint(a_value)
 
 
 def process(server, quiet=False):
