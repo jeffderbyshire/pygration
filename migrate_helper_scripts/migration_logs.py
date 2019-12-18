@@ -77,7 +77,7 @@ def detail_error_messages(all_dict):
             if 'MUTIPLE_COPY' in status:
                 reason = 'MULTIPLE_COPY'
             else:
-                reason = status
+                reason = status.split()
             bfid_reason[bfid] = reason
         error_details[volume] = bfid_reason
     return error_details
