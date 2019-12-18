@@ -5,6 +5,7 @@ Parses logs for volume serials to archive, rerun, and too many errors
 store too many errors in sqlite db
 """
 import pprint
+import subprocess
 from configparser import ConfigParser
 from tqdm import tqdm
 import migrate_helper_scripts.archive_logs as archive_logs
@@ -48,13 +49,30 @@ def too_many_logs(server, too_many_list):
     return all_volumes
 
 
+def file_migration_status(bfid):
+    """ Run migrate --status command and Return status of bfid """
+    try:
+        status = subprocess.run(
+            [
+                '/opt/enstore/Python/bin/python',
+                '/opt/enstore/bin/migrate',
+                '--status',
+                bfid
+            ],
+            capture_output=True)
+        status = status.stdout.decode()
+    except FileNotFoundError:
+        status = ''
+    return status
+
+
 def detail_error_messages(all_dict):
     """ receive error list and run enstore commands against volume serials, bfids, and pnfs """
     for volume in all_dict:
         pprint.pprint(volume)
         # pprint.pprint(all_dict[volume])
         for bfid in all_dict[volume]['bfid']:
-            pprint.pprint(bfid)
+            pprint.pprint(file_migration_status(bfid))
 
 
 def process(server, quiet=False):
