@@ -30,6 +30,7 @@ def main(logs, process, quiet, check, status):
         migration_status.report_status()
 
     if process:
+        migration_status.report_status()
         migration_logs.process(server=server, quiet=quiet)
 
     if check:
