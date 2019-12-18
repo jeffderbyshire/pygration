@@ -70,15 +70,8 @@ def detail_error_messages(all_dict):
     error_details = {}
     bfid_reason = {}
     for volume in all_dict:
-        # pprint.pprint(volume)
-        # pprint.pprint(all_dict[volume])
         for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
-            status = file_migration_status(bfid)
-            if 'MUTIPLE_COPY' in status:
-                reason = 'MULTIPLE_COPY'
-            else:
-                reason = status.split()
-            bfid_reason[bfid] = reason
+            bfid_reason[bfid] = file_migration_status(bfid).split()[-1]
         error_details[volume] = bfid_reason
     return error_details
 
