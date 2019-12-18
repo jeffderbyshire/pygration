@@ -23,10 +23,10 @@ LOG_DIR = CONFIG['Default']['log_dir']
 
 def too_many_logs(server, too_many_list):
     """ Connect to sqlite db and insert server, volume serial, and log file details"""
-    volume_dict = {'bfid': set(), 'pnfs': set(), 'server_id': database.get_node_id(server)}
     all_volumes = {}
     for volume in tqdm(too_many_list, desc='> 9 Errors:'):
-        volume_dict['volume_id'] = database.get_volume_id(volume)
+        volume_dict = {'bfid': set(), 'pnfs': set(), 'server_id': database.get_node_id(server),
+                       'volume_id': database.get_volume_id(volume)}
         error_logs = list_logs.get_logs("errors", {volume})
         for log_file in error_logs:
             date = log_file.split(LOG_PREFIX)[1].split("#")[0].split(".")[0]
@@ -43,7 +43,6 @@ def too_many_logs(server, too_many_list):
                         volume_dict['pnfs'].add(log_word)
                 log_details.append((log_file_id, parse_logs.interpret_error_message(message),
                                     message))
-
             database.insert_log_file_detail(log_details)
         all_volumes[volume] = volume_dict
     return all_volumes
