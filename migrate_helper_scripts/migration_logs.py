@@ -50,6 +50,8 @@ def detail_error_messages(all_dict):
     for volume in all_dict:
         pprint.pprint(volume)
         pprint.pprint(all_dict[volume])
+        for bfid in all_dict[volume]['bfid']:
+            pprint.pprint(bfid)
 
 
 def process(server, quiet=False):
