@@ -68,8 +68,8 @@ def file_migration_status(bfid):
 def detail_error_messages(all_dict):
     """ receive error list and run enstore commands against volume serials, bfids, and pnfs """
     error_details = {}
-    bfid_reason = {}
     for volume in all_dict:
+        bfid_reason = {}
         for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
             bfid_reason[bfid] = file_migration_status(bfid).split()[-1]
         error_details[volume] = bfid_reason
