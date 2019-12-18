@@ -68,11 +68,20 @@ def file_migration_status(bfid):
 
 def detail_error_messages(all_dict):
     """ receive error list and run enstore commands against volume serials, bfids, and pnfs """
+    error_details = {}
+    bfid_reason = {}
     for volume in all_dict:
-        pprint.pprint(volume)
+        # pprint.pprint(volume)
         # pprint.pprint(all_dict[volume])
-        for bfid in all_dict[volume]['bfid']:
-            pprint.pprint(file_migration_status(bfid))
+        for bfid in tqdm(all_dict[volume]['bfid'], desc='testing bfids'):
+            status = file_migration_status(bfid)
+            if 'MUTIPLE_COPY' in status:
+                reason = 'MULTIPLE_COPY'
+            else:
+                reason = 'Unknown'
+            bfid_reason[bfid] = reason
+        error_details[volume] = bfid_reason
+    return error_details
 
 
 def process(server, quiet=False):
@@ -89,7 +98,7 @@ def process(server, quiet=False):
         rerun_logs = build_rerun.rerun(logs['rerun'])
     if logs['too_many']:
         all_errors = too_many_logs(server, sorted(logs['too_many']))
-        detail_error_messages(all_errors)
+        pprint.pprint(detail_error_messages(all_errors), width=100, depth=5)
 
     if not quiet:
         print('Node: ' + server)
