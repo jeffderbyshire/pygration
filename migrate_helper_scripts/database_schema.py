@@ -3,12 +3,13 @@
 from configparser import ConfigParser
 from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, scoped_session
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 ENGINE = create_engine('sqlite:///' + CONFIG['Default']['sqlite_db'])
-SESSION = sessionmaker(bind=ENGINE)
+SESSION_FACTORY = sessionmaker(bind=ENGINE)
+SESSION = scoped_session(SESSION_FACTORY)
 BASE = declarative_base()
 
 
