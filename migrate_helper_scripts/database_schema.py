@@ -35,6 +35,8 @@ class Volumes(BASE):
 
     log_files = relationship("LogFiles", back_populates='volume',
                              cascade="all, delete, delete-orphan")
+    bfid_errors = relationship("BFIDErrors", back_populates='volumes',
+                               cascade="all, delete, delete-orphan")
 
     def __init__(self, volume):
         self.volume = volume
@@ -88,6 +90,21 @@ class LogFileDetail(BASE):
         return "<LogFileDetail(snippet='%s',message='%s')>" % self.snippet, self.message
 
 
+class BFIDErrors(BASE):
+    """ BFID Errors table definition and relationship to volumes """
+    __tablename__ = 'bfid_errors'
+
+    bfid_errors_id = Column(Integer, primary_key=True)
+    volume_id = Column(Integer, ForeignKey("volumes.volume_id"), nullable=False)
+    bfid = Column(String, nullable=False)
+    error = Column(String, nullable=False)
+
+    volumes = relationship("Volumes", back_populates="bfid_errors")
+
+    def __repr__(self):
+        return "<BFIDErrors(bfid='%s',error='%s')>" % self.bfid, self.error
+
+
 def get_node_id(node_name):
     """ add node name and return node id """
     session = SESSION()
@@ -139,3 +156,12 @@ def delete_volume_name(volume_name):
     volume_delete = session.query(Volumes).filter_by(volume=volume_name).delete()
     session.commit()
     return volume_delete
+
+
+def insert_bfid_errors(error_details):
+    """ insert multiple bfid errors into table """
+    session = SESSION()
+    for column in error_details:
+        insert = BFIDErrors(volume_id=column[0], bfid=column[1], error=column[2])
+        session.add(insert)
+    session.commit()

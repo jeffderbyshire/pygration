@@ -67,13 +67,15 @@ def file_migration_status(bfid):
 
 def detail_error_messages(all_dict):
     """ receive error list and run enstore commands against volume serials, bfids, and pnfs """
-    error_details = {}
+    error_details = []
+    bfids = set()
     for volume in all_dict:
-        bfid_reason = {}
+        volume_id = database.get_volume_id(volume)
         for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
-            bfid_reason[bfid] = file_migration_status(bfid).split()[-1]
-        error_details[volume] = bfid_reason
-    return error_details
+            error_details.append(volume_id, bfid, file_migration_status(bfid).split()[-1])
+            bfids.add(bfid)
+    database.insert_bfid_errors(error_details)
+    return bfids
 
 
 def process(server, quiet=False):
@@ -90,13 +92,14 @@ def process(server, quiet=False):
         rerun_logs = build_rerun.rerun(logs['rerun'])
     if logs['too_many']:
         all_errors = too_many_logs(server, sorted(logs['too_many']))
-        pprint.pprint(detail_error_messages(all_errors), width=100, depth=5)
+        errors = detail_error_messages(all_errors)
 
     if not quiet:
         print('Node: ' + server)
         print("archive: " + str(len(logs['archive'])))
         print("rerun: " + str(len(logs['rerun'])))
         print("too many: " + str(len(logs['too_many'])))
+        print("bfid errors: " + str(len(errors)))
         print("Archive processed")
         pprint.pprint(archive_count, indent=1)
         print("Rerun processed")
