@@ -38,7 +38,7 @@ def too_many_logs(server, too_many_list):
                 # print(message.split())
                 for log_word in message.split():
                     if 'CDMS' in log_word:
-                        volume_dict['bfid'].add(log_word.strip('found()[]\'\":,'))
+                        volume_dict['bfid'].add(log_word.strip('found()[]\'\":,(current'))
                     if '/pnfs' in log_word:
                         volume_dict['pnfs'].add(log_word)
                 log_details.append((log_file_id, parse_logs.interpret_error_message(message),
