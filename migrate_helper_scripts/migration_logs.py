@@ -38,7 +38,7 @@ def too_many_logs(server, too_many_list):
                 # print(message.split())
                 for log_word in message.split():
                     if 'CDMS' in log_word:
-                        volume_dict['bfid'].add(log_word.strip('\'\":,'))
+                        volume_dict['bfid'].add(log_word.strip('found()[]\'\":,'))
                     if '/pnfs' in log_word:
                         volume_dict['pnfs'].add(log_word)
                 log_details.append((log_file_id, parse_logs.interpret_error_message(message),
@@ -104,5 +104,5 @@ def process(server, quiet=False):
         pprint.pprint(archive_count, indent=1)
         print("Rerun processed")
         pprint.pprint(rerun_logs['msg'], indent=1)
-        pprint.pprint(rerun_logs['rerun'], indent=1)
+        print("Reruns: " + str(len(rerun_logs['rerun'])))
         print('End of line.')
