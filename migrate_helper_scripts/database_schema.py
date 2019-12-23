@@ -166,3 +166,9 @@ def insert_bfid_errors(error_details):
         insert = BFIDErrors(volume_id=column[0], bfid=column[1], error=column[2])
         session.add(insert)
     session.commit()
+
+
+def volume_id_in_bfid_errors(volume_id):
+    """ check bfid errors for volume_id """
+    session = SESSION()
+    return bool(session.query(BFIDErrors).filter(BFIDErrors.volume_id == volume_id))

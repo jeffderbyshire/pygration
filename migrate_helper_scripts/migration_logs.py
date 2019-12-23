@@ -71,9 +71,10 @@ def detail_error_messages(all_dict):
     bfids = set()
     for volume in all_dict:
         volume_id = database.get_volume_id(volume)
-        for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
-            error_details.append((volume_id, bfid, file_migration_status(bfid).split()[-1]))
-            bfids.add(bfid)
+        if not database.volume_id_in_bfid_errors(volume_id):
+            for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
+                error_details.append((volume_id, bfid, file_migration_status(bfid).split()[-1]))
+                bfids.add(bfid)
     database.insert_bfid_errors(error_details)
     return bfids
 
