@@ -83,6 +83,7 @@ def process(server, quiet=False):
     archive_count = 0
     rerun_logs = {}
     all_errors = {}
+    errors = set()
     archive_logs.archive("archive")
     output = see_errors.see_errors()
     logs = parse_logs.parse_logs(output)
