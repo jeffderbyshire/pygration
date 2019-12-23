@@ -47,8 +47,11 @@ def rerun(volumes):
                             ignore = True
                             break
                 if volume not in volumes_dict['added'] and not ignore and not spool_full:
-                    command = "/opt/enstore/Python/bin/python " + first[7] + " --debug 2 "\
-                              + " ".join(first[8:])
+                    if 'debug' in first:
+                        command = "/opt/enstore/Python/bin/python " + " ".join(first[8:])
+                    else:
+                        command = "/opt/enstore/Python/bin/python " + first[7] + " --debug 2 "\
+                                  + " ".join(first[8:])
                     volumes_dict['added'].append(volume)
             if command != '':
                 file.write(command + '\n')
