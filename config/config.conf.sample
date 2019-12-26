@@ -4,16 +4,16 @@ sqlite_db: /path/to/sqlite/db
 log_prefix: LogFilePrefix
 
 [Archive]
-archive_dir: archive/
+archive_dir: archive-log-path/
 
 [List]
-volume_serial_prefix: -V|-P|-I
+volume_serial_prefix: prefixes|separated|by|pipes
 
 [Process]
 running: process_to_check_if_running
 
 [Rerun]
-rerun_script: /tmp/migrate.rerun
+rerun_script: /path/to/write/rerun/script
 ignore: --flags|--to|--ignore
 
 
