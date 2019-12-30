@@ -48,10 +48,12 @@ def rerun(volumes):
                             break
                 if volume not in volumes_dict['added'] and not ignore and not spool_full:
                     print(first)
-                    if '--debug' in first:
-                        print("found debug")
+                    while '--debug' in first:
+                        first.pop(first.index('--debug') + 1)
+                        first.pop(first.index('--debug'))
+                    print(first)
                     exit()
-                    # if 'debug' in first:
+                    # if '--debug' in first:
                     #    command = "/opt/enstore/Python/bin/python " + " ".join(first[7:])
                     #else:
                     #    command = "/opt/enstore/Python/bin/python " + first[7] + " --debug 2 "\
