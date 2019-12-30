@@ -48,6 +48,26 @@ def too_many_logs(server, too_many_list):
     return all_volumes
 
 
+def find_same_copies(bfid):
+    """ Run enstore info --find-same-copies bfid """
+    try:
+        find = subprocess.run(
+            [
+                '/opt/enstore/Python/bin/python',
+                '/opt/enstore/bin/enstore',
+                'info',
+                '--find-same-copies',
+                bfid
+            ],
+            capture_output=True)
+        find = find.stdout.decode()
+        print(find)
+        exit()
+    except FileNotFoundError:
+        find = ''
+    return find
+
+
 def file_migration_status(bfid):
     """ Run migrate --status command and Return status of bfid """
     try:
@@ -59,7 +79,7 @@ def file_migration_status(bfid):
                 bfid
             ],
             capture_output=True)
-        status = status.stdout.decode()
+        status = status.stdout.decode().split()[-1]
     except FileNotFoundError:
         status = ''
     return status
@@ -73,7 +93,8 @@ def detail_error_messages(all_dict):
         volume_id = database.get_volume_id(volume)
         if not database.volume_id_in_bfid_errors(volume_id):
             for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
-                error_details.append((volume_id, bfid, file_migration_status(bfid).split()[-1]))
+                error_details.append((volume_id, bfid, file_migration_status(bfid) +
+                                      find_same_copies(bfid)))
                 bfids.add(bfid)
     database.insert_bfid_errors(error_details)
     return bfids
