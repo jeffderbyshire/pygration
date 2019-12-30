@@ -48,7 +48,7 @@ def rerun(volumes):
                             break
                 if volume not in volumes_dict['added'] and not ignore and not spool_full:
                     print(first)
-                    if 'debug' in first:
+                    if '--debug' in first:
                         print("found debug")
                     exit()
                     # if 'debug' in first:
