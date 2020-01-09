@@ -103,7 +103,7 @@ def detail_error_messages(all_dict):
 def process(server, quiet=False, rerun=False):
     """ parse command line arguments and run functions """
     archive_count = 0
-    rerun_logs = {}
+    rerun_logs = {'msg': 'None'}
     all_errors = {}
     errors = set()
     archive_logs.archive("archive")
