@@ -165,7 +165,7 @@ def parse_logs(logs):
         if rerun_error_message(msg):
             logs_list['rerun'].add(vol)
         else:
-            if counter[(vol, msg)] < 10:
+            if counter[(vol, msg)] < 0:
                 # rerun_vol_ser(vol)
                 logs_list['rerun'].add(vol)
             else:

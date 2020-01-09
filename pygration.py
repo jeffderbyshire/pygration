@@ -31,7 +31,7 @@ def main(logs, process, quiet, check, status):
 
     if process:
         migration_status.report_status()
-        migration_logs.process(server=server, quiet=quiet)
+        migration_logs.process(server=server, quiet=quiet, rerun=False)
 
     if check:
         output = error_check.main()

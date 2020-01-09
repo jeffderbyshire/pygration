@@ -24,7 +24,7 @@ LOG_DIR = CONFIG['Default']['log_dir']
 def too_many_logs(server, too_many_list):
     """ Connect to sqlite db and insert server, volume serial, and log file details"""
     all_volumes = {}
-    for volume in tqdm(too_many_list, desc='> 9 Errors:'):
+    for volume in tqdm(too_many_list, desc='> 2 Errors:'):
         volume_dict = {'bfid': set(), 'pnfs': set(), 'server_id': database.get_node_id(server),
                        'volume_id': database.get_volume_id(volume)}
         error_logs = list_logs.get_logs("errors", {volume})
@@ -100,7 +100,7 @@ def detail_error_messages(all_dict):
     return bfids
 
 
-def process(server, quiet=False):
+def process(server, quiet=False, rerun=False):
     """ parse command line arguments and run functions """
     archive_count = 0
     rerun_logs = {}
@@ -111,7 +111,7 @@ def process(server, quiet=False):
     logs = parse_logs.parse_logs(output)
     if logs['archive']:
         archive_count = archive_logs.archive("archive-with-errors", sorted(logs['archive']))
-    if logs['rerun']:
+    if logs['rerun'] and rerun:
         rerun_logs = build_rerun.rerun(logs['rerun'])
     if logs['too_many']:
         all_errors = too_many_logs(server, sorted(logs['too_many']))
