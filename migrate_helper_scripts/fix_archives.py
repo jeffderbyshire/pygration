@@ -25,7 +25,8 @@ def get_volume_from_archive():
 
 def check_volumes(volumes):
     """ check volume migration status """
-    for volume in volumes:
+    check_these = volumes
+    for volume in check_these:
         if parse_logs.check_migration_status(volume):
             volumes.discard(volume)
 
