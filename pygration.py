@@ -21,7 +21,7 @@ import migrate_helper_scripts.fix_archives as fix_archives
 @click.option('--check', is_flag=True)
 @click.option('--status', is_flag=True)
 @click.option('--fix', is_flag=True)
-def main(logs, process, quiet, check, status):
+def main(logs, process, quiet, check, status, fix):
     """ Parse command arguments, build server list and run commands """
     server = socket.gethostname()
 
