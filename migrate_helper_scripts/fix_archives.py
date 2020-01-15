@@ -21,7 +21,7 @@ def get_volume_from_archive():
         try:
             volume = log.split(LOG_PREFIX)[1].split('-')[3].split('.')[0]
         except IndexError:
-            volume = ''
+            volume = 'XXX'
         if 'VP' in volume[:2] or 'P' in volume[0] or 'I' in volume[0]:
             if not parse_logs.check_migration_status(volume):
                 volumes.add(volume)
