@@ -131,7 +131,10 @@ def check_migration_status(volume):
         check = status.stdout.decode()
     except FileNotFoundError:
         check = ''
-    return bool('migrated' in check)
+    if 'migrated' in check:
+        return True
+
+    return False
 
 
 def parse_logs(logs):
