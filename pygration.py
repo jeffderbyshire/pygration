@@ -11,6 +11,7 @@ import migrate_helper_scripts.migration_logs as migration_logs
 import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.error_check as error_check
 import migrate_helper_scripts.migration_status as migration_status
+import migrate_helper_scripts.fix_archives as fix_archives
 
 
 @click.command()
@@ -19,6 +20,7 @@ import migrate_helper_scripts.migration_status as migration_status
 @click.option('--quiet', is_flag=True)
 @click.option('--check', is_flag=True)
 @click.option('--status', is_flag=True)
+@click.option('--fix', is_flag=True)
 def main(logs, process, quiet, check, status):
     """ Parse command arguments, build server list and run commands """
     server = socket.gethostname()
@@ -28,6 +30,9 @@ def main(logs, process, quiet, check, status):
 
     if status:
         migration_status.report_status()
+
+    if fix:
+        fix_archives.main()
 
     if process:
         migration_status.report_status()
