@@ -26,20 +26,17 @@ def get_volume_from_archive():
     return volumes
 
 
-def check_volumes(volumes):
-    """ check volume migration status """
-    check_these = volumes
-    for volume in check_these:
-        if parse_logs.check_migration_status(volume):
-            volumes.discard(volume)
-
-    return volumes
+def move_archived_logs(volumes):
+    """ move archived logs back to main log directory """
+    for volume in volumes:
+        for log in glob(LOG_DIRECTORY + ARCHIVE_DIR + '*/*/*' + volume + '.0.gz'):
+            print(log)
 
 
 def main():
     """ main function """
     volumes = get_volume_from_archive()
-    print(volumes)
+    move_archived_logs(volumes)
 
 
 if __name__ == "__main__":
