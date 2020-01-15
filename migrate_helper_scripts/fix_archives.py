@@ -1,6 +1,6 @@
 """ fix archives """
 
-
+import os
 from glob import glob
 from configparser import ConfigParser
 from tqdm import tqdm
@@ -30,7 +30,8 @@ def move_archived_logs(volumes):
     """ move archived logs back to main log directory """
     for volume in volumes:
         for log in glob(LOG_DIRECTORY + ARCHIVE_DIR + '*/*/*' + volume + '.0.gz'):
-            print(log)
+            file_name = log.split('/')[-1]
+            os.rename(log, LOG_DIRECTORY + file_name)
 
 
 def main():
