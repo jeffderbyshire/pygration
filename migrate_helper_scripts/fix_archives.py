@@ -18,10 +18,12 @@ def get_volume_from_archive():
     volumes = set()
     for log in tqdm(glob(LOG_DIRECTORY + ARCHIVE_DIR + '*/*/*.0.gz'), desc='check archive logs'):
         # MigrationLog@2019-12-04.12:29:59#336614-VP5615.0.gz
+        print(log)
         try:
             volume = log.split(LOG_PREFIX)[1].split('-')[3].split('.')[0]
         except IndexError:
             volume = 'XXX'
+        print(volume)
         if 'VP' in volume[:2] or 'P' in volume[0] or 'I' in volume[0]:
             if not parse_logs.check_migration_status(volume):
                 volumes.add(volume)
