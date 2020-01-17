@@ -39,11 +39,7 @@ def fix_mtime(log):
     date_time = parse_logs.get_date_time(log)
     mtime = datetime.strptime(date_time['date'] + 'T' + date_time['time'],
                               '%Y-%m-%dT%H:%M:%S').timestamp()
-    print(log, mtime)
-    print(os.stat(log))
     os.utime(log, (mtime, mtime))
-    print(os.stat(log))
-    exit()
 
 
 def move_archived_logs(volumes):
@@ -60,8 +56,8 @@ def main():
         for file in the_dir:
             if LOG_PREFIX in file.name and file.name.endswith('.0'):
                 fix_mtime(LOG_DIRECTORY + file.name)
-    # volumes = get_volume_from_archive()
-    # move_archived_logs(volumes)
+    volumes = get_volume_from_archive()
+    move_archived_logs(volumes)
 
 
 if __name__ == "__main__":
