@@ -198,4 +198,4 @@ def volume_id_in_bfid_errors(volume_id):
 def volume_is_migrated(volume):
     """ check if volume serial exists in migrated table """
     session = SESSION()
-    return bool(session.query(Migrated).filter(Migrated.volume == volume))
+    print(bool(session.query(Migrated).filter(Migrated.volume == volume)))
