@@ -61,8 +61,6 @@ def find_same_file(bfid):
             ],
             capture_output=True)
         find = find.stdout.decode()
-        print(find)
-        exit()
     except FileNotFoundError:
         find = ''
     return find
