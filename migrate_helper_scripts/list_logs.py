@@ -53,7 +53,8 @@ def select_specific_files(selection, file_list):
     for file in file_list:
         if selection == "errors":
             if file.endswith(".0"):
-                selected.append(file)
+                if vol_prefix_in_file(file):
+                    selected.append(file)
         elif selection == "no-errors":
             if not file.endswith(".0"):
                 if not vol_prefix_in_file(file):
