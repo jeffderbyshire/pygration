@@ -192,10 +192,10 @@ def insert_bfid_errors(error_details):
 def volume_id_in_bfid_errors(volume_id):
     """ check bfid errors for volume_id """
     session = SESSION()
-    return bool(session.query(BFIDErrors).filter(BFIDErrors.volume_id == volume_id))
+    return bool(session.query(BFIDErrors).filter(BFIDErrors.volume_id == volume_id).count())
 
 
 def volume_is_migrated(volume):
     """ check if volume serial exists in migrated table """
     session = SESSION()
-    print(bool(session.query(Migrated).filter(Migrated.volume == volume).count()))
+    return bool(session.query(Migrated).filter(Migrated.volume == volume).count())
