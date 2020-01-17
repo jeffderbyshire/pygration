@@ -51,7 +51,10 @@ def archive(command="archive", volumes=False):
                         totals['archived'] += 1
                 if os.path.exists(gz_file_path):
                     with open(log_file_path, 'rb') as handle:
-                        volumes.append(next(handle).decode().split()[-1])
+                        try:
+                            volumes.append(next(handle).decode().split()[-1])
+                        except StopIteration:
+                            pass
 
                     os.remove(log_file_path)
                     totals['removed'] += 1
