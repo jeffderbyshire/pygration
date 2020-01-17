@@ -1,7 +1,8 @@
 """ database schema using sqlalchemy """
 
 from configparser import ConfigParser
-from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, TIMESTAMP
+from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, scoped_session
 
@@ -106,6 +107,18 @@ class BFIDErrors(BASE):
         return "<BFIDErrors(bfid='%s',error='%s')>" % self.bfid, self.error
 
 
+class Migrated(BASE):
+    """ Migrated Volumes to be checked to speed up fix archives """
+    __tablename__ = 'migrated'
+
+    migrated_id = Column(Integer, primary_key=True)
+    volume = Column(String, nullable=False, unique=True)
+    timestamp = Column(TIMESTAMP, default=func.now())
+
+    def __repr__(self):
+        return "<Migrated(volume='%s')>" % self.volume
+
+
 def get_node_id(node_name):
     """ add node name and return node id """
     session = SESSION()
@@ -142,6 +155,14 @@ def get_log_file_id(server_id, volume_id, log_file, date):
     return log_file_record.log_files_id
 
 
+def insert_migrated(volume):
+    """ insert volume into migrated table """
+    session = SESSION()
+    migrated_volume = Migrated(volume=volume)
+    session.add(migrated_volume)
+    session.commit()
+
+
 def insert_log_file_detail(log_details):
     """ insert multiple log file detail records """
     session = SESSION()
@@ -172,3 +193,9 @@ def volume_id_in_bfid_errors(volume_id):
     """ check bfid errors for volume_id """
     session = SESSION()
     return bool(session.query(BFIDErrors).filter(BFIDErrors.volume_id == volume_id))
+
+
+def volume_is_migrated(volume):
+    """ check if volume serial exists in migrated table """
+    session = SESSION()
+    return bool(session.query(Migrated).filter(Migrated.volume == volume))

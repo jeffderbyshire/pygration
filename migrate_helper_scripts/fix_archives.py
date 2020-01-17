@@ -4,9 +4,9 @@ import os
 from glob import glob
 from configparser import ConfigParser
 import gzip
-import logging
 from tqdm import tqdm
 import migrate_helper_scripts.parse_logs as parse_logs
+from migrate_helper_scripts.database_schema import insert_migrated, volume_is_migrated
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
@@ -24,9 +24,11 @@ def get_volume_from_archive():
             volume = log.split(LOG_PREFIX)[1].split('-')[3].split('.')[0]
         except IndexError:
             volume = 'XXX'
-        if len(volume) > 3:
+        if len(volume) > 3 and not volume_is_migrated(volume):
             if 'VP' in volume[:2] or 'P' in volume[0] or 'I' in volume[0] or 'VO' in volume[:2]:
-                if not parse_logs.check_migration_status(volume):
+                if parse_logs.check_migration_status(volume):
+                    insert_migrated(volume)
+                else:
                     volumes.add(volume)
 
     return volumes
@@ -40,10 +42,7 @@ def move_archived_logs(volumes):
             os.rename(log, LOG_DIRECTORY + file_name)
             uncompressed_file = open(LOG_DIRECTORY + file_name.rstrip('.gz'), 'w')
             gz_file = open(LOG_DIRECTORY + file_name, 'rb').read()
-            logging.debug(uncompressed_file)
-            logging.debug(gzip.decompress(gz_file).decode())
-            # uncompressed_file.write(gz_file.decode())
-            exit()
+            uncompressed_file.write(gzip.decompress(gz_file).decode())
 
 
 def main():
