@@ -1,9 +1,9 @@
 """ fix archives """
 
 import os
+from datetime import datetime
 from glob import glob
 from configparser import ConfigParser
-import gzip
 from tqdm import tqdm
 import migrate_helper_scripts.parse_logs as parse_logs
 from migrate_helper_scripts.database_schema import insert_migrated, volume_is_migrated
@@ -34,21 +34,32 @@ def get_volume_from_archive():
     return volumes
 
 
+def fix_mtime(log):
+    """ fix modified time for files based on log file name """
+    date_time = parse_logs.get_date_time(log)
+    mtime = datetime.strptime(date_time['date'] + 'T' + date_time['time'],
+                              'Y-d-mTH-M-S').timestamp()
+    print(mtime)
+    exit()
+    # os.utime(log, times=)
+
+
 def move_archived_logs(volumes):
     """ move archived logs back to main log directory """
     for volume in volumes:
         for log in glob(LOG_DIRECTORY + ARCHIVE_DIR + '*/*/*' + volume + '.0.gz'):
             file_name = log.split('/')[-1]
             os.rename(log, LOG_DIRECTORY + file_name)
-            uncompressed_file = open(LOG_DIRECTORY + file_name.rstrip('.gz'), 'w')
-            gz_file = open(LOG_DIRECTORY + file_name, 'rb').read()
-            uncompressed_file.write(gzip.decompress(gz_file).decode())
 
 
 def main():
     """ main function """
-    volumes = get_volume_from_archive()
-    move_archived_logs(volumes)
+    with os.scandir(LOG_DIRECTORY) as the_dir:
+        for file in the_dir:
+            if LOG_PREFIX in file.name and file.name.endswith('.0'):
+                fix_mtime(LOG_DIRECTORY + file.name)
+    # volumes = get_volume_from_archive()
+    # move_archived_logs(volumes)
 
 
 if __name__ == "__main__":
