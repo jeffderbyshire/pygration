@@ -39,10 +39,10 @@ def move_archived_logs(volumes):
             file_name = log.split('/')[-1]
             os.rename(log, LOG_DIRECTORY + file_name)
             uncompressed_file = open(LOG_DIRECTORY + file_name.rstrip('.gz'), 'w')
+            gz_file = open(LOG_DIRECTORY + file_name, 'rb')
             logging.debug(uncompressed_file)
-            with gzip.decompress(LOG_DIRECTORY + file_name) as gz_file:
-                # uncompressed_file.write(gz_file.decode())
-                logging.debug(gz_file.decode())
+            logging.debug(gzip.decompress(gz_file).decode())
+            # uncompressed_file.write(gz_file.decode())
             exit()
 
 
