@@ -38,7 +38,7 @@ def fix_mtime(log):
     """ fix modified time for files based on log file name """
     date_time = parse_logs.get_date_time(log)
     mtime = datetime.strptime(date_time['date'] + 'T' + date_time['time'],
-                              'Y-d-mTH-M-S').timestamp()
+                              'Y-d-mTH:M:S').timestamp()
     print(mtime)
     exit()
     # os.utime(log, times=)
