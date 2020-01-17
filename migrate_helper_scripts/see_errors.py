@@ -29,14 +29,16 @@ def see_errors():
         file_name = MIGRATION_DIR + file
         with open(file_name, 'rb') as handle:
             error_message = ""
-            print(file_name)
-            first = next(handle).decode().split()
-            volume = first[-1]
-            for line in handle.readlines():
-                message = line.decode()
-                if re.search('ERR', message):
-                    error_message = message
-                    break
+            try:
+                first = next(handle).decode().split()
+                volume = first[-1]
+                for line in handle.readlines():
+                    message = line.decode()
+                    if re.search('ERR', message):
+                        error_message = message
+                        break
+            except StopIteration:
+                pass
         error = volume + " ---- " + error_message
         all_errors.append(error)
 
