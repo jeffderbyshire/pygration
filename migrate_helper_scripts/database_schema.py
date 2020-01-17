@@ -189,10 +189,9 @@ def insert_bfid_errors(error_details):
     session.commit()
 
 
-def volume_id_in_bfid_errors(volume):
+def volume_id_in_bfid_errors(volume_id):
     """ check bfid errors for volume_id """
     session = SESSION()
-    volume_id = get_volume_id(volume)
     return bool(session.query(BFIDErrors).filter(BFIDErrors.volume_id == volume_id).count())
 
 
