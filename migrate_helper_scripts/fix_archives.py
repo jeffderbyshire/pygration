@@ -3,6 +3,8 @@
 import os
 from glob import glob
 from configparser import ConfigParser
+import gzip
+import logging
 from tqdm import tqdm
 import migrate_helper_scripts.parse_logs as parse_logs
 
@@ -36,6 +38,12 @@ def move_archived_logs(volumes):
         for log in glob(LOG_DIRECTORY + ARCHIVE_DIR + '*/*/*' + volume + '.0.gz'):
             file_name = log.split('/')[-1]
             os.rename(log, LOG_DIRECTORY + file_name)
+            uncompressed_file = open(LOG_DIRECTORY + file_name.rstrip('.gz'), 'w')
+            logging.debug(uncompressed_file)
+            with gzip.decompress(LOG_DIRECTORY + file_name) as gz_file:
+                # uncompressed_file.write(gz_file.decode())
+                logging.debug(gz_file.decode())
+            exit()
 
 
 def main():
