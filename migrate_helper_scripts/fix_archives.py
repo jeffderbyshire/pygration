@@ -39,9 +39,11 @@ def fix_mtime(log):
     date_time = parse_logs.get_date_time(log)
     mtime = datetime.strptime(date_time['date'] + 'T' + date_time['time'],
                               '%Y-%d-%mT%H:%M:%S').timestamp()
-    print(mtime)
+    print(log, mtime)
+    print(os.stat(log))
+    os.utime(log, (mtime, mtime))
+    print(os.stat(log))
     exit()
-    # os.utime(log, times=)
 
 
 def move_archived_logs(volumes):
