@@ -17,7 +17,7 @@ import migrate_helper_scripts.fix_archives as fix_archives
 @click.command()
 @click.option('--logs', type=click.Choice(['all', 'errors', 'no-errors', 'archive',
                                            'archive-with-errors']))
-@click.option('--process', type=click.Choice(['all', 'fix', 'status']), default='all')
+@click.option('--process', type=click.Choice(['all', 'fix', 'status']))
 @click.option('--quiet', is_flag=True)
 @click.option('--check', is_flag=True)
 def main(logs, process, quiet, check):
@@ -26,7 +26,7 @@ def main(logs, process, quiet, check):
 
     if logs:
         pprint.pprint(list_logs.get_logs(logs))
-    print(process)
+
     if process in ['all', 'fix', 'status']:
         migration_status.report_status()
         if process == 'fix':
