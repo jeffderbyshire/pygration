@@ -15,28 +15,25 @@ import migrate_helper_scripts.fix_archives as fix_archives
 
 
 @click.command()
-@click.option('--logs', type=click.Choice(['all', 'errors', 'no-errors'], case_sensitive=False))
-@click.option('--process', is_flag=True)
+@click.option('--logs', type=click.Choice(['all', 'errors', 'no-errors', 'archive']))
+@click.option('--process', type=click.Choice(['all', 'fix', 'status']), default='all')
 @click.option('--quiet', is_flag=True)
 @click.option('--check', is_flag=True)
-@click.option('--status', is_flag=True)
-@click.option('--fix', is_flag=True)
-def main(logs, process, quiet, check, status, fix):
+def main(logs, process, quiet, check):
     """ Parse command arguments, build server list and run commands """
     server = socket.gethostname()
 
     if logs:
         pprint.pprint(list_logs.get_logs(logs))
 
-    if status:
-        migration_status.report_status()
-
-    if fix:
-        fix_archives.main()
-
     if process:
         migration_status.report_status()
-        migration_logs.process(server=server, quiet=quiet, rerun=False)
+        if process == 'fix':
+            fix_archives.main()
+        elif process == 'status':
+            migration_status.report_status()
+        else:
+            migration_logs.process(server=server, quiet=quiet, rerun=False)
 
     if check:
         output = error_check.main()
