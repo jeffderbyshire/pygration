@@ -88,13 +88,13 @@ def detail_error_messages(all_dict):
     error_details = []
     bfids = set()
     for volume in all_dict:
-        print(all_dict[volume])
-        volume_id = database.get_volume_id(volume)
-        if not database.volume_id_in_bfid_errors(volume_id):
-            for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
-                error_details.append((volume_id, bfid, file_migration_status(bfid) +
-                                      find_same_file(bfid)))
-                bfids.add(bfid)
+        if bool(all_dict[volume]['bfid']):
+            volume_id = database.get_volume_id(volume)
+            if not database.volume_id_in_bfid_errors(volume_id):
+                for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
+                    error_details.append((volume_id, bfid, file_migration_status(bfid) +
+                                          find_same_file(bfid)))
+                    bfids.add(bfid)
     database.insert_bfid_errors(error_details)
     return bfids
 
