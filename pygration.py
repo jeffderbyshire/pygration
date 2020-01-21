@@ -31,8 +31,10 @@ def main(logs, process, quiet, check):
         migration_status.report_status()
         if process == 'fix':
             fix_archives.main()
+            migration_status.report_status()
         elif process == 'all':
             migration_logs.process(server=server, quiet=quiet, rerun=False)
+            migration_status.report_status()
 
     if check:
         output = error_check.main()
