@@ -26,8 +26,8 @@ def main(logs, process, quiet, check):
 
     if logs:
         pprint.pprint(list_logs.get_logs(logs))
-
-    if process:
+    print(process)
+    if process in ['all', 'fix', 'status']:
         migration_status.report_status()
         if process == 'fix':
             fix_archives.main()
