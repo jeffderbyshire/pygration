@@ -7,6 +7,7 @@ from configparser import ConfigParser
 from tqdm import tqdm
 import migrate_helper_scripts.parse_logs as parse_logs
 from migrate_helper_scripts.database_schema import insert_migrated, volume_is_migrated
+from migrate_helper_scripts.list_logs import vol_prefix_in_file
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
@@ -25,7 +26,7 @@ def get_volume_from_archive():
         except IndexError:
             volume = 'XXX'
         if len(volume) > 3 and not volume_is_migrated(volume):
-            if 'VP' in volume[:2] or 'P' in volume[0] or 'I' in volume[0] or 'VO' in volume[:2]:
+            if vol_prefix_in_file(volume):
                 if parse_logs.check_migration_status(volume):
                     insert_migrated(volume)
                 else:
