@@ -5,7 +5,7 @@ import glob
 import subprocess
 from configparser import ConfigParser
 from tqdm import tqdm
-from migrate_helper_scripts.database_schema import insert_migrated, volume_is_migrated
+import migrate_helper_scripts.database_schema as database
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
@@ -133,7 +133,7 @@ def check_migration_status(volume):
     except FileNotFoundError:
         check = ''
     if 'migrated' in check:
-        insert_migrated(volume)
+        database.insert_migrated(volume)
         return True
 
     return False
@@ -145,7 +145,7 @@ def parse_logs(logs):
     logs_list = {'archive': set([]), 'rerun': set([]), 'too_many': set([])}
     counter = collections.Counter()
 
-    for line in tqdm(logs, desc='Read Errors:'):
+    for line in tqdm(logs, desc='Reading Errors:'):
         if len(line) > 10:
             volume_serial, log_error_message = line.split(" ---- ")
             # print(split_line)
@@ -157,7 +157,7 @@ def parse_logs(logs):
     # leave for debugging pprint.pprint(counter, indent=1)
     # 1. Archive Logs if No errors found
     for [vol, msg] in tqdm(list(counter), desc='Archive Check:'):
-        if volume_is_migrated(vol) \
+        if database.volume_is_migrated(vol) \
                 or is_vol_archived(vol) \
                 or archive_error_message(msg) \
                 or check_migration_status(vol):

@@ -57,7 +57,7 @@ def select_specific_files(selection, file_list):
                     selected.append(file)
         elif selection == "no-errors":
             if not file.endswith(".0"):
-                if not "-" in file.split('#')[1]:
+                if "-" not in file.split('#')[1]:
                     selected.append(file)
         elif selection == "archive":
             if not file.endswith(".0"):
