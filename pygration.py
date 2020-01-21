@@ -31,9 +31,7 @@ def main(logs, process, quiet, check):
         migration_status.report_status()
         if process == 'fix':
             fix_archives.main()
-        elif process == 'status':
-            migration_status.report_status()
-        else:
+        elif process == 'all':
             migration_logs.process(server=server, quiet=quiet, rerun=False)
 
     if check:
