@@ -41,7 +41,6 @@ def find_files(volume_serials, file_age):
 def vol_prefix_in_file(file_name):
     """ search volume in set of prefixes"""
     for vol_prefix in VOLUME_SERIAL_PREFIX.split('|'):
-        print(vol_prefix)
         if vol_prefix in file_name:
             return True
 
@@ -57,10 +56,8 @@ def select_specific_files(selection, file_list):
                 if vol_prefix_in_file(file):
                     selected.append(file)
         elif selection == "no-errors":
-            print(file)
             if not file.endswith(".0"):
-                if not vol_prefix_in_file(file):
-                    selected.append(file)
+                selected.append(file)
         elif selection == "archive":
             if not file.endswith(".0"):
                 if vol_prefix_in_file(file):
