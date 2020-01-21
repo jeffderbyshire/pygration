@@ -88,6 +88,7 @@ def detail_error_messages(all_dict):
     error_details = []
     bfids = set()
     for volume in all_dict:
+        print(all_dict[volume])
         volume_id = database.get_volume_id(volume)
         if not database.volume_id_in_bfid_errors(volume_id):
             for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
