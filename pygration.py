@@ -15,7 +15,8 @@ import migrate_helper_scripts.fix_archives as fix_archives
 
 
 @click.command()
-@click.option('--logs', type=click.Choice(['all', 'errors', 'no-errors', 'archive']))
+@click.option('--logs', type=click.Choice(['all', 'errors', 'no-errors', 'archive',
+                                           'archive-with-errors']))
 @click.option('--process', type=click.Choice(['all', 'fix', 'status']), default='all')
 @click.option('--quiet', is_flag=True)
 @click.option('--check', is_flag=True)
