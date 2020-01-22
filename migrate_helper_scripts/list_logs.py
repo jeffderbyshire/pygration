@@ -47,6 +47,11 @@ def vol_prefix_in_file(file_name):
     return False
 
 
+def log_file_has_volume_serial(file):
+    """ check if log file has -VolumeSerial appended """
+    return bool("-" in file.split('#')[1])
+
+
 def select_specific_files(selection, file_list):
     """ selected files """
     selected = []
@@ -57,14 +62,14 @@ def select_specific_files(selection, file_list):
                     selected.append(file)
         elif selection == "no-errors":
             if not file.endswith(".0"):
-                if "-" not in file.split('#')[1]:
+                if not log_file_has_volume_serial(file):
                     selected.append(file)
         elif selection == "archive":
             if not file.endswith(".0"):
-                if vol_prefix_in_file(file):
+                if log_file_has_volume_serial(file):
                     selected.append(file)
         elif selection == "archive-with-errors":
-            if vol_prefix_in_file(file):
+            if log_file_has_volume_serial(file):
                 selected.append(file)
 
     return selected
