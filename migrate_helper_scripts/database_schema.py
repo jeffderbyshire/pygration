@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker, relationship, scoped_session
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
-ENGINE = create_engine('sqlite:///' + CONFIG['Default']['sqlite_db'])
+ENGINE = create_engine('postgresql+psycopg2://' + CONFIG['Default']['database'])
 SESSION_FACTORY = sessionmaker(bind=ENGINE)
 SESSION = scoped_session(SESSION_FACTORY)
 BASE = declarative_base()

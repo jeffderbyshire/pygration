@@ -1,6 +1,6 @@
 [Default]
 log_dir = /path/to/logs
-sqlite_db = /path/to/sqlite/db
+database = user:password@host:port/database
 log_prefix = LogFilePrefix
 
 [Archive]
