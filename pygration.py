@@ -3,6 +3,7 @@
 This program is created to help build automation for tape migration.
 
 """
+import sys
 import pprint
 import socket
 import click
@@ -12,6 +13,13 @@ import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.error_check as error_check
 import migrate_helper_scripts.migration_status as migration_status
 import migrate_helper_scripts.fix_archives as fix_archives
+
+sys.path = ['',
+            '/opt/miniconda3/lib/python37.zip',
+            '/opt/miniconda3/lib/python3.7',
+            '/opt/miniconda3/lib/python3.7/lib-dynload',
+            '/opt/miniconda3/lib/python3.7/site-packages'
+            ]
 
 
 @click.command()
@@ -43,6 +51,5 @@ def main(logs, process, quiet, check):
 
 
 main()
-
 
 exit()
