@@ -20,6 +20,7 @@ class Servers(BASE):
 
     server_id = Column(Integer, primary_key=True)
     server = Column(String, unique=True, nullable=False)
+    updated = Column(TIMESTAMP, default=func.now())
 
     def __init__(self, server):
         self.server = server
@@ -34,6 +35,7 @@ class Volumes(BASE):
 
     volume_id = Column(Integer, primary_key=True)
     volume = Column(String, unique=True, nullable=False)
+    updated = Column(TIMESTAMP, default=func.now())
 
     log_files = relationship("LogFiles", back_populates='volume',
                              cascade="all, delete, delete-orphan")
@@ -56,6 +58,7 @@ class LogFiles(BASE):
     volume_id = Column(Integer, ForeignKey("volumes.volume_id"), nullable=False)
     log_file = Column(String, nullable=False)
     date = Column(String, nullable=False)
+    updated = Column(TIMESTAMP, default=func.now())
 
     volume = relationship("Volumes", back_populates="log_files")
     log_file_detail = relationship("LogFileDetail", back_populates='log_files',
@@ -80,6 +83,7 @@ class LogFileDetail(BASE):
     log_files_id = Column(Integer, ForeignKey("log_files.log_files_id"), nullable=False)
     snippet = Column(String, nullable=False)
     message = Column(String, nullable=False)
+    updated = Column(TIMESTAMP, default=func.now())
 
     log_files = relationship("LogFiles", back_populates="log_file_detail")
 
@@ -100,6 +104,7 @@ class BFIDErrors(BASE):
     volume_id = Column(Integer, ForeignKey("volumes.volume_id"), nullable=False)
     bfid = Column(String, nullable=False)
     error = Column(String, nullable=False)
+    updated = Column(TIMESTAMP, default=func.now())
 
     volumes = relationship("Volumes", back_populates="bfid_errors")
 
@@ -113,7 +118,7 @@ class Migrated(BASE):
 
     migrated_id = Column(Integer, primary_key=True)
     volume = Column(String, nullable=False, unique=True)
-    timestamp = Column(TIMESTAMP, default=func.now())
+    updated = Column(TIMESTAMP, default=func.now())
 
     def __repr__(self):
         return "<Migrated(volume='%s')>" % self.volume
