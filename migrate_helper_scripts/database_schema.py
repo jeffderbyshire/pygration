@@ -199,3 +199,9 @@ def volume_is_migrated(volume):
     """ check if volume serial exists in migrated table """
     session = SESSION()
     return bool(session.query(Migrated).filter(Migrated.volume == volume).count())
+
+
+def does_bfid_exist(bfid):
+    """ check if bfid exists in bfid errors table """
+    session = SESSION()
+    return bool(session.query(BFIDErrors).filter(BFIDErrors.bfid == bfid).count())
