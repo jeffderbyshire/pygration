@@ -2,7 +2,6 @@
 
 from configparser import ConfigParser
 from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, TIMESTAMP
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, scoped_session
@@ -154,11 +153,8 @@ def get_log_file_id(server_id, volume_id, log_file, date):
     session = SESSION()
     log_file_insert = LogFiles(server_id=server_id, volume_id=volume_id, log_file=log_file,
                                date=date)
-    try:
-        session.add(log_file_insert)
-        session.commit()
-    except IntegrityError:
-        pass
+    session.add(log_file_insert)
+    session.commit()
 
     log_file_record = session.query(LogFiles).filter_by(server_id=server_id, volume_id=volume_id,
                                                         log_file=log_file, date=date).first()

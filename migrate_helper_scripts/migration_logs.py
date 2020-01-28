@@ -79,6 +79,7 @@ def file_migration_status(bfid):
                 bfid
             ],
             capture_output=True)
+        print(status)
         status = status.stdout.decode().split()[-1]
     except FileNotFoundError:
         status = ''
