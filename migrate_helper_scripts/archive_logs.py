@@ -38,7 +38,7 @@ def archive(command="archive", volumes=False):
     totals = collections.Counter()
     volumes = []
     if logs:
-        for log in tqdm(logs, desc='Archive Logs:'):
+        for log in tqdm(logs, desc='Archive Logs(' + command + '):'):
             year_month = get_year_month(log)
             os.makedirs(LOG_DIRECTORY + ARCHIVE_DIR + year_month, exist_ok=True)
             log_file_path = LOG_DIRECTORY + log

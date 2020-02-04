@@ -60,7 +60,7 @@ def find_same_file(bfid):
             '--find-same-file',
             bfid
         ],
-        timeout=15,
+        timeout=30,
         capture_output=True,
         env=include.ENSTORE_ENV
     )
@@ -113,7 +113,6 @@ def process(server, quiet=False, rerun=False):
     archive_logs.archive("archive")
     output = see_errors.see_errors()
     logs = parse_logs.parse_logs(output)
-    print(logs)
     if logs['archive']:
         archive_count = archive_logs.archive("archive-with-errors", sorted(logs['archive']))
     if logs['rerun']:
