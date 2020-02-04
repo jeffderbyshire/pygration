@@ -36,7 +36,7 @@ def check_pnfs(volume):
             volume
         ],
         capture_output=True,
-        shell=True,
+        timeout=5,
         env=dict(PYTHONPATH=":".join(ENSTORE_ENV), **os.environ)
     )
     print(volume_result)
