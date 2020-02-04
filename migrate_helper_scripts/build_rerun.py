@@ -31,7 +31,7 @@ def check_pnfs(volume):
             volume
         ],
         capture_output=True,
-        timeout=5,
+        timeout=10,
         env=include.ENSTORE_ENV
     )
     for line in volume_result.stdout.decode():
