@@ -29,7 +29,6 @@ def check_pnfs(volume):
     is_pnfs_cms = False
     volume_result = subprocess.run(
         [
-            '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL',
             '/opt/enstore/Python/bin/python',
             '/opt/enstore/bin/enstore',
             'info',
