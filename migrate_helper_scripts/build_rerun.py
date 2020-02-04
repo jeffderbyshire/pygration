@@ -37,6 +37,7 @@ def check_pnfs(volume):
             volume
         ],
         capture_output=True,
+        shell=True,
         env={'PYTHONPATH': ":".join(ENSTORE_ENV)}
     )
     for line in volume_result.stdout.decode():
