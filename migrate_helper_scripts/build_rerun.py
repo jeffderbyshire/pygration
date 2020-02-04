@@ -33,7 +33,8 @@ def check_pnfs(volume):
             volume
         ],
         capture_output=True,
-        env=dict(ENSTORE_ENV, **os.environ)
+        env=dict(PYTHONPATH='/opt/enstore:/opt/enstore/src:/opt/enstore/modules:'
+                            '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL', **os.environ)
     )
     for line in volume_result.stdout.decode():
         print(line)
