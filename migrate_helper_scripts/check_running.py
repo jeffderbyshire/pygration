@@ -1,7 +1,9 @@
 """ check running migration processes """
 
 from configparser import ConfigParser
+import socket
 import sh
+import migrate_helper_scripts.database_schema as database
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
@@ -20,7 +22,9 @@ def main():
     for line in process:
         volumes_running.append(line.split()[-1])
 
-    return volumes_running
+    database.update_running(socket.gethostbyname(), volumes_running)
+
+    return database.get_running()
 
 
 if __name__ == "__main__":

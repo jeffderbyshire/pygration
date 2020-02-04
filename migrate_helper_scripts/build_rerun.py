@@ -15,51 +15,55 @@ MIGRATION_DIR = CONFIG['Default']['log_dir']
 IGNORE = CONFIG['Rerun']['ignore']
 
 
-def rerun(volumes):
+def rerun(volumes, start_rerun=False):
     """ build rerun script and run if disk space free > 60 % and < 2 processes running """
     volumes_dict = {'added': check_running.main(), 'rerun': set(), 'msg': set()}
     if len(volumes_dict['added']) < 2:
         file = open(RERUN_SCRIPT, "w")
         file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
-        logs = list_logs.get_logs('errors', volumes)
-        for log in tqdm(logs, desc='Build Rerun:'):
-            command = ''
-            ignore = False
-            spool_full = False
+        for log in tqdm(list_logs.get_logs('errors', volumes), desc='Build Rerun:'):
+            rerun_dict = {
+                'command': '',
+                'first': list(),
+                'ignore': False,
+                'spool': list(),
+                'spool_full': False,
+                'volume': ''}
             with open(MIGRATION_DIR + log, 'rb') as handle:
-                first = next(handle).decode().split()
-                volume = first[-1]
-                for argument in first:
+                rerun_dict['first'] = next(handle).decode().split()
+                rerun_dict['volume'] = rerun_dict['first'][-1]
+                for argument in rerun_dict['first']:
                     if '/data/data' in argument:
-                        spool = argument.split('/')
+                        rerun_dict['spool'] = argument.split('/')
                         try:
-                            usage = shutil.disk_usage("/".join(spool[0:3]))
+                            usage = shutil.disk_usage("/".join(rerun_dict['spool'][0:3]))
                         except FileNotFoundError:
                             Usage = namedtuple('usage', ['used', 'total'])
                             usage = Usage(1, 1)
                         if usage.used/usage.total > 0.60:
-                            volumes_dict['msg'].add("/".join(spool[0:3]) +
-                                                    ' is more than 60% full ' + volume)
-                            spool_full = True
+                            volumes_dict['msg'].add("/".join(rerun_dict['spool'][0:3]) +
+                                                    ' is more than 60% full ' +
+                                                    rerun_dict['volume'])
+                            rerun_dict['spool_full'] = True
                             break
                     else:
                         if argument in IGNORE:
-                            ignore = True
+                            rerun_dict['ignore'] = True
                             break
-                if volume not in volumes_dict['added'] and not ignore and not spool_full:
-                    while '--debug' in first:
-                        first.pop(first.index('--debug') + 1)
-                        first.pop(first.index('--debug'))
-                    command = "/opt/enstore/Python/bin/python " + first[7] + " --debug 2 "\
-                              + " ".join(first[8:])
-                    volumes_dict['added'].append(volume)
-            if command != '':
-                file.write(command + '\n')
-                volumes_dict['rerun'].add(command.split()[-1])
+                if rerun_dict['volume'] not in volumes_dict['added']\
+                        and not rerun_dict['ignore'] and not rerun_dict['spool_full']:
+                    rerun_dict['command'] = "/opt/enstore/Python/bin/python " +\
+                                            rerun_dict['first'][7] +\
+                                            " ".join(rerun_dict['first'][8:])
+                    volumes_dict['added'].append(rerun_dict['volume'])
+            if rerun_dict['command'] != '':
+                file.write(rerun_dict['command'] + '\n')
+                volumes_dict['rerun'].add(rerun_dict['command'].split()[-1])
         file.write('\nexit\n}\n')
         file.close()
         os.chmod(RERUN_SCRIPT, 0o700)
-        os.system('screen -d -m ' + RERUN_SCRIPT)
+        if start_rerun:
+            os.system('screen -d -m ' + RERUN_SCRIPT)
     else:
         volumes_dict['msg'].add('too many migrate_chimera processes running')
 

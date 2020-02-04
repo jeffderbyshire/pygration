@@ -116,8 +116,8 @@ def process(server, quiet=False, rerun=False):
     logs = parse_logs.parse_logs(output)
     if logs['archive']:
         archive_count = archive_logs.archive("archive-with-errors", sorted(logs['archive']))
-    if logs['rerun'] and rerun:
-        rerun_logs = build_rerun.rerun(logs['rerun'])
+    if logs['rerun']:
+        rerun_logs = build_rerun.rerun(logs['rerun'], rerun)
     if logs['too_many']:
         all_errors = too_many_logs(server, sorted(logs['too_many']))
         errors = detail_error_messages(all_errors)

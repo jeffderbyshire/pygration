@@ -124,6 +124,18 @@ class Migrated(BASE):
         return "<Migrated(volume='%s')>" % self.volume
 
 
+class Running(BASE):
+    """ Running volumes to be checked before reruns """
+    __tablename__ = 'running'
+
+    server = Column(String, nullable=False)
+    volume = Column(String, nullable=False)
+    updated = Column(TIMESTAMP, default=func.now())
+
+    def __repr__(self):
+        return "<Running(server='%s',volume='%s')>" % self.server, self.volume
+
+
 def get_node_id(node_name):
     """ add node name and return node id """
     session = SESSION()
@@ -211,3 +223,19 @@ def does_bfid_exist(bfid):
     """ check if bfid exists in bfid errors table """
     session = SESSION()
     return bool(session.query(BFIDErrors).filter(BFIDErrors.bfid == bfid).count())
+
+
+def update_running(server, volumes):
+    """ remove server entries and insert current running volumes """
+    session = SESSION()
+    session.query(Running).filter_by(server=server).delete()
+    for volume in volumes:
+        insert = Running(server=server, volume=volume)
+        session.add(insert)
+    session.commit()
+
+
+def get_running():
+    """ get volumes from table running """
+    session = SESSION()
+    return session.query(Running.volume).all()
