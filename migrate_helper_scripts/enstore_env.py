@@ -17,8 +17,6 @@ ENSTORE_ENV = dict(
     ENSCP='/usr/bin/scp',
     ENSTORE_CONFIG_HOST='stkensrv7n.fnal.gov',
     ENSTORE_GIT='ssh://p-enstore@cdgit.fnal.gov/cvs/projects/enstore',
-    PATH='/opt/enstore/Python/bin:/opt/enstore/sbin:/opt/enstore/bin:/opt/enstore/tools:'
-         '/opt/enstore/qpid/bin:/opt/enstore/SWIG',
     ENSTORE_CONFIG_DIR='/home/enstore/site_specific',
     ENSTORE_CONF_GIT='ssh://p-enstore-config@cdgit.fnal.gov/cvs/projects/enstore-config',
     PYTHONINC='/opt/enstore/Python/include/python2.7',
@@ -34,3 +32,6 @@ ENSTORE_ENV = dict(
     ENSTORE_GANG='stken',
     SWIG_DIR='/opt/enstore/SWIG', **os.environ
 )
+
+ENSTORE_ENV['PATH'] = '/opt/enstore/Python/bin:/opt/enstore/sbin:/opt/enstore/bin:' \
+                      '/opt/enstore/tools:/opt/enstore/qpid/bin:/opt/enstore/SWIG'
