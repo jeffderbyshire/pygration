@@ -56,15 +56,15 @@ def find_same_file(bfid):
     try:
         same_file_result = subprocess.run(
             [
-                'export',
-                ENSTORE_ENV,
                 '/opt/enstore/Python/bin/python',
                 '/opt/enstore/bin/enstore',
                 'info',
                 '--find-same-file',
                 bfid
             ],
-            capture_output=True)
+            capture_output=True,
+            env=dict(ENSTORE_ENV)
+        )
         same_file_result = same_file_result.stdout.decode()
     except FileNotFoundError:
         pass
@@ -77,14 +77,14 @@ def file_migration_status(bfid):
     try:
         status = subprocess.run(
             [
-                'export',
-                ENSTORE_ENV,
                 '/opt/enstore/Python/bin/python',
                 '/opt/enstore/bin/migrate',
                 '--status',
                 bfid
             ],
-            capture_output=True)
+            capture_output=True,
+            env=dict(ENSTORE_ENV)
+        )
         print(status)
         status = status.stdout.decode().split()[-1]
     except FileNotFoundError:
