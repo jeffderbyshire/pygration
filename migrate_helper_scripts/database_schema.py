@@ -128,8 +128,8 @@ class Running(BASE):
     """ Running volumes to be checked before reruns """
     __tablename__ = 'running'
 
-    server = Column(String, nullable=False)
-    volume = Column(String, nullable=False)
+    server = Column(String, nullable=False, primary_key=True)
+    volume = Column(String, nullable=False, primary_key=True)
     updated = Column(TIMESTAMP, default=func.now())
 
     def __repr__(self):
