@@ -1,18 +1,49 @@
 """ build rerun script """
 
 import os
+import subprocess
 import shutil
 from configparser import ConfigParser
 from collections import namedtuple
 from tqdm import tqdm
 import migrate_helper_scripts.check_running as check_running
 import migrate_helper_scripts.list_logs as list_logs
+import migrate_helper_scripts.database_schema as database
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 RERUN_SCRIPT = CONFIG['Rerun']['rerun_script']
 MIGRATION_DIR = CONFIG['Default']['log_dir']
 IGNORE = CONFIG['Rerun']['ignore']
+
+
+def check_pnfs(volume):
+    """ check mtab to see which pnfs is mount and check volume family and compare """
+    is_family_cms = False
+    is_pnfs_cms = False
+    volume_result = subprocess.run(
+        [
+            'export PYTHONPATH=/opt/enstore:/opt/enstore/src:/opt/enstore/modules:'
+            '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL',
+            '/opt/enstore/Python/bin/python',
+            '/opt/enstore/bin/enstore',
+            'info',
+            '--vol',
+            volume
+        ],
+        capture_output=True)
+    for line in volume_result.stdout.decode():
+        print(line)
+        if 'volume_family' in line:
+            is_family_cms = bool('cms.' in line)
+    with open('/etc/mtab') as file:
+        is_pnfs_cms = bool('cmsdcatapedb' in file.read())
+
+    print(is_family_cms, is_pnfs_cms)
+    if (is_family_cms and is_pnfs_cms) or (not is_family_cms and not is_pnfs_cms):
+        return True
+
+    return False
 
 
 def rerun(volumes, start_rerun=False):
@@ -32,30 +63,31 @@ def rerun(volumes, start_rerun=False):
             with open(MIGRATION_DIR + log, 'rb') as handle:
                 rerun_dict['first'] = next(handle).decode().split()
                 rerun_dict['volume'] = rerun_dict['first'][-1]
-                for argument in rerun_dict['first']:
-                    if '/data/data' in argument:
-                        rerun_dict['spool'] = argument.split('/')
-                        try:
-                            usage = shutil.disk_usage("/".join(rerun_dict['spool'][0:3]))
-                        except FileNotFoundError:
-                            Usage = namedtuple('usage', ['used', 'total'])
-                            usage = Usage(1, 1)
-                        if usage.used/usage.total > 0.60:
-                            volumes_dict['msg'].add("/".join(rerun_dict['spool'][0:3]) +
-                                                    ' is more than 60% full ' +
-                                                    rerun_dict['volume'])
-                            rerun_dict['spool_full'] = True
-                            break
-                    else:
-                        if argument in IGNORE:
-                            rerun_dict['ignore'] = True
-                            break
-                if rerun_dict['volume'] not in volumes_dict['added']\
-                        and not rerun_dict['ignore'] and not rerun_dict['spool_full']:
-                    rerun_dict['command'] = "/opt/enstore/Python/bin/python " +\
-                                            rerun_dict['first'][7] +\
-                                            " ".join(rerun_dict['first'][8:])
-                    volumes_dict['added'].append(rerun_dict['volume'])
+                if check_pnfs(rerun_dict['volume']):
+                    for argument in rerun_dict['first']:
+                        if '/data/data' in argument:
+                            rerun_dict['spool'] = argument.split('/')
+                            try:
+                                usage = shutil.disk_usage("/".join(rerun_dict['spool'][0:3]))
+                            except FileNotFoundError:
+                                Usage = namedtuple('usage', ['used', 'total'])
+                                usage = Usage(1, 1)
+                            if usage.used/usage.total > 0.60:
+                                volumes_dict['msg'].add("/".join(rerun_dict['spool'][0:3]) +
+                                                        ' is more than 60% full ' +
+                                                        rerun_dict['volume'])
+                                rerun_dict['spool_full'] = True
+                                break
+                        else:
+                            if argument in IGNORE:
+                                rerun_dict['ignore'] = True
+                                break
+                    if rerun_dict['volume'] not in database.get_running()\
+                            and not rerun_dict['ignore'] and not rerun_dict['spool_full']:
+                        rerun_dict['command'] = "/opt/enstore/Python/bin/python " +\
+                                                rerun_dict['first'][7] +\
+                                                " ".join(rerun_dict['first'][8:])
+                        volumes_dict['added'].append(rerun_dict['volume'])
             if rerun_dict['command'] != '':
                 file.write(rerun_dict['command'] + '\n')
                 volumes_dict['rerun'].add(rerun_dict['command'].split()[-1])

@@ -19,6 +19,8 @@ CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 LOG_DIR = CONFIG['Default']['log_dir']
+ENSTORE_ENV = 'export PYTHONPATH=/opt/enstore:/opt/enstore/src:/opt/enstore/modules:' \
+              '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL'
 
 
 def too_many_logs(server, too_many_list):
@@ -54,6 +56,7 @@ def find_same_file(bfid):
     try:
         same_file_result = subprocess.run(
             [
+                ENSTORE_ENV,
                 '/opt/enstore/Python/bin/python',
                 '/opt/enstore/bin/enstore',
                 'info',
@@ -73,8 +76,7 @@ def file_migration_status(bfid):
     try:
         status = subprocess.run(
             [
-                'export PYTHONPATH=/opt/enstore:/opt/enstore/src:/opt/enstore/modules:'
-                '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL',
+                ENSTORE_ENV,
                 '/opt/enstore/Python/bin/python',
                 '/opt/enstore/bin/migrate',
                 '--status',

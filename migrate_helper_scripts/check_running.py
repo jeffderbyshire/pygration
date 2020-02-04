@@ -24,7 +24,7 @@ def main():
 
     database.update_running(socket.gethostname(), volumes_running)
 
-    return database.get_running()
+    return volumes_running
 
 
 if __name__ == "__main__":
