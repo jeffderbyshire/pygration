@@ -15,7 +15,7 @@ CONFIG.read('config/config.conf')
 RERUN_SCRIPT = CONFIG['Rerun']['rerun_script']
 MIGRATION_DIR = CONFIG['Default']['log_dir']
 IGNORE = CONFIG['Rerun']['ignore']
-ENSTORE_ENV = 'PYTHONPATH=/opt/enstore:/opt/enstore/src:/opt/enstore/modules:' \
+ENSTORE_ENV = '/opt/enstore:/opt/enstore/src:/opt/enstore/modules:' \
               '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL'
 
 
@@ -33,8 +33,7 @@ def check_pnfs(volume):
             volume
         ],
         capture_output=True,
-        env=dict(PYTHONPATH='/opt/enstore:/opt/enstore/src:/opt/enstore/modules:'
-                            '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL', **os.environ)
+        env=dict(PYTHONPATH=ENSTORE_ENV, **os.environ)
     )
     for line in volume_result.stdout.decode():
         print(line)
