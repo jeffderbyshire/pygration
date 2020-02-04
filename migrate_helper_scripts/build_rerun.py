@@ -33,7 +33,7 @@ def check_pnfs(volume):
             volume
         ],
         capture_output=True,
-        env=dict(ENSTORE_ENV)
+        env=dict(ENSTORE_ENV, **os.environ)
     )
     for line in volume_result.stdout.decode():
         print(line)
