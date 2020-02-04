@@ -40,7 +40,7 @@ def check_pnfs(volume):
         shell=True,
         env=dict(PYTHONPATH=":".join(ENSTORE_ENV), **os.environ)
     )
-    print(volume_result.stdout.decode())
+    print(volume_result)
     for line in volume_result.stdout.decode():
         if 'volume_family' in line:
             is_family_cms = bool('cms.' in line)
