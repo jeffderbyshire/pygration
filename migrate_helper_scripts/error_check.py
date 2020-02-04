@@ -3,6 +3,7 @@
 import os
 import configparser
 import migrate_helper_scripts.list_logs as list_logs
+import migrate_helper_scripts.check_running as check_running
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read('config/config.conf')
@@ -12,6 +13,7 @@ MIGRATION_DIR = CONFIG['Default']['log_dir']
 def main():
     """ look for new log files and check for errors.  rename file with volume serial """
     output_renames = {}
+    check_running.main()
     unchecked_files = list_logs.get_logs("no-errors")
     for file in unchecked_files:
         file_name = MIGRATION_DIR + file
