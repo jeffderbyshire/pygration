@@ -60,7 +60,7 @@ def find_same_file(bfid):
             '--find-same-file',
             bfid
         ],
-        timeout=10,
+        timeout=15,
         capture_output=True,
         env=include.ENSTORE_ENV
     )
@@ -82,7 +82,6 @@ def file_migration_status(bfid):
         capture_output=True,
         env=include.ENSTORE_ENV
     )
-    print(status)
     status = status.stdout.decode().split()[-1]
 
     return status
