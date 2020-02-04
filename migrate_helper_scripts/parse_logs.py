@@ -131,7 +131,7 @@ def check_migration_status(volume):
         ],
         capture_output=True,
         env=include.ENSTORE_ENV,
-        timeout=5
+        timeout=10
     )
     check = status.stdout.decode()
     if 'migrated' in check:
