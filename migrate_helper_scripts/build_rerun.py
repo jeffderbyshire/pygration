@@ -38,10 +38,10 @@ def check_pnfs(volume):
         ],
         capture_output=True,
         shell=True,
-        env={'PYTHONPATH': ":".join(ENSTORE_ENV)}
+        env=dict(PYTHONPATH=":".join(ENSTORE_ENV), **os.environ)
     )
+    print(volume_result.stdout.decode())
     for line in volume_result.stdout.decode():
-        print(line)
         if 'volume_family' in line:
             is_family_cms = bool('cms.' in line)
     with open('/etc/mtab') as file:
