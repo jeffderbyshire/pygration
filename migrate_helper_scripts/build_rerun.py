@@ -15,8 +15,12 @@ CONFIG.read('config/config.conf')
 RERUN_SCRIPT = CONFIG['Rerun']['rerun_script']
 MIGRATION_DIR = CONFIG['Default']['log_dir']
 IGNORE = CONFIG['Rerun']['ignore']
-ENSTORE_ENV = '/opt/enstore:/opt/enstore/src:/opt/enstore/modules:' \
-              '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL'
+ENSTORE_ENV = ['/opt/enstore',
+               '/opt/enstore/src',
+               '/opt/enstore/modules',
+               '/opt/enstore/HTMLgen',
+               '/opt/enstore/PyGreSQL'
+               ]
 
 
 def check_pnfs(volume):
@@ -33,7 +37,7 @@ def check_pnfs(volume):
             volume
         ],
         capture_output=True,
-        env=dict(PYTHONPATH=ENSTORE_ENV, **os.environ)
+        env=dict(PYTHONPATH=":".join(ENSTORE_ENV), **os.environ)
     )
     for line in volume_result.stdout.decode():
         print(line)
@@ -75,7 +79,7 @@ def rerun(volumes, start_rerun=False):
                             except FileNotFoundError:
                                 Usage = namedtuple('usage', ['used', 'total'])
                                 usage = Usage(1, 1)
-                            if usage.used/usage.total > 0.60:
+                            if usage.used / usage.total > 0.60:
                                 volumes_dict['msg'].add("/".join(rerun_dict['spool'][0:3]) +
                                                         ' is more than 60% full ' +
                                                         rerun_dict['volume'])
@@ -85,10 +89,10 @@ def rerun(volumes, start_rerun=False):
                             if argument in IGNORE:
                                 rerun_dict['ignore'] = True
                                 break
-                    if rerun_dict['volume'] not in database.get_running()\
+                    if rerun_dict['volume'] not in database.get_running() \
                             and not rerun_dict['ignore'] and not rerun_dict['spool_full']:
-                        rerun_dict['command'] = "/opt/enstore/Python/bin/python " +\
-                                                rerun_dict['first'][7] +\
+                        rerun_dict['command'] = "/opt/enstore/Python/bin/python " + \
+                                                rerun_dict['first'][7] + \
                                                 " ".join(rerun_dict['first'][8:])
                         volumes_dict['added'].append(rerun_dict['volume'])
             if rerun_dict['command'] != '':
