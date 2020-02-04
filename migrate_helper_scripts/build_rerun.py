@@ -9,18 +9,13 @@ from tqdm import tqdm
 import migrate_helper_scripts.check_running as check_running
 import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.database_schema as database
+import migrate_helper_scripts.enstore_env as include
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 RERUN_SCRIPT = CONFIG['Rerun']['rerun_script']
 MIGRATION_DIR = CONFIG['Default']['log_dir']
 IGNORE = CONFIG['Rerun']['ignore']
-ENSTORE_ENV = ['/opt/enstore',
-               '/opt/enstore/src',
-               '/opt/enstore/modules',
-               '/opt/enstore/HTMLgen',
-               '/opt/enstore/PyGreSQL'
-               ]
 
 
 def check_pnfs(volume):
@@ -37,7 +32,7 @@ def check_pnfs(volume):
         ],
         capture_output=True,
         timeout=5,
-        env=dict(PYTHONPATH=":".join(ENSTORE_ENV), **os.environ)
+        env=include.ENSTORE_ENV
     )
     print(volume_result)
     for line in volume_result.stdout.decode():
