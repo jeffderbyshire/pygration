@@ -34,14 +34,12 @@ def check_pnfs(volume):
         timeout=5,
         env=include.ENSTORE_ENV
     )
-    print(volume_result)
     for line in volume_result.stdout.decode():
         if 'volume_family' in line:
             is_family_cms = bool('cms.' in line)
     with open('/etc/mtab') as file:
         is_pnfs_cms = bool('cmsdcatapedb' in file.read())
 
-    print(is_family_cms, is_pnfs_cms)
     if (is_family_cms and is_pnfs_cms) or (not is_family_cms and not is_pnfs_cms):
         return True
 

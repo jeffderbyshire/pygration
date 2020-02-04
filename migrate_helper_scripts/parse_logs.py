@@ -6,6 +6,8 @@ import subprocess
 from configparser import ConfigParser
 from tqdm import tqdm
 import migrate_helper_scripts.database_schema as database
+import migrate_helper_scripts.enstore_env as include
+
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
@@ -119,21 +121,19 @@ def interpret_error_message(message):
 
 def check_migration_status(volume):
     """ Run enstore command and Return True if 'migrated' in result """
-    try:
-        status = subprocess.run(
-            [
-                'export PYTHONPATH=/opt/enstore:/opt/enstore/src:/opt/enstore/modules:'
-                '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL',
-                '/opt/enstore/Python/bin/python',
-                '/opt/enstore/bin/enstore',
-                'info',
-                '--check',
-                volume
-            ],
-            capture_output=True)
-        check = status.stdout.decode()
-    except FileNotFoundError:
-        check = ''
+    status = subprocess.run(
+        [
+            '/opt/enstore/Python/bin/python',
+            '/opt/enstore/bin/enstore',
+            'info',
+            '--check',
+            volume
+        ],
+        capture_output=True,
+        env=include.ENSTORE_ENV,
+        timeout=5
+    )
+    check = status.stdout.decode()
     if 'migrated' in check:
         database.insert_migrated(volume)
         return True

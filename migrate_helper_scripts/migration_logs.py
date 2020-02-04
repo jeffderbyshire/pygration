@@ -14,13 +14,12 @@ import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.build_rerun as build_rerun
 import migrate_helper_scripts.see_errors as see_errors
 import migrate_helper_scripts.database_schema as database
+import migrate_helper_scripts.enstore_env as include
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 LOG_DIR = CONFIG['Default']['log_dir']
-ENSTORE_ENV = 'PYTHONPATH=/opt/enstore:/opt/enstore/src:/opt/enstore/modules:' \
-              '/opt/enstore/HTMLgen:/opt/enstore/PyGreSQL'
 
 
 def too_many_logs(server, too_many_list):
@@ -53,42 +52,39 @@ def too_many_logs(server, too_many_list):
 def find_same_file(bfid):
     """ Run enstore info --find-same-copies bfid """
     same_file_result = ''
-    try:
-        same_file_result = subprocess.run(
-            [
-                '/opt/enstore/Python/bin/python',
-                '/opt/enstore/bin/enstore',
-                'info',
-                '--find-same-file',
-                bfid
-            ],
-            capture_output=True,
-            env=dict(ENSTORE_ENV)
-        )
-        same_file_result = same_file_result.stdout.decode()
-    except FileNotFoundError:
-        pass
+    same_file_result = subprocess.run(
+        [
+            '/opt/enstore/Python/bin/python',
+            '/opt/enstore/bin/enstore',
+            'info',
+            '--find-same-file',
+            bfid
+        ],
+        timeout=10,
+        capture_output=True,
+        env=include.ENSTORE_ENV
+    )
+    same_file_result = same_file_result.stdout.decode()
 
     return same_file_result
 
 
 def file_migration_status(bfid):
     """ Run migrate --status command and Return status of bfid """
-    try:
-        status = subprocess.run(
-            [
-                '/opt/enstore/Python/bin/python',
-                '/opt/enstore/bin/migrate',
-                '--status',
-                bfid
-            ],
-            capture_output=True,
-            env=dict(ENSTORE_ENV)
-        )
-        print(status)
-        status = status.stdout.decode().split()[-1]
-    except FileNotFoundError:
-        status = ''
+    status = subprocess.run(
+        [
+            '/opt/enstore/Python/bin/python',
+            '/opt/enstore/bin/migrate',
+            '--status',
+            bfid
+        ],
+        timeout=5,
+        capture_output=True,
+        env=include.ENSTORE_ENV
+    )
+    print(status)
+    status = status.stdout.decode().split()[-1]
+
     return status
 
 
