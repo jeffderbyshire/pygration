@@ -2,6 +2,7 @@
 
 import os
 import subprocess
+import json
 import shutil
 from configparser import ConfigParser
 from collections import namedtuple
@@ -34,7 +35,7 @@ def check_pnfs(volume):
         timeout=10,
         env=include.ENSTORE_ENV
     )
-    result_dict = volume_result.stdout.decode()
+    result_dict = json.loads(volume_result.stdout.decode())
     print(result_dict.keys())
     for line in volume_result.stdout.decode():
         if 'volume_family' in line:
