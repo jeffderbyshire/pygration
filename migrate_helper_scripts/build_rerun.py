@@ -31,7 +31,7 @@ def check_pnfs(volume):
             volume
         ],
         capture_output=True,
-        timeout=10,
+        timeout=20,
         env=include.ENSTORE_ENV
     )
     is_family_cms = bool("'volume_family': 'cms." in volume_result.stdout.decode())
