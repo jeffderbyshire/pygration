@@ -20,8 +20,6 @@ IGNORE = CONFIG['Rerun']['ignore']
 
 def check_pnfs(volume):
     """ check mtab to see which pnfs is mount and check volume family and compare """
-    is_family_cms = False
-    is_pnfs_cms = False
     volume_result = subprocess.run(
         [
             '/opt/enstore/Python/bin/python',
