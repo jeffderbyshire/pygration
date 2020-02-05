@@ -124,7 +124,7 @@ def process(server, quiet=False, rerun=False):
     if not quiet:
         print('Node: ' + server)
         print("archive: " + str(len(logs['archive'])))
-        print("rerun: " + str(len(logs['rerun'])))
+        print("rerun: " + str(len(logs['rerun'])), logs['rerun'])
         print("too many: " + str(len(logs['too_many'])))
         print("bfid errors: " + str(len(errors)))
         print("Archive processed")
