@@ -18,6 +18,29 @@ MIGRATION_DIR = CONFIG['Default']['log_dir']
 IGNORE = CONFIG['Rerun']['ignore']
 
 
+def write_rerun_file(commands):
+    """ write rerun file with dictionary of commands[volume] = command """
+    file = open(RERUN_SCRIPT, "w")
+    file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
+    for volume, command in commands:
+        file.write(command + " " + volume + "\n")
+    file.write('\nexit\n}\n')
+    file.close()
+    os.chmod(RERUN_SCRIPT, 0o700)
+
+    return "Wrote rerun file with " + str(len(commands.keys())) + " commands"
+
+
+def run_rerun_file(start_rerun=False):
+    """ run rerun file if # migration processes < 2 running """
+    if len(check_running.main()) > 1:
+        start_rerun = False
+    if start_rerun:
+        os.system('screen -d -m ' + RERUN_SCRIPT)
+
+    return str(start_rerun) + str(len(check_running.main())) + " processes running"
+
+
 def check_pnfs(volume):
     """ check mtab to see which pnfs is mount and check volume family and compare """
     volume_result = subprocess.run(
@@ -43,57 +66,61 @@ def check_pnfs(volume):
 
 
 def rerun(volumes, start_rerun=False):
-    """ build rerun script and run if disk space free > 60 % and < 2 processes running """
+    """ build rerun script and run if disk space free > 60 % and < 2 processes running
+    # TODO
+    # find log files with volume serials
+    # find command string used in latest log file parse and check date in log file
+    # if ignore tags not in command
+    # if correct pnfs is mounted
+    # if volume is not running via running table
+    # if disk space on spool < 60 %
+    # build commands as dict[volume] = command first[7:-2]?  -- omits duplicates
+    # + write command build rerun script
+    # + if < 2 process running
+    # + run rerun script if allowed
+    """
     volumes_dict = {'added': check_running.main(), 'rerun': set(), 'msg': set()}
-    if len(volumes_dict['added']) < 2:
-        file = open(RERUN_SCRIPT, "w")
-        file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
-        for log in tqdm(list_logs.get_logs('errors', volumes), desc='Build Rerun:'):
-            rerun_dict = {
-                'command': '',
-                'first': list(),
-                'ignore': False,
-                'spool': list(),
-                'spool_full': False,
-                'volume': ''}
-            with open(MIGRATION_DIR + log, 'rb') as handle:
-                rerun_dict['first'] = next(handle).decode().split()
-                rerun_dict['volume'] = rerun_dict['first'][-1]
-                if check_pnfs(rerun_dict['volume']):
-                    for argument in rerun_dict['first']:
-                        if '/data/data' in argument:
-                            rerun_dict['spool'] = argument.split('/')
-                            try:
-                                usage = shutil.disk_usage("/".join(rerun_dict['spool'][0:3]))
-                            except FileNotFoundError:
-                                Usage = namedtuple('usage', ['used', 'total'])
-                                usage = Usage(1, 1)
-                            if usage.used / usage.total > 0.60:
-                                volumes_dict['msg'].add("/".join(rerun_dict['spool'][0:3]) +
-                                                        ' is more than 60% full ' +
-                                                        rerun_dict['volume'])
-                                rerun_dict['spool_full'] = True
-                                break
-                        else:
-                            if argument in IGNORE:
-                                rerun_dict['ignore'] = True
-                                break
-                    if rerun_dict['volume'] not in database.get_running() \
-                            and not rerun_dict['ignore'] and not rerun_dict['spool_full']:
-                        rerun_dict['command'] = "/opt/enstore/Python/bin/python " + \
-                                                rerun_dict['first'][7] + " " + \
-                                                " ".join(rerun_dict['first'][8:])
-                        volumes_dict['added'].append(rerun_dict['volume'])
-            if rerun_dict['command'] != '':
-                file.write(rerun_dict['command'] + '\n')
-                volumes_dict['rerun'].add(rerun_dict['command'].split()[-1])
-        file.write('\nexit\n}\n')
-        file.close()
-        os.chmod(RERUN_SCRIPT, 0o700)
-        if start_rerun:
-            os.system('screen -d -m ' + RERUN_SCRIPT)
-    else:
-        volumes_dict['msg'].add('too many migrate_chimera processes running')
+    for log in tqdm(list_logs.get_logs('errors', volumes), desc='Build Rerun:'):
+        rerun_dict = {
+            'command': '',
+            'first': list(),
+            'ignore': False,
+            'spool': list(),
+            'spool_full': False,
+            'volume': ''}
+        with open(MIGRATION_DIR + log, 'rb') as handle:
+            rerun_dict['first'] = next(handle).decode().split()
+            rerun_dict['volume'] = rerun_dict['first'][-1]
+            print(rerun_dict['first'], rerun_dict['volume'])
+            exit()
+            print(start_rerun)
+            if check_pnfs(rerun_dict['volume']):
+                for argument in rerun_dict['first']:
+                    if '/data/data' in argument:
+                        rerun_dict['spool'] = argument.split('/')
+                        try:
+                            usage = shutil.disk_usage("/".join(rerun_dict['spool'][0:3]))
+                        except FileNotFoundError:
+                            Usage = namedtuple('usage', ['used', 'total'])
+                            usage = Usage(1, 1)
+                        if usage.used / usage.total > 0.60:
+                            volumes_dict['msg'].add("/".join(rerun_dict['spool'][0:3]) +
+                                                    ' is more than 60% full ' +
+                                                    rerun_dict['volume'])
+                            rerun_dict['spool_full'] = True
+                            break
+                    else:
+                        if argument in IGNORE:
+                            rerun_dict['ignore'] = True
+                            break
+                if rerun_dict['volume'] not in database.get_running() \
+                        and not rerun_dict['ignore'] and not rerun_dict['spool_full']:
+                    rerun_dict['command'] = "/opt/enstore/Python/bin/python " + \
+                                            rerun_dict['first'][7] + " " + \
+                                            " ".join(rerun_dict['first'][8:])
+                    volumes_dict['added'].append(rerun_dict['volume'])
+        if rerun_dict['command'] != '':
+            volumes_dict['rerun'].add(rerun_dict['command'].split()[-1])
 
     return volumes_dict
 
