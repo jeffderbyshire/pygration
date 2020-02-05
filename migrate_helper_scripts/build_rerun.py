@@ -34,9 +34,9 @@ def check_pnfs(volume):
         timeout=10,
         env=include.ENSTORE_ENV
     )
-    print(volume_result.stdout.decode())
+    result_dict = volume_result.stdout.decode()
+    print(result_dict['volume_family'])
     for line in volume_result.stdout.decode():
-        print(line)
         if 'volume_family' in line:
             is_family_cms = bool('cms.' in line)
     with open('/etc/mtab') as file:
