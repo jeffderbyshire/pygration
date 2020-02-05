@@ -81,7 +81,7 @@ def rerun(volumes, start_rerun=False):
                     if rerun_dict['volume'] not in database.get_running() \
                             and not rerun_dict['ignore'] and not rerun_dict['spool_full']:
                         rerun_dict['command'] = "/opt/enstore/Python/bin/python " + \
-                                                rerun_dict['first'][7] + \
+                                                rerun_dict['first'][7] + " " + \
                                                 " ".join(rerun_dict['first'][8:])
                         volumes_dict['added'].append(rerun_dict['volume'])
             if rerun_dict['command'] != '':
