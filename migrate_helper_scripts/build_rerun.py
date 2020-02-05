@@ -2,7 +2,6 @@
 
 import os
 import subprocess
-import ast
 import shutil
 from configparser import ConfigParser
 from collections import namedtuple
@@ -35,12 +34,7 @@ def check_pnfs(volume):
         timeout=10,
         env=include.ENSTORE_ENV
     )
-    print(volume_result.stdout.decode())
-    result_dict = ast.literal_eval(volume_result.stdout.decode())
-    print(result_dict.keys())
-    for line in volume_result.stdout.decode():
-        if 'volume_family' in line:
-            is_family_cms = bool('cms.' in line)
+    is_family_cms = bool("'volume_family': 'cms." in volume_result.stdout.decode())
     with open('/etc/mtab') as file:
         is_pnfs_cms = bool('cmsdcatapedb' in file.read())
 
