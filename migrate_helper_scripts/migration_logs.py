@@ -122,9 +122,9 @@ def process(server, quiet=False, rerun=False):
 
     if not quiet:
         logging.info("Node: %s", server)
-        logging.info("archive logs %d", len(logs['archive']))
-        logging.info("rerun %d", len(logs['rerun']))
-        logging.info("foobar %d", len(logs['too_many']))
-        logging.info("new bfid errors %d", len(errors))
-        logging.info("archived with errors %d", archive_count)
-        logging.info("Rerun %d volumes", len(rerun_logs['rerun']))
+        logging.info("archive logs %s", len(logs['archive']))
+        logging.info("rerun %s", len(logs['rerun']))
+        logging.info("foobar %s", len(logs['too_many']))
+        logging.info("new bfid errors %s", len(errors))
+        logging.info("archived with errors %s", archive_count)
+        logging.info("Rerun %s volumes", len(rerun_logs['rerun']))
