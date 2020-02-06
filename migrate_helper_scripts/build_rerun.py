@@ -32,8 +32,10 @@ def write_rerun_file(commands):
     """ write rerun file with dictionary of commands[volume] = command """
     file = open(RERUN_SCRIPT, "w")
     file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
+    logging.info("%s", commands)
     for volume, command in commands:
-        file.write("/opt/enstore/Python/bin/python " + command + " " + volume + "\n")
+        logging.info("write volume %s and command %s", volume, command)
+        file.write("/opt/enstore/Python/bin/python %s %s\n" % (command, volume))
     file.write('\nexit\n}\n')
     file.close()
     os.chmod(RERUN_SCRIPT, 0o700)
@@ -110,21 +112,15 @@ def rerun(volumes, start_rerun=False):
         with open(MIGRATION_DIR + log, 'rb') as handle:
             rerun_dict['first'] = next(handle).decode().split()
             rerun_dict['volume'] = rerun_dict['first'][-1]
-            logging.info("in dict %s", bool(rerun_dict['volume'] not in commands_dict.keys()))
-            logging.info("pnfs %s", bool(check_pnfs(rerun_dict['volume'])))
-            logging.info("disk usage %s", bool(disk_usage_ok(rerun_dict['first'][7:-1])))
-            logging.info("ignore %s", bool(ignore_not_found(rerun_dict['first'][7:-1])))
-            logging.info("not in running db %s",
-                         bool(rerun_dict['volume'] not in database.get_running()))
             if rerun_dict['volume'] not in commands_dict.keys() \
                     and check_pnfs(rerun_dict['volume']) \
                     and disk_usage_ok(rerun_dict['first'][7:-1]) \
                     and ignore_not_found(rerun_dict['first'][7:-1]) \
                     and rerun_dict['volume'] not in database.get_running():
                 commands_dict[rerun_dict['volume']] = " ".join(rerun_dict['first'][7:-1])
-                write_rerun_file(commands_dict)
-                run_rerun_file(start_rerun)
                 volumes_dict['rerun'].add(rerun_dict['volume'])
+    write_rerun_file(commands_dict)
+    run_rerun_file(start_rerun)
 
     return volumes_dict
 
