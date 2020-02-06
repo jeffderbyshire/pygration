@@ -103,8 +103,8 @@ def rerun(volumes, start_rerun=False):
     volumes_dict = {'added': check_running.main(), 'rerun': set(), 'msg': set()}
     commands_dict = {}
     for log in tqdm(list_logs.get_logs('errors', volumes), desc='Build Rerun:'):
-        logging.debug("%s", log)
-        logging.debug("%s", commands_dict.keys())
+        logging.info("%s", log)
+        logging.info("%s", commands_dict.keys())
         rerun_dict = {
             'first': list(),
             'volume': ''}
