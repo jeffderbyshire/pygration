@@ -33,7 +33,7 @@ def write_rerun_file(commands):
     file = open(RERUN_SCRIPT, "w")
     file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
     logging.info("%s", commands)
-    for volume, command in commands:
+    for volume, command in commands.items():
         logging.info("write volume %s and command %s", volume, command)
         file.write("/opt/enstore/Python/bin/python %s %s\n" % (command, volume))
     file.write('\nexit\n}\n')
