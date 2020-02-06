@@ -136,6 +136,22 @@ class Running(BASE):
         return "<Running(server='%s',volume='%s')>" % self.server, self.volume
 
 
+class Logging(BASE):
+    """ Log Table details of each process / node """
+    __tablename__ = 'logging'
+
+    logging_id = Column(Integer, primary_key=True)
+    server = Column(String, nullable=False)
+    process = Column(String, nullable=False)
+    log_type = Column(String, nullable=False)
+    message = Column(String, nullable=False)
+    updated = Column(TIMESTAMP, default=func.now())
+
+    def __repr__(self):
+        return "<Logging(server='%s',process='%s',log_type='%s',message='%s')>" % \
+               self.server, self.process, self.log_type, self.message
+
+
 def get_node_id(node_name):
     """ add node name and return node id """
     session = SESSION()
@@ -239,3 +255,11 @@ def get_running():
     """ get volumes from table running """
     session = SESSION()
     return session.query(Running.volume).all()
+
+
+def insert_log(server, process, log_type, message):
+    """ insert log message into log """
+    session = SESSION()
+    insert = Logging(server=server, process=process, log_type=log_type, message=message)
+    session.add(insert)
+    session.commit()

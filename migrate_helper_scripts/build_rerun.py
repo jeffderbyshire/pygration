@@ -1,10 +1,10 @@
 """ build rerun script """
 
 import os
+import socket
 import subprocess
 import shutil
 from configparser import ConfigParser
-from collections import namedtuple
 from tqdm import tqdm
 import migrate_helper_scripts.check_running as check_running
 import migrate_helper_scripts.list_logs as list_logs
@@ -18,17 +18,21 @@ MIGRATION_DIR = CONFIG['Default']['log_dir']
 IGNORE = CONFIG['Rerun']['ignore']
 
 
+def logger(log_type="info", message="N/A"):
+    """ logger instance for rerun """
+    database.insert_log(socket.gethostname(), "rerun", log_type, message)
+
+
 def write_rerun_file(commands):
     """ write rerun file with dictionary of commands[volume] = command """
     file = open(RERUN_SCRIPT, "w")
     file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
     for volume, command in commands:
-        file.write(command + " " + volume + "\n")
+        file.write("/opt/enstore/Python/bin/python " + command + " " + volume + "\n")
     file.write('\nexit\n}\n')
     file.close()
     os.chmod(RERUN_SCRIPT, 0o700)
-
-    return "Wrote rerun file with " + str(len(commands.keys())) + " commands"
+    logger("info", "Wrote rerun file with " + str(len(commands.keys())) + " commands")
 
 
 def run_rerun_file(start_rerun=False):
@@ -38,7 +42,7 @@ def run_rerun_file(start_rerun=False):
     if start_rerun:
         os.system('screen -d -m ' + RERUN_SCRIPT)
 
-    return str(start_rerun) + str(len(check_running.main())) + " processes running"
+    logger("info", str(start_rerun) + str(len(check_running.main())) + " processes running")
 
 
 def check_pnfs(volume):
@@ -65,62 +69,48 @@ def check_pnfs(volume):
     return False
 
 
+def disk_usage_ok(command_list):
+    """ search for spool directory and check disk usage < 60% """
+    for argument in command_list:
+        if '/data/data' in argument:
+            usage = shutil.disk_usage(argument)
+            if usage.used / usage.total < 0.60:
+                return True
+
+    logger("info", "Disk usage > 60%")
+    return False
+
+
+def ignore_not_found(command_list):
+    """ search for ignore rerun commands such as scan or restore """
+    found = False
+    for argument in command_list:
+        if argument in IGNORE:
+            found = True
+
+    return found
+
+
 def rerun(volumes, start_rerun=False):
-    """ build rerun script and run if disk space free > 60 % and < 2 processes running
-    # TODO
-    # find log files with volume serials
-    # find command string used in latest log file parse and check date in log file
-    # if ignore tags not in command
-    # if correct pnfs is mounted
-    # if volume is not running via running table
-    # if disk space on spool < 60 %
-    # build commands as dict[volume] = command first[7:-2]?  -- omits duplicates
-    # + write command build rerun script
-    # + if < 2 process running
-    # + run rerun script if allowed
-    """
+    """ build rerun script and run if disk space free > 60 % and < 2 processes running """
     volumes_dict = {'added': check_running.main(), 'rerun': set(), 'msg': set()}
+    commands_dict = {}
     for log in tqdm(list_logs.get_logs('errors', volumes), desc='Build Rerun:'):
         rerun_dict = {
-            'command': '',
             'first': list(),
-            'ignore': False,
-            'spool': list(),
-            'spool_full': False,
             'volume': ''}
         with open(MIGRATION_DIR + log, 'rb') as handle:
             rerun_dict['first'] = next(handle).decode().split()
             rerun_dict['volume'] = rerun_dict['first'][-1]
-            print(rerun_dict['first'], rerun_dict['volume'])
-            exit()
-            print(start_rerun)
-            if check_pnfs(rerun_dict['volume']):
-                for argument in rerun_dict['first']:
-                    if '/data/data' in argument:
-                        rerun_dict['spool'] = argument.split('/')
-                        try:
-                            usage = shutil.disk_usage("/".join(rerun_dict['spool'][0:3]))
-                        except FileNotFoundError:
-                            Usage = namedtuple('usage', ['used', 'total'])
-                            usage = Usage(1, 1)
-                        if usage.used / usage.total > 0.60:
-                            volumes_dict['msg'].add("/".join(rerun_dict['spool'][0:3]) +
-                                                    ' is more than 60% full ' +
-                                                    rerun_dict['volume'])
-                            rerun_dict['spool_full'] = True
-                            break
-                    else:
-                        if argument in IGNORE:
-                            rerun_dict['ignore'] = True
-                            break
-                if rerun_dict['volume'] not in database.get_running() \
-                        and not rerun_dict['ignore'] and not rerun_dict['spool_full']:
-                    rerun_dict['command'] = "/opt/enstore/Python/bin/python " + \
-                                            rerun_dict['first'][7] + " " + \
-                                            " ".join(rerun_dict['first'][8:])
-                    volumes_dict['added'].append(rerun_dict['volume'])
-        if rerun_dict['command'] != '':
-            volumes_dict['rerun'].add(rerun_dict['command'].split()[-1])
+            if rerun_dict['volume'] not in commands_dict.keys() \
+                    and check_pnfs(rerun_dict['volume']) \
+                    and disk_usage_ok(rerun_dict['first'][7:-1]) \
+                    and ignore_not_found(rerun_dict['first'][7:-1]) \
+                    and rerun_dict['volume'] not in database.get_running():
+                commands_dict[rerun_dict['volume']] = " ".join(rerun_dict['first'][7:-1])
+                write_rerun_file(commands_dict)
+                run_rerun_file(start_rerun)
+                volumes_dict['rerun'].add(rerun_dict['volume'])
 
     return volumes_dict
 
