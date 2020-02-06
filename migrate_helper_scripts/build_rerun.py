@@ -3,6 +3,7 @@
 import os
 import socket
 import subprocess
+import logging
 import shutil
 from configparser import ConfigParser
 from tqdm import tqdm
@@ -16,6 +17,10 @@ CONFIG.read('config/config.conf')
 RERUN_SCRIPT = CONFIG['Rerun']['rerun_script']
 MIGRATION_DIR = CONFIG['Default']['log_dir']
 IGNORE = CONFIG['Rerun']['ignore']
+
+logging.basicConfig(filename=MIGRATION_DIR + "/reruns/rerun.log",
+                    format='%(asctime)s %(levelname)s:%(message)s',
+                    level=logging.DEBUG)
 
 
 def logger(log_type="info", message="N/A"):
@@ -32,7 +37,8 @@ def write_rerun_file(commands):
     file.write('\nexit\n}\n')
     file.close()
     os.chmod(RERUN_SCRIPT, 0o700)
-    logger("info", "Wrote rerun file with " + str(len(commands.keys())) + " commands")
+    logging.info("Wrote rerun file with %s commands", str(len(commands.keys())))
+    logger("info", "Wrote rerun file with %s commands" % str(len(commands.keys())))
 
 
 def run_rerun_file(start_rerun=False):
@@ -42,6 +48,7 @@ def run_rerun_file(start_rerun=False):
     if start_rerun:
         os.system('screen -d -m ' + RERUN_SCRIPT)
 
+    logging.info("%s %s processes running", str(start_rerun), str(len(check_running.main())))
     logger("info", str(start_rerun) + str(len(check_running.main())) + " processes running")
 
 
@@ -96,6 +103,8 @@ def rerun(volumes, start_rerun=False):
     volumes_dict = {'added': check_running.main(), 'rerun': set(), 'msg': set()}
     commands_dict = {}
     for log in tqdm(list_logs.get_logs('errors', volumes), desc='Build Rerun:'):
+        logging.debug("%s", log)
+        logging.debug("%s", commands_dict.keys())
         rerun_dict = {
             'first': list(),
             'volume': ''}
