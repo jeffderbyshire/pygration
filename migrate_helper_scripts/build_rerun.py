@@ -69,6 +69,7 @@ def check_pnfs(volume):
     if (is_family_cms and is_pnfs_cms) or (not is_family_cms and not is_pnfs_cms):
         return True
 
+    logging.info("%s is cms %s and pnfs is cms %s", volume, is_family_cms, is_pnfs_cms)
     return False
 
 
@@ -80,6 +81,7 @@ def disk_usage_ok(command_list):
             if usage.used / usage.total < 0.60:
                 return True
 
+    logging.info("Disk usage > 60%")
     logger("info", "Disk usage > 60%")
     return False
 
