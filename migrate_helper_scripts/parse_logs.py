@@ -16,10 +16,6 @@ LOG_PREFIX = CONFIG['Default']['log_prefix']
 LOG_DIRECTORY = CONFIG['Default']['log_dir']
 ARCHIVE_DIR = CONFIG['Archive']['archive_dir']
 
-logging.basicConfig(filename=LOG_DIRECTORY + "/reruns/parse.log",
-                    format='%(asctime)s %(levelname)s:%(message)s',
-                    level=logging.INFO)
-
 
 def get_date_time(log_file):
     """ get date and time from log file name """

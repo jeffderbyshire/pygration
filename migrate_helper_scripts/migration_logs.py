@@ -21,10 +21,6 @@ CONFIG.read('config/config.conf')
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 LOG_DIR = CONFIG['Default']['log_dir']
 
-logging.basicConfig(filename=LOG_DIR + "/reruns/migration.log",
-                    format='%(asctime)s %(levelname)s:%(message)s',
-                    level=logging.INFO)
-
 
 def too_many_logs(server, too_many_list):
     """ Connect to sqlite db and insert server, volume serial, and log file details"""
