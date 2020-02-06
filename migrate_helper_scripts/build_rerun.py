@@ -20,7 +20,7 @@ IGNORE = CONFIG['Rerun']['ignore']
 
 logging.basicConfig(filename=MIGRATION_DIR + "/reruns/rerun.log",
                     format='%(asctime)s %(levelname)s:%(message)s',
-                    level=logging.DEBUG)
+                    level=logging.INFO)
 
 
 def logger(log_type="info", message="N/A"):
