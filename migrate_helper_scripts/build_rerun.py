@@ -92,7 +92,7 @@ def ignore_not_found(command_list):
     """ search for ignore rerun commands such as scan or restore """
     found = False
     for argument in command_list:
-        if argument in IGNORE:
+        if argument not in IGNORE:
             found = True
 
     return found
