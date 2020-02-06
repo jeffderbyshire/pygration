@@ -2,6 +2,7 @@
 
 import collections
 import glob
+import logging
 import subprocess
 from configparser import ConfigParser
 from tqdm import tqdm
@@ -14,6 +15,10 @@ CONFIG.read('config/config.conf')
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 LOG_DIRECTORY = CONFIG['Default']['log_dir']
 ARCHIVE_DIR = CONFIG['Archive']['archive_dir']
+
+logging.basicConfig(filename=LOG_DIRECTORY + "/reruns/parse.log",
+                    format='%(asctime)s %(levelname)s:%(message)s',
+                    level=logging.INFO)
 
 
 def get_date_time(log_file):
@@ -49,8 +54,6 @@ def archive_error_message(message):
 def rerun_error_message(message):
     """ Return True if special rerun error messages are found """
     rerun_messages = [
-        "COPYING_TO_DISK",
-        "COPYING_TO_TAPE",
         "Error after transferring 0 bytes in 1 files",
         'Noticed the local file inode changed',
         'pg.ProgrammingError',
@@ -73,6 +76,7 @@ def interpret_error_message(message):
         "[1] metadata",
         "[2] metadata",
         "[Errno 2] No such file or directory: PNFS ID not found:",
+        "already duplicated to",
         "are inconsistent on bfid ... ERROR",
         "COPYING_TO_DISK cleanup lists are not empty",
         "COPYING_TO_DISK failed to copy",
@@ -172,12 +176,9 @@ def parse_logs(logs):
     # leave for debugging pprint.pprint(counter, indent=1)
     for [vol, msg] in tqdm(list(counter), desc='Rerun Check:'):
         if rerun_error_message(msg):
+            logging.info("volume %s rerun for %s", vol, msg)
             logs_list['rerun'].add(vol)
         else:
-            if counter[(vol, msg)] < 0:
-                # rerun_vol_ser(vol)
-                logs_list['rerun'].add(vol)
-            else:
-                # too many errors to rerun
-                logs_list['too_many'].add(vol)
+            logs_list['too_many'].add(vol)
+
     return logs_list

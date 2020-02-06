@@ -4,7 +4,7 @@ Main command line is --process see_errors
 Parses logs for volume serials to archive, rerun, and too many errors
 store too many errors in sqlite db
 """
-import pprint
+import logging
 import subprocess
 from configparser import ConfigParser
 from tqdm import tqdm
@@ -20,6 +20,10 @@ CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 LOG_DIR = CONFIG['Default']['log_dir']
+
+logging.basicConfig(filename=LOG_DIR + "/reruns/migration.log",
+                    format='%(asctime)s %(levelname)s:%(message)s',
+                    level=logging.INFO)
 
 
 def too_many_logs(server, too_many_list):
@@ -121,14 +125,10 @@ def process(server, quiet=False, rerun=False):
         errors = detail_error_messages(all_errors)
 
     if not quiet:
-        print('Node: ' + server)
-        print("archive: " + str(len(logs['archive'])))
-        print("rerun: " + str(len(logs['rerun'])), logs['rerun'])
-        print("too many: " + str(len(logs['too_many'])))
-        print("bfid errors: " + str(len(errors)))
-        print("Archive processed")
-        pprint.pprint(archive_count, indent=1)
-        print("Rerun processed")
-        pprint.pprint(rerun_logs['msg'], indent=1)
-        print("Reruns: " + str(len(rerun_logs['rerun'])))
-        print('End of line.')
+        logging.info("Node: %s", server)
+        logging.info("archive logs %d", len(logs['archive']))
+        logging.info("rerun %d", len(logs['rerun']))
+        logging.info("foobar %d", len(logs['too_many']))
+        logging.info("new bfid errors %d", len(errors))
+        logging.info("archived with errors %d", archive_count)
+        logging.info("Rerun %d volumes", len(rerun_logs['rerun']))
