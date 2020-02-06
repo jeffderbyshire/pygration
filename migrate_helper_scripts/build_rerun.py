@@ -32,15 +32,12 @@ def write_rerun_file(commands):
     """ write rerun file with dictionary of commands[volume] = command """
     file = open(RERUN_SCRIPT, "w")
     file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
-    logging.info("%s", commands)
     for volume, command in commands.items():
-        logging.info("write volume %s and command %s", volume, command)
         file.write("/opt/enstore/Python/bin/python %s %s\n" % (command, volume))
     file.write('\nexit\n}\n')
     file.close()
     os.chmod(RERUN_SCRIPT, 0o700)
-    logging.info("Wrote rerun file with %s commands", str(len(commands.keys())))
-    logger("info", "Wrote rerun file with %s commands" % str(len(commands.keys())))
+    logger("info", "Rerun file with %s volumes" % str(len(commands.keys())))
 
 
 def run_rerun_file(start_rerun=False):
@@ -51,7 +48,8 @@ def run_rerun_file(start_rerun=False):
         os.system('screen -d -m ' + RERUN_SCRIPT)
 
     logging.info("%s %s processes running", str(start_rerun), str(len(check_running.main())))
-    logger("info", str(start_rerun) + str(len(check_running.main())) + " processes running")
+    logger("info", "Run Rerun %s and %s processes running" %
+           (str(start_rerun), str(len(check_running.main()))))
 
 
 def check_pnfs(volume):
