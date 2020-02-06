@@ -82,7 +82,10 @@ def file_migration_status(bfid):
         capture_output=True,
         env=include.ENSTORE_ENV
     )
-    status = status.stdout.decode().split()[-1]
+    try:
+        status = status.stdout.decode().split()[-1]
+    except IndexError:
+        status = False
 
     return status
 
