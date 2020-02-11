@@ -18,10 +18,7 @@ def main():
     processes = subprocess.run(
         [
             'ps',
-            'ww',
-            '|',
-            'grep',
-            RUNNING
+            'ww'
         ],
         capture_output=True,
     )
