@@ -24,6 +24,8 @@ def main():
     )
     results = [line.strip() for line in processes.stdout.decode()]
     for process in results:
+        print(process)
+        exit()
         if RUNNING in process:
             try:
                 volumes_running.append(process.split()[-1])
