@@ -78,7 +78,7 @@ def file_migration_status(bfid):
             '--status',
             bfid
         ],
-        timeout=5,
+        timeout=10,
         capture_output=True,
         env=include.ENSTORE_ENV
     )
