@@ -19,11 +19,14 @@ def main():
         [
             'ps',
             'ww',
-            '|grep',
+            '|',
+            'grep',
             RUNNING
         ],
         capture_output=True,
     )
+    print(processes.stdout.decode())
+    exit()
     results = [line.strip() for line in processes.stdout.decode()]
     for process in results:
         try:
