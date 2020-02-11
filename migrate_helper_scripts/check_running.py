@@ -22,17 +22,13 @@ def main():
         ],
         capture_output=True,
     )
-    print(processes.stdout.decode())
     for process in processes.stdout.decode().split('\n'):
-        print(process)
         if RUNNING in process:
             try:
                 volumes_running.append(process.split()[-1])
             except IndexError:
                 pass
 
-    print(volumes_running)
-    exit()
     if volumes_running:
         database.update_running(socket.gethostname(), volumes_running)
 
