@@ -2,7 +2,7 @@
 
 from configparser import ConfigParser
 import socket
-import sh
+import subprocess
 import migrate_helper_scripts.database_schema as database
 
 CONFIG = ConfigParser()
@@ -15,14 +15,24 @@ def main():
     :return: volume serials if other migrate_chimera process found
     """
     volumes_running = []
-    try:
-        process = sh.grep(sh.ps('ww'), RUNNING)
-    except sh.ErrorReturnCode:
-        return volumes_running
-    for line in process:
-        volumes_running.append(line.split()[-1])
+    processes = subprocess.run(
+        [
+            'ps',
+            'ww',
+            '|grep',
+            RUNNING
+        ],
+        capture_output=True,
+    )
+    results = [line.strip() for line in processes.stdout.decode()]
+    for process in results:
+        try:
+            volumes_running.append(process.split()[-1])
+        except IndexError:
+            pass
 
-    database.update_running(socket.gethostname(), volumes_running)
+    if volumes_running:
+        database.update_running(socket.gethostname(), volumes_running)
 
     return volumes_running
 
