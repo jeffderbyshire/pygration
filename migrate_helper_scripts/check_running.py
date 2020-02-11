@@ -22,7 +22,7 @@ def main():
         ],
         capture_output=True,
     )
-    print(processes.stdout.decode())
+    print(processes.stdout)
     for process in processes.stdout:
         print(process)
         exit()
