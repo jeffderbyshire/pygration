@@ -22,8 +22,7 @@ def main():
         ],
         capture_output=True,
     )
-    results = [line.strip() for line in processes.stdout.decode()]
-    for process in results:
+    for process in processes.stdout.decode():
         print(process)
         exit()
         if RUNNING in process:
