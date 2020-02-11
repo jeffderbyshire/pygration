@@ -23,7 +23,7 @@ def main():
         capture_output=True,
     )
     print(processes.stdout.decode())
-    for process in processes.stdout.decode():
+    for process in processes.stdout.decode().split('\n'):
         print(process)
         if RUNNING in process:
             try:
