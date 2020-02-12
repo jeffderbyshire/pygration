@@ -71,21 +71,24 @@ def find_same_file(bfid):
 
 def file_migration_status(bfid):
     """ Run migrate --status command and Return status of bfid """
-    status = subprocess.run(
-        [
-            '/opt/enstore/Python/bin/python',
-            '/opt/enstore/bin/migrate',
-            '--status',
-            bfid
-        ],
-        timeout=10,
-        capture_output=True,
-        env=include.ENSTORE_ENV
-    )
     try:
-        status = status.stdout.decode().split()[-1]
-    except IndexError:
-        status = False
+        status = subprocess.run(
+            [
+                '/opt/enstore/Python/bin/python',
+                '/opt/enstore/bin/migrate',
+                '--status',
+                bfid
+            ],
+            timeout=5,
+            capture_output=True,
+            env=include.ENSTORE_ENV
+        )
+        try:
+            status = status.stdout.decode().split()[-1]
+        except IndexError:
+            status = False
+    except TimeoutError:
+        status = 'timeout status check'
 
     return status
 
