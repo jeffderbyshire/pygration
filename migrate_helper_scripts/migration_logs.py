@@ -95,7 +95,6 @@ def file_migration_status(bfid):
 
 def detail_error_messages(all_dict):
     """ receive error list and run enstore commands against volume serials, bfids, and pnfs """
-    error_details = []
     bfids = set()
     for volume in all_dict:
         if bool(all_dict[volume]['bfid']):
@@ -103,9 +102,8 @@ def detail_error_messages(all_dict):
             if not database.volume_id_in_bfid_errors(volume_id):
                 for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
                     if not database.does_bfid_exist(bfid):
-                        error_details.append((volume_id, bfid, file_migration_status(bfid)))
+                        database.insert_bfid_errors((volume_id, bfid, file_migration_status(bfid)))
                         bfids.add(bfid)
-    database.insert_bfid_errors(error_details)
     return bfids
 
 
