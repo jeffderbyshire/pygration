@@ -20,6 +20,7 @@ CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 LOG_DIR = CONFIG['Default']['log_dir']
+BFID_CLEANUP = 'found()[]\'\":,(current\'{}'
 
 
 def too_many_logs(server, too_many_list):
@@ -39,7 +40,7 @@ def too_many_logs(server, too_many_list):
                 # print(message.split())
                 for log_word in message.split():
                     if 'CDMS' in log_word:
-                        volume_dict['bfid'].add(log_word.strip('found()[]\'\":,(current'))
+                        volume_dict['bfid'].add(log_word.strip(BFID_CLEANUP))
                     if '/pnfs' in log_word:
                         volume_dict['pnfs'].add(log_word)
                 log_details.append((log_file_id, parse_logs.interpret_error_message(message),
@@ -101,6 +102,7 @@ def detail_error_messages(all_dict):
             volume_id = database.get_volume_id(volume)
             if not database.volume_id_in_bfid_errors(volume_id):
                 for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
+                    bfid = bfid.strip(BFID_CLEANUP)
                     if not database.does_bfid_exist(bfid):
                         type(volume_id)
                         database.insert_bfid_errors(volume_id, bfid, file_migration_status(bfid))
