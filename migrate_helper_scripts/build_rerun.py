@@ -43,7 +43,7 @@ def run_rerun_file(start_rerun=False):
     if start_rerun:
         rerun_result = subprocess.run(
             [
-                'screen',
+                '/usr/bin/screen',
                 '-d',
                 '-m',
                 RERUN_SCRIPT
