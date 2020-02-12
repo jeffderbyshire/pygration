@@ -41,9 +41,21 @@ def run_rerun_file(start_rerun=False):
     if len(check_running.main()) > 1:
         start_rerun = False
     if start_rerun:
-        os.system('screen -d -m ' + RERUN_SCRIPT)
+        rerun_result = subprocess.run(
+            [
+                'screen',
+                '-d',
+                '-m',
+                RERUN_SCRIPT
+            ],
+            capture_output=True,
+            env=include.ENSTORE_ENV
+        )
+        logging.info(rerun_result.stdout.decode())
 
-    logging.info("%s %s processes running", str(start_rerun), str(len(check_running.main())))
+    logging.info("Rerun enabled: %s and %s processes running",
+                 str(start_rerun),
+                 str(len(check_running.main())))
     logger("info", "Run Rerun %s and %s processes running" %
            (str(start_rerun), str(len(check_running.main()))))
 
