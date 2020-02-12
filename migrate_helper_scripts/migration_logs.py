@@ -104,8 +104,7 @@ def detail_error_messages(all_dict):
                 for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
                     bfid = bfid.strip(BFID_CLEANUP)
                     if not database.does_bfid_exist(bfid):
-                        type(volume_id)
-                        database.insert_bfid_errors(volume_id, bfid, file_migration_status(bfid))
+                        database.insert_bfid_errors(volume_id, bfid, '')
                         bfids.add(bfid)
     return bfids
 
