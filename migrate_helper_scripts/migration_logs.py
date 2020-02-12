@@ -87,7 +87,7 @@ def file_migration_status(bfid):
             status = status.stdout.decode().split()[-1]
         except IndexError:
             status = False
-    except TimeoutError:
+    except subprocess.TimeoutExpired:
         status = 'timeout status check'
 
     return status
