@@ -214,12 +214,11 @@ def delete_volume_name(volume_name):
     return volume_delete
 
 
-def insert_bfid_errors(error_details):
+def insert_bfid_errors(volume_id, bfid, message):
     """ insert multiple bfid errors into table """
     session = SESSION()
-    for column in error_details:
-        insert = BFIDErrors(volume_id=column[0], bfid=column[1], error=column[2])
-        session.add(insert)
+    insert = BFIDErrors(volume_id=volume_id, bfid=str(bfid), error=str(message))
+    session.add(insert)
     session.commit()
 
 
