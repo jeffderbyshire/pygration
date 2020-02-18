@@ -172,6 +172,7 @@ def parse_logs(logs):
                     del counter[key]
     # leave for debugging pprint.pprint(counter, indent=1)
     for [vol, msg] in tqdm(list(counter), desc='Rerun Check:'):
+        logging.info("checking volume %s message is %s", vol, msg)
         if rerun_error_message(msg):
             logging.info("volume %s rerun for %s", vol, msg)
             logs_list['rerun'].add(vol)
