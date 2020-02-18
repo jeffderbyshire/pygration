@@ -54,6 +54,7 @@ def rerun_error_message(message):
         'Noticed the local file inode changed',
         'pg.ProgrammingError',
         "TIMEOUT",
+        "TIMEDOUT",
         "TOO MANY RETRIES",
         "Too many open files",
     ]
