@@ -150,6 +150,7 @@ def parse_logs(logs):
     for line in tqdm(logs, desc='Reading Errors:'):
         if len(line) > 10:
             volume_serial, log_error_message = line.split(" ---- ")
+            logging.info("%s", volume_serial)
             # print(split_line)
             # if len(x) > 0:
             log_error_message_snippet = interpret_error_message(log_error_message)
@@ -177,4 +178,5 @@ def parse_logs(logs):
         else:
             logs_list['too_many'].add(vol)
 
+    logging.info("%s", logs_list)
     return logs_list
