@@ -15,7 +15,7 @@ CONFIG.read('config/config.conf')
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 LOG_DIRECTORY = CONFIG['Default']['log_dir']
 ARCHIVE_DIR = CONFIG['Archive']['archive_dir']
-
+DEBUG = False
 
 def get_date_time(log_file):
     """ get date and time from log file name """
@@ -51,6 +51,7 @@ def rerun_error_message(message):
     """ Return True if special rerun error messages are found """
     rerun_messages = [
         "Error after transferring 0 bytes in 1 files",
+        "No Error Found in Log File",
         'Noticed the local file inode changed',
         'pg.ProgrammingError',
         "TIMEOUT",
@@ -60,7 +61,8 @@ def rerun_error_message(message):
     ]
 
     for rerun in rerun_messages:
-        logging.info("check rerun condition %s message is %s", rerun, message)
+        if DEBUG:
+            logging.info("check rerun condition %s message is %s", rerun, message)
         if rerun in message:
             return True
 
@@ -152,7 +154,8 @@ def parse_logs(logs):
     for line in tqdm(logs, desc='Reading Errors:'):
         if len(line) > 10:
             volume_serial, log_error_message = line.split(" ---- ")
-            logging.info("%s", volume_serial)
+            if DEBUG:
+                logging.info("%s", volume_serial)
             # print(split_line)
             # if len(x) > 0:
             log_error_message_snippet = interpret_error_message(log_error_message)
@@ -174,7 +177,8 @@ def parse_logs(logs):
                     del counter[key]
     # leave for debugging pprint.pprint(counter, indent=1)
     for [vol, msg] in tqdm(list(counter), desc='Rerun Check:'):
-        logging.info("checking volume %s message is %s", vol, msg)
+        if DEBUG:
+            logging.info("checking volume %s message is %s", vol, msg)
         if rerun_error_message(msg):
             logging.info("volume %s rerun for %s", vol, msg)
             logs_list['rerun'].add(vol)
