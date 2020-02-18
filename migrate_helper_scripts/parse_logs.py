@@ -59,6 +59,7 @@ def rerun_error_message(message):
     ]
 
     for rerun in rerun_messages:
+        logging.info("check rerun condition %s message is %s", rerun, message)
         if rerun in message:
             return True
 
