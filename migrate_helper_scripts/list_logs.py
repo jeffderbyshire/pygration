@@ -49,6 +49,9 @@ def vol_prefix_in_file(file_name):
 
 def log_file_has_volume_serial(file):
     """ check if log file has -VolumeSerial appended """
+    if "#" not in file:
+        return False
+
     return bool("-" in file.split('#')[1])
 
 
