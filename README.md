@@ -14,8 +14,8 @@ The main script is run with a few command line arguments.
 ### Prerequisites
 
 * Python >= 3.7
-* sqlite3
-* python modules: sh, tqdm, click, sqlalchemy
+* Postgres
+* python modules: tqdm, click, sqlalchemy
 * Enstore http://www-ccf.fnal.gov/enstore/
 
 ## Deployment
