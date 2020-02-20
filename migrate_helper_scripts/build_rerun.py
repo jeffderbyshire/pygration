@@ -121,12 +121,16 @@ def rerun(volumes, start_rerun=False):
             rerun_dict['first'] = next(handle).decode().split()
             rerun_dict['volume'] = rerun_dict['first'][-1]
             if rerun_dict['volume'] not in commands_dict.keys() \
-                    and check_pnfs(rerun_dict['volume']) \
-                    and disk_usage_ok(rerun_dict['first'][7:-1]) \
                     and ignore_not_found(rerun_dict['first'][7:-1]) \
                     and rerun_dict['volume'] not in database.get_running():
-                commands_dict[rerun_dict['volume']] = " ".join(rerun_dict['first'][7:-1])
-                volumes_dict['rerun'].add(rerun_dict['volume'])
+                if check_pnfs(rerun_dict['volume']):
+                    if disk_usage_ok(rerun_dict['first'][7:-1]):
+                        commands_dict[rerun_dict['volume']] = \
+                            " ".join(rerun_dict['first'][7:-1])
+                        volumes_dict['rerun'].add(rerun_dict['volume'])
+                else:
+                    logger("pnfs mismatch", "/opt/enstore/Python/bin/python " +
+                           " ".join(rerun_dict['first'][7:-1]))
     write_rerun_file(commands_dict)
     run_rerun_file(start_rerun)
 

@@ -3,11 +3,13 @@
 from configparser import ConfigParser
 import socket
 import subprocess
+import logging
 import migrate_helper_scripts.database_schema as database
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 RUNNING = CONFIG['Process']['running']
+DEBUG = True
 
 
 def main():
@@ -22,6 +24,8 @@ def main():
         ],
         capture_output=True,
     )
+    if DEBUG:
+        logging.info("%s", processes.stdout.decode().split('\n'))
     for process in processes.stdout.decode().split('\n'):
         if RUNNING in process:
             try:
