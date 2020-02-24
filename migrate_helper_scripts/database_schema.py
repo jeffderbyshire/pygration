@@ -133,7 +133,7 @@ class Running(BASE):
     updated = Column(TIMESTAMP, default=func.now())
 
     def __repr__(self):
-        return "<Running(server='%s',volume='%s')>" % self.server, self.volume
+        return "<Running(volume='%s')>" % self.volume
 
 
 class Logging(BASE):
@@ -253,14 +253,8 @@ def update_running(server, volumes):
 
 def get_running():
     """ get volumes from table running """
-    volumes = set()
     session = SESSION()
-    results = session.query(Running.volume).all()
-    for volume, nothing in results:
-        volumes.add(volume)
-        if nothing:
-            pass
-    return volumes
+    return session.query(Running.volume).all()
 
 
 def insert_log(server, process, log_type, message):
