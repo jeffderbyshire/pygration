@@ -253,8 +253,12 @@ def update_running(server, volumes):
 
 def get_running():
     """ get volumes from table running """
+    volumes = set()
     session = SESSION()
-    return session.query(Running.volume).all()
+    results = session.query(Running.volume).all()
+    for volume in results:
+        volumes.add(volume)
+    return volumes
 
 
 def insert_log(server, process, log_type, message):
