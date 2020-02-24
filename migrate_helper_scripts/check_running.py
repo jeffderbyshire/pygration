@@ -24,10 +24,10 @@ def main():
         ],
         capture_output=True,
     )
-    if DEBUG:
-        logging.info("%s", processes.stdout.decode().split('\n'))
     for process in processes.stdout.decode().split('\n'):
         if RUNNING in process:
+            if DEBUG:
+                logging.info("%s", process.split())
             try:
                 volumes_running.append(process.split()[-1])
             except IndexError:
