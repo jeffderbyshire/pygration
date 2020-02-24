@@ -1,3 +1,3 @@
 #!/bin/bash
-source ~enstore/.bashrc
+source /home/enstore/.bashrc
 screen -d -m /tmp/migrate.rerun

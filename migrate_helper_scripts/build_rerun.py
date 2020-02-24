@@ -27,7 +27,7 @@ def logger(log_type="info", message="N/A"):
 def write_rerun_file(commands):
     """ write rerun file with dictionary of commands[volume] = command """
     file = open(RERUN_SCRIPT, "w")
-    file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource ~enstore/.bashrc\n")
+    file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource /home/enstore/.bashrc\n")
     for volume, command in commands.items():
         file.write("/opt/enstore/Python/bin/python %s %s\n" % (command, volume))
     file.write('\nexit\n}\n')
