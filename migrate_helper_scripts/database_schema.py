@@ -256,8 +256,10 @@ def get_running():
     volumes = set()
     session = SESSION()
     results = session.query(Running.volume).all()
-    for volume in results:
+    for volume, nothing in results:
         volumes.add(volume)
+        if nothing:
+            pass
     return volumes
 
 
