@@ -244,6 +244,7 @@ def update_running(server, volumes):
     """ remove server entries and insert current running volumes """
     session = SESSION()
     session.query(Running).filter_by(server=server).delete()
+    session.commit()
     for volume in volumes:
         insert = Running(server=server, volume=volume)
         session.add(insert)
