@@ -120,6 +120,8 @@ def rerun(volumes, start_rerun=False):
         with open(MIGRATION_DIR + log, 'rb') as handle:
             rerun_dict['first'] = next(handle).decode().split()
             rerun_dict['volume'] = rerun_dict['first'][-1]
+            logging.info("volume % and running volumes are %s", rerun_dict['volume'],
+                         database.get_running())
             if rerun_dict['volume'] not in commands_dict.keys() \
                     and ignore_not_found(rerun_dict['first'][7:-1]) \
                     and rerun_dict['volume'] not in database.get_running():
