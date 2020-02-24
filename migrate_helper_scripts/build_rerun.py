@@ -108,6 +108,16 @@ def ignore_not_found(command_list):
     return found
 
 
+def is_volume_running(volume):
+    """ check if volume is not in database get running """
+    running = database.get_running()
+    for volume_running in running:
+        logging.info("volume %s vs running %s", str(volume), str(volume_running))
+        if volume in str(volume_running):
+            return True
+    return False
+
+
 def rerun(volumes, start_rerun=False):
     """ build rerun script and run if disk space free > 60 % and < 2 processes running """
     volumes_dict = {'added': check_running.main(), 'rerun': set(), 'msg': set()}
@@ -120,11 +130,9 @@ def rerun(volumes, start_rerun=False):
         with open(MIGRATION_DIR + log, 'rb') as handle:
             rerun_dict['first'] = next(handle).decode().split()
             rerun_dict['volume'] = rerun_dict['first'][-1]
-            logging.info("volume % and running volumes are %s", rerun_dict['volume'],
-                         database.get_running())
             if rerun_dict['volume'] not in commands_dict.keys() \
                     and ignore_not_found(rerun_dict['first'][7:-1]) \
-                    and rerun_dict['volume'] not in database.get_running():
+                    and not is_volume_running(rerun_dict['volume']):
                 if check_pnfs(rerun_dict['volume']):
                     if disk_usage_ok(rerun_dict['first'][7:-1]):
                         commands_dict[rerun_dict['volume']] = \
