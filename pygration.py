@@ -13,6 +13,7 @@ import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.error_check as error_check
 import migrate_helper_scripts.migration_status as migration_status
 import migrate_helper_scripts.fix_archives as fix_archives
+import migrate_helper_scripts.unity as unity
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
@@ -26,7 +27,7 @@ logging.basicConfig(filename=LOG_DIR + "/reruns/migration.log",
 @click.command()
 @click.option('--logs', type=click.Choice(['all', 'errors', 'no-errors', 'archive',
                                            'archive-with-errors']))
-@click.option('--process', type=click.Choice(['all', 'fix', 'status']))
+@click.option('--process', type=click.Choice(['all', 'fix', 'status', 'import']))
 @click.option('--quiet', is_flag=True)
 @click.option('--check', is_flag=True)
 def main(logs, process, quiet, check):
@@ -44,6 +45,9 @@ def main(logs, process, quiet, check):
         elif process == 'all':
             migration_logs.process(server=server, quiet=quiet, rerun=True)
             migration_status.report_status()
+
+    if process in ['import']:
+        unity.db_import()
 
     if check:
         output = error_check.main()

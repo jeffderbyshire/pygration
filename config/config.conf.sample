@@ -16,4 +16,9 @@ running = process_to_check_if_running
 rerun_script = /path/to/write/rerun/script
 ignore = --flags|--to|--ignore
 
+[Unity_Import]
+unity_dir = /path/to/unity/files
+scan_dbs = scan_db1|scan_db2
+state_dbs = state_db1|state_db2
+
 

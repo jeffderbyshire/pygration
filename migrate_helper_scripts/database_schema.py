@@ -1,7 +1,7 @@
 """ database schema using sqlalchemy """
 
 from configparser import ConfigParser
-from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, TIMESTAMP
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, TIMESTAMP, Date
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, scoped_session
@@ -150,6 +150,89 @@ class Logging(BASE):
     def __repr__(self):
         return "<Logging(server='%s',process='%s',log_type='%s',message='%s')>" % \
                self.server, self.process, self.log_type, self.message
+
+
+class MigrationScan(BASE):
+    """ Migration Scan table """
+    __tablename__ = 'migration_scan'
+
+    migration_scan_id = Column(Integer, primary_key=True)
+    scan_volume = Column(String, nullable=False, unique=True)
+    scan_start = Column(Date)
+    scan_node = Column(String)
+    scan_errors = Column(String)
+    scan_end = Column(Date)
+    source_list = Column(String)
+    updated = Column(TIMESTAMP, default=func.now())
+
+    def __repr__(self):
+        return "<MigrationScan(scan_volume='%s',scan_start='%s',scan_node='%s',scan_errors='%s'," \
+               "scan_end='%s',source_list='%s')>" % self.scan_volume, self.scan_start,\
+               self.scan_node, self.scan_errors, self.scan_end, self.source_list
+
+
+def insert_update_migration_scan(record):
+    """ insert or update migration scan """
+    session = SESSION()
+    skip_update = session.query(MigrationScan).filter_by(**record).first()
+    if skip_update:
+        pass
+    else:
+        result = session.query(MigrationScan).filter_by(scan_volume=record['scan_volume']).first()
+        if result:
+            for key, value in record.items():
+                setattr(result, key, value)
+        else:
+            insert = MigrationScan(**record)
+            session.add(insert)
+        session.commit()
+
+
+class MigrationState(BASE):
+    """ Migration State table """
+    __tablename__ = 'migration_state'
+
+    migration_state_id = Column(Integer, primary_key=True)
+    source_volume = Column(String, nullable=False, unique=True)
+    media = Column(String)
+    migration_type = Column(String)
+    migration_start = Column(Date)
+    node = Column(String)
+    errors = Column(String)
+    migration_end = Column(Date)
+    destination_volumes = Column(String)
+    scanned = Column(Date)
+    storage_group = Column(String)
+    library = Column(String)
+    file_family = Column(String)
+    updated = Column(TIMESTAMP, default=func.now())
+
+    def __repr__(self):
+        return "<MigrationState(source_volume='%s',media='%s',migration_type='%s'," \
+               "migration_start='%s',node='%s',errors='%s',migration_end='%s'," \
+               "destination_volumes='%s',scanned='%s',storage_group='%s',library='%s'," \
+               "file_family='%s')>" % self.source_volume, self.media, self.migration_type,\
+               self.migration_start, self.node, self.errors, self.migration_end,\
+               self.destination_volumes, self.scanned, self.storage_group, self.library,\
+               self.file_family
+
+
+def insert_update_migration_state(record):
+    """ insert or update migration scan """
+    session = SESSION()
+    skip_update = session.query(MigrationState).filter_by(**record).first()
+    if skip_update:
+        pass
+    else:
+        result =\
+            session.query(MigrationState).filter_by(source_volume=record['source_volume']).first()
+        if result:
+            for key, value in record.items():
+                setattr(result, key, value)
+        else:
+            insert = MigrationState(**record)
+            session.add(insert)
+        session.commit()
 
 
 def get_node_id(node_name):
