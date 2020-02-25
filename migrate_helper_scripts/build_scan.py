@@ -1,6 +1,8 @@
 """ build scan script """
 
 import logging
+import os
+import shutil
 from configparser import ConfigParser
 from tqdm import tqdm
 import migrate_helper_scripts.database_schema as database
@@ -15,6 +17,9 @@ DEBUG = False
 def scan(storage_group):
     """ build scan script and run if < 2 processes running """
     commands = {}
+    if os.path.isdir(SCAN_SCRIPT_DIR):
+        shutil.rmtree(SCAN_SCRIPT_DIR)
+    os.mkdir(SCAN_SCRIPT_DIR)
     volumes = database.get_volumes_need_scanning(storage_group)
     if DEBUG:
         logging.info("storage group %s volumes %s", storage_group, volumes)
