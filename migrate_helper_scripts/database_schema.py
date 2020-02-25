@@ -169,8 +169,9 @@ class MigrationScan(BASE):
 
     def __repr__(self):
         return "<MigrationScan(scan_volume='%s',scan_start='%s',scan_node='%s',scan_errors='%s'," \
-               "scan_end='%s',source_list='%s')>" % self.scan_volume, self.scan_start, \
-               self.scan_node, self.scan_errors, self.scan_end, self.source_list
+               "scan_end='%s',source_list='%s')>" % (self.scan_volume, self.scan_start,
+                                                     self.scan_node, self.scan_errors,
+                                                     self.scan_end, self.source_list)
 
 
 def insert_update_migration_scan(record):
@@ -213,10 +214,11 @@ class MigrationState(BASE):
         return "<MigrationState(source_volume='%s',media='%s',migration_type='%s'," \
                "migration_start='%s',node='%s',errors='%s',migration_end='%s'," \
                "destination_volumes='%s',scanned='%s',storage_group='%s',library='%s'," \
-               "file_family='%s')>" % self.source_volume, self.media, self.migration_type, \
-               self.migration_start, self.node, self.errors, self.migration_end, \
-               self.destination_volumes, self.scanned, self.storage_group, self.library, \
-               self.file_family
+               "file_family='%s')>" % (self.source_volume, self.media, self.migration_type,
+                                       self.migration_start, self.node, self.errors,
+                                       self.migration_end,
+                                       self.destination_volumes, self.scanned, self.storage_group,
+                                       self.library, self.file_family)
 
 
 def insert_update_migration_state(record):
