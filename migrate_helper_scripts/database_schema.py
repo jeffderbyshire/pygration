@@ -254,8 +254,8 @@ def get_volumes_need_scanning(storage_group):
     result = \
         session.query(MigrationState).filter(
             MigrationState.storage_group == storage_group,
-            MigrationState.migration_end is not None,
-            MigrationState.scanned is None).order_by(
+            MigrationState.migration_end.isnot(None),
+            MigrationState.scanned.is_(None)).order_by(
                 MigrationState.storage_group, MigrationState.file_family).all()
     if DEBUG:
         logging.info("volumes need scanning results %s", result)
