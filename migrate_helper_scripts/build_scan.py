@@ -9,7 +9,7 @@ import migrate_helper_scripts.build_rerun as build_rerun
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 SCAN_SCRIPT_DIR = CONFIG['Default']['log_dir'] + 'scans/'
-DEBUG = True
+DEBUG = False
 
 
 def scan(storage_group):
