@@ -1,6 +1,7 @@
 """ database schema using sqlalchemy """
 
 import logging
+from collections import defaultdict
 from configparser import ConfigParser
 from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, TIMESTAMP, Date
 from sqlalchemy.sql import func
@@ -248,11 +249,12 @@ def has_volume_been_scanned(volume):
 
 def get_volumes_need_scanning(storage_group):
     """ get volumes to scan based on storage group """
-    volumes_need_scanning = {}
+    volumes_need_scanning = defaultdict(list)
     session = SESSION()
     result = \
         session.query(MigrationState).filter(
-            MigrationState.storage_group == storage_group).order_by(
+            MigrationState.storage_group == storage_group,
+            MigrationState.migration_end is not None).order_by(
                 MigrationState.storage_group, MigrationState.file_family).all()
     if DEBUG:
         logging.info("volumes need scanning results %s", result)
