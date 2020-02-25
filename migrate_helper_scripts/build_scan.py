@@ -23,11 +23,10 @@ def scan(storage_group):
     volumes = database.get_volumes_need_scanning(storage_group)
     if DEBUG:
         logging.info("storage group %s volumes %s", storage_group, volumes)
-    for file_family, volumes in tqdm(volumes.items(), desc='Build Scan'):
-        for volume in volumes:
-            commands[volume] = '/opt/enstore/src/migrate_chimera.py --scan --check-only-meta'
-        build_rerun.write_run_file(commands, SCAN_SCRIPT_DIR + file_family, "scan")
-        logging.info("file family %s with volumes %s", file_family, volumes)
+    for volume in tqdm(volumes, desc='Build Scan'):
+        commands[volume] = '/opt/enstore/src/migrate_chimera.py --scan --check-only-meta'
+    build_rerun.write_run_file(commands, SCAN_SCRIPT_DIR + storage_group, "scan")
+    logging.info("file family %s with volumes %s", storage_group, volumes)
 
 
 if __name__ == '__main__':
