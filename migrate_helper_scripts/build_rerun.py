@@ -24,40 +24,41 @@ def logger(log_type="info", message="N/A"):
     database.insert_log(socket.gethostname(), "rerun", log_type, message)
 
 
-def write_rerun_file(commands):
+def write_run_file(commands, script_file, job):
     """ write rerun file with dictionary of commands[volume] = command """
-    file = open(RERUN_SCRIPT, "w")
+    file = open(script_file, "w")
     file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource /home/enstore/.bashrc\n")
     for volume, command in commands.items():
         file.write("/opt/enstore/Python/bin/python %s %s\n" % (command, volume))
     file.write('\nexit\n}\n')
     file.close()
-    os.chmod(RERUN_SCRIPT, 0o700)
-    logger("info", "Rerun file with %s volumes" % str(len(commands.keys())))
+    os.chmod(script_file, 0o700)
+    logger("info", "%s file with %s volumes" % (job, str(len(commands.keys()))))
 
 
-def run_rerun_file(start_rerun=False):
+def run_file(script, start_run=False, job="Rerun"):
     """ run rerun file if # migration processes < 2 running """
     if len(check_running.main()) > 1:
-        start_rerun = False
-    if start_rerun:
-        rerun_result = subprocess.run(
+        start_run = False
+    if start_run:
+        run_result = subprocess.run(
             [
                 '/usr/bin/screen',
                 '-d',
                 '-m',
-                RERUN_SCRIPT
+                script
             ],
             capture_output=True,
             env=include.ENSTORE_ENV
         )
-        logging.info(rerun_result.stdout.decode())
+        logging.info(run_result.stdout.decode())
 
-    logging.info("Rerun enabled: %s and %s processes running",
-                 str(start_rerun),
+    logging.info("%s enabled: %s and %s processes running",
+                 job,
+                 str(start_run),
                  str(len(check_running.main())))
-    logger("info", "Run Rerun %s and %s processes running" %
-           (str(start_rerun), str(len(check_running.main()))))
+    logger("info", "Run %s %s and %s processes running" %
+           (job, str(start_run), str(len(check_running.main()))))
 
 
 def check_pnfs(volume):
@@ -141,8 +142,8 @@ def rerun(volumes, start_rerun=False):
                 else:
                     logger("pnfs mismatch", "/opt/enstore/Python/bin/python " +
                            " ".join(rerun_dict['first'][7:-1]))
-    write_rerun_file(commands_dict)
-    run_rerun_file(start_rerun)
+    write_run_file(commands_dict, RERUN_SCRIPT, "Rerun")
+    run_file(RERUN_SCRIPT, start_rerun)
 
     return volumes_dict
 

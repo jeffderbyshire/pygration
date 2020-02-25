@@ -167,7 +167,7 @@ class MigrationScan(BASE):
 
     def __repr__(self):
         return "<MigrationScan(scan_volume='%s',scan_start='%s',scan_node='%s',scan_errors='%s'," \
-               "scan_end='%s',source_list='%s')>" % self.scan_volume, self.scan_start,\
+               "scan_end='%s',source_list='%s')>" % self.scan_volume, self.scan_start, \
                self.scan_node, self.scan_errors, self.scan_end, self.source_list
 
 
@@ -211,9 +211,9 @@ class MigrationState(BASE):
         return "<MigrationState(source_volume='%s',media='%s',migration_type='%s'," \
                "migration_start='%s',node='%s',errors='%s',migration_end='%s'," \
                "destination_volumes='%s',scanned='%s',storage_group='%s',library='%s'," \
-               "file_family='%s')>" % self.source_volume, self.media, self.migration_type,\
-               self.migration_start, self.node, self.errors, self.migration_end,\
-               self.destination_volumes, self.scanned, self.storage_group, self.library,\
+               "file_family='%s')>" % self.source_volume, self.media, self.migration_type, \
+               self.migration_start, self.node, self.errors, self.migration_end, \
+               self.destination_volumes, self.scanned, self.storage_group, self.library, \
                self.file_family
 
 
@@ -224,7 +224,7 @@ def insert_update_migration_state(record):
     if skip_update:
         pass
     else:
-        result =\
+        result = \
             session.query(MigrationState).filter_by(source_volume=record['source_volume']).first()
         if result:
             for key, value in record.items():
@@ -233,6 +233,33 @@ def insert_update_migration_state(record):
             insert = MigrationState(**record)
             session.add(insert)
         session.commit()
+
+
+def has_volume_been_scanned(volume):
+    """ check scan table for volume and if scan has started """
+    session = SESSION()
+    return bool(session.query(MigrationScan).filter(
+        MigrationScan.scan_volume == volume, MigrationScan.scan_start is None).count())
+
+
+def get_volumes_need_scanning(storage_group):
+    """ get volumes to scan based on storage group """
+    volumes_need_scanning = {}
+    session = SESSION()
+    result = \
+        session.query(MigrationState).filter(
+            MigrationState.storage_group == storage_group, MigrationState.scanned is None,
+            MigrationState.migration_end is not None).order_by(
+                MigrationState.storage_group, MigrationState.file_family).all()
+    for row in result:
+        volumes = row.destination_volumes.split()
+        file_family = row.file_family
+        for volume in volumes:
+            insert_update_migration_scan({"scan_volume": volume})
+            if not has_volume_been_scanned(volume):
+                volumes_need_scanning[file_family].append(volume)
+
+    return volumes_need_scanning
 
 
 def get_node_id(node_name):
