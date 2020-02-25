@@ -1,5 +1,6 @@
 """ database schema using sqlalchemy """
 
+import logging
 from configparser import ConfigParser
 from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, TIMESTAMP, Date
 from sqlalchemy.sql import func
@@ -12,6 +13,7 @@ ENGINE = create_engine('postgresql+psycopg2://' + CONFIG['Default']['database'])
 SESSION_FACTORY = sessionmaker(bind=ENGINE)
 SESSION = scoped_session(SESSION_FACTORY)
 BASE = declarative_base()
+DEBUG = True
 
 
 class Servers(BASE):
@@ -251,6 +253,8 @@ def get_volumes_need_scanning(storage_group):
             MigrationState.storage_group == storage_group, MigrationState.scanned is None,
             MigrationState.migration_end is not None).order_by(
                 MigrationState.storage_group, MigrationState.file_family).all()
+    if DEBUG:
+        logging.info("volumes need scanning results %s", result)
     for row in result:
         volumes = row.destination_volumes.split()
         file_family = row.file_family
