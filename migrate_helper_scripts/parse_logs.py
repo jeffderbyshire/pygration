@@ -40,6 +40,7 @@ def archive_error_message(message):
         "does not exist in db",
         "has a non-migration file family",
         "is NOTALLOWED",
+        "to readonly",
     ]
 
     for archive in archive_messages:

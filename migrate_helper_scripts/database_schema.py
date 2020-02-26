@@ -74,7 +74,7 @@ class LogFiles(BASE):
 
     def __repr__(self):
         return "<LogFiles(server_id='%s',volume_id='%s',log_file='%s',date='%s')>" % \
-               self.server_id, self.volume_id, self.log_file, self.date
+               (self.server_id, self.volume_id, self.log_file, self.date)
 
 
 class LogFileDetail(BASE):
@@ -95,7 +95,7 @@ class LogFileDetail(BASE):
         self.message = message
 
     def __repr__(self):
-        return "<LogFileDetail(snippet='%s',message='%s')>" % self.snippet, self.message
+        return "<LogFileDetail(snippet='%s',message='%s')>" % (self.snippet, self.message)
 
 
 class BFIDErrors(BASE):
@@ -111,7 +111,7 @@ class BFIDErrors(BASE):
     volumes = relationship("Volumes", back_populates="bfid_errors")
 
     def __repr__(self):
-        return "<BFIDErrors(bfid='%s',error='%s')>" % self.bfid, self.error
+        return "<BFIDErrors(bfid='%s',error='%s')>" % (self.bfid, self.error)
 
 
 class Migrated(BASE):
@@ -151,7 +151,7 @@ class Logging(BASE):
 
     def __repr__(self):
         return "<Logging(server='%s',process='%s',log_type='%s',message='%s')>" % \
-               self.server, self.process, self.log_type, self.message
+               (self.server, self.process, self.log_type, self.message)
 
 
 class MigrationScan(BASE):
