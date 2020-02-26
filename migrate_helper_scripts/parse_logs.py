@@ -17,6 +17,7 @@ LOG_DIRECTORY = CONFIG['Default']['log_dir']
 ARCHIVE_DIR = CONFIG['Archive']['archive_dir']
 DEBUG = False
 
+
 def get_date_time(log_file):
     """ get date and time from log file name """
     date_time_list = log_file.split(LOG_PREFIX)[1].split("#")[0].split(".")
@@ -37,6 +38,7 @@ def archive_error_message(message):
     """ Return True if special archive messages are found """
     archive_messages = [
         "does not exist in db",
+        "has a non-migration file family",
         "is NOTALLOWED",
     ]
 
