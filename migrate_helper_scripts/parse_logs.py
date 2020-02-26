@@ -95,6 +95,7 @@ def interpret_error_message(message):
         "FINAL_SCAN FINAL_SCAN_VOLUME",
         "FINAL_SCAN LOG_HISTORY_CLOSED did not set",
         "GET_INPUT_TARGETS can not find bfid of file-family-width",
+        "has a non-migration file family",
         "has not been swapped",
         'insert or update on table "migration" violates foreign key constraint "$2"',
         "is NOTALLOWED",
