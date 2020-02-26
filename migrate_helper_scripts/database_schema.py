@@ -258,7 +258,7 @@ def get_volumes_need_scanning(storage_group):
             MigrationState.storage_group == storage_group,
             MigrationState.migration_end.isnot(None),
             MigrationState.scanned.is_(None),
-            MigrationState.file_family.isnot(file_family_incomplete)).order_by(
+            MigrationState.file_family.notin_(file_family_incomplete)).order_by(
                 MigrationState.storage_group, MigrationState.file_family).all()
     if DEBUG:
         logging.info("volumes need scanning results %s", result)
