@@ -250,11 +250,15 @@ def get_volumes_need_scanning(storage_group):
     """ get volumes to scan based on storage group """
     volumes_need_scanning = set()
     session = SESSION()
+    file_family_incomplete = session.query(MigrationState.file_family).filter(
+        MigrationState.migration_end.is_(None)).subquery()
     result = \
         session.query(MigrationState).filter(
+            MigrationState.migration_type == 'MIG',
             MigrationState.storage_group == storage_group,
             MigrationState.migration_end.isnot(None),
-            MigrationState.scanned.is_(None)).order_by(
+            MigrationState.scanned.is_(None),
+            MigrationState.file_family.isnot(file_family_incomplete)).order_by(
                 MigrationState.storage_group, MigrationState.file_family).all()
     if DEBUG:
         logging.info("volumes need scanning results %s", result)
