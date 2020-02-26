@@ -5,6 +5,7 @@ from pprint import pprint
 from datetime import datetime, timedelta
 from sys import argv
 from configparser import ConfigParser
+import migrate_helper_scripts.check_running as check_running
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
@@ -12,8 +13,15 @@ CONFIG.read('config/config.conf')
 LOG_DIRECTORY = CONFIG['Default']['log_dir']
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 VOLUME_SERIAL_PREFIX = CONFIG['List']['volume_serial_prefix']
-FILE_MTIME_SHORT = timedelta(hours=12).total_seconds()
 FILE_MTIME_LONG = timedelta(days=2).total_seconds()
+
+
+def check_running_process(file_name):
+    """ check log file based on running process """
+    for process in check_running.main()[1]:
+        if process in file_name.split('#')[1]:
+            return True
+    return False
 
 
 def check_file_mtime(file_name, age):
@@ -23,12 +31,12 @@ def check_file_mtime(file_name, age):
     return bool(now.timestamp() - age > mtime)
 
 
-def find_files(volume_serials, file_age):
-    """ find files in log directory that look like MigrationLog and have a mtime """
+def find_files(volume_serials):
+    """ find files in log directory that look like MigrationLog and aren't running process """
     files_found = []
     with scandir(LOG_DIRECTORY) as the_dir:
         for file in the_dir:
-            if LOG_PREFIX in file.name and check_file_mtime(file.name, file_age):
+            if LOG_PREFIX in file.name and not check_running_process(file.name):
                 if volume_serials:
                     for volume in volume_serials:
                         if volume in file.name:
@@ -67,13 +75,13 @@ def select_specific_files(selection, file_list):
             if not file.endswith(".0"):
                 if not log_file_has_volume_serial(file):
                     selected.append(file)
-        elif selection == "archive":
-            if not file.endswith(".0"):
-                if log_file_has_volume_serial(file):
+        elif selection in ["archive", "archive-with-errors"]:
+            if log_file_has_volume_serial(file) and check_file_mtime(file, FILE_MTIME_LONG):
+                if selection == "archive":
+                    if not file.endswith(".0"):
+                        selected.append(file)
+                else:
                     selected.append(file)
-        elif selection == "archive-with-errors":
-            if log_file_has_volume_serial(file):
-                selected.append(file)
 
     return selected
 
@@ -89,13 +97,10 @@ def select_files(selection, file_list):
 
 
 def get_logs(command="all", volumes=False):
-    """ main function determine file age if archiving """
+    """ main function find files and return sorted list """
     if not volumes:
         volumes = set()
-    file_modified = FILE_MTIME_SHORT
-    if command in {'archive', 'archive-with-errors'}:
-        file_modified = FILE_MTIME_LONG
-    selected_files = select_files(command, find_files(volumes, file_modified))
+    selected_files = select_files(command, find_files(volumes))
 
     return sorted(selected_files, reverse=True)
 

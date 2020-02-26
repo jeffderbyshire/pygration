@@ -38,7 +38,7 @@ def write_run_file(commands, script_file, job):
 
 def run_file(script, start_run=False, job="Rerun"):
     """ run rerun file if # migration processes < 2 running """
-    if len(check_running.main()) > 1:
+    if len(check_running.main()[0]) > 1:
         start_run = False
     if start_run:
         run_result = subprocess.run(
@@ -56,9 +56,9 @@ def run_file(script, start_run=False, job="Rerun"):
     logging.info("%s enabled: %s and %s processes running",
                  job,
                  str(start_run),
-                 str(len(check_running.main())))
+                 str(len(check_running.main()[0])))
     logger("info", "Run %s %s and %s processes running" %
-           (job, str(start_run), str(len(check_running.main()))))
+           (job, str(start_run), str(len(check_running.main()[0]))))
 
 
 def check_pnfs(volume):
@@ -121,7 +121,7 @@ def is_volume_running(volume):
 
 def rerun(volumes, start_rerun=False):
     """ build rerun script and run if disk space free > 60 % and < 2 processes running """
-    volumes_dict = {'added': check_running.main(), 'rerun': set(), 'msg': set()}
+    volumes_dict = {'added': check_running.main()[0], 'rerun': set(), 'msg': set()}
     commands_dict = {}
     for log in tqdm(list_logs.get_logs('errors', volumes), desc='Build Rerun:'):
         logging.info("%s", log)

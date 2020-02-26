@@ -9,7 +9,7 @@ import migrate_helper_scripts.database_schema as database
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 RUNNING = CONFIG['Process']['running']
-DEBUG = True
+DEBUG = False
 
 
 def main():
@@ -17,6 +17,7 @@ def main():
     :return: volume serials if other migrate_chimera process found
     """
     volumes_running = []
+    process_running = []
     processes = subprocess.run(
         [
             'ps',
@@ -30,13 +31,14 @@ def main():
                 logging.info("%s", process.split())
             try:
                 volumes_running.append(process.split()[-1])
+                process_running.append(process.split()[0])
             except IndexError:
                 pass
 
     if volumes_running:
         database.update_running(socket.gethostname(), volumes_running)
 
-    return volumes_running
+    return volumes_running, process_running
 
 
 if __name__ == "__main__":
