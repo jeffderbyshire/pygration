@@ -52,7 +52,7 @@ def count_error_logs():
 
 def report_status():
     """ print and call """
-    pprint({'running': len(check_running.main()),
+    pprint({'running': len(check_running.main()[0]),
             'disk space': check_disk_space(),
             'unprocessed logs': len(list_logs.get_logs('no-errors')),
             'archived': len(fetch_archived_logs()),
