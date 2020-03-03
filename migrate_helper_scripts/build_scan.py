@@ -11,7 +11,6 @@ import migrate_helper_scripts.build_rerun as build_rerun
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 SCAN_SCRIPT_DIR = CONFIG['Default']['log_dir'] + 'scans/'
-DEBUG = True
 
 
 def scan(storage_group):
@@ -21,8 +20,7 @@ def scan(storage_group):
         shutil.rmtree(SCAN_SCRIPT_DIR)
     os.mkdir(SCAN_SCRIPT_DIR)
     volumes = database.get_volumes_need_scanning(storage_group)
-    if DEBUG:
-        logging.info("storage group %s volumes %s", storage_group, volumes)
+    logging.debug("storage group %s volumes %s", storage_group, volumes)
     for volume in tqdm(volumes, desc='Build Scan'):
         commands[volume] = '/opt/enstore/src/migrate_chimera.py --scan --check-only-meta'
     build_rerun.write_run_file(commands, SCAN_SCRIPT_DIR + storage_group, "scan")

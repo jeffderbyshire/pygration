@@ -13,7 +13,6 @@ ENGINE = create_engine('postgresql+psycopg2://' + CONFIG['Default']['database'])
 SESSION_FACTORY = sessionmaker(bind=ENGINE)
 SESSION = scoped_session(SESSION_FACTORY)
 BASE = declarative_base()
-DEBUG = True
 
 
 class Servers(BASE):
@@ -261,16 +260,13 @@ def get_volumes_need_scanning(storage_group):
             MigrationState.scanned.is_(None),
             MigrationState.file_family.notin_(file_family_incomplete)).order_by(
                 MigrationState.storage_group, MigrationState.file_family).all()
-    if DEBUG:
-        logging.info("volumes need scanning results %s", result)
+    logging.debug("volumes need scanning results %s", result)
     for row in result:
         volumes = row.destination_volumes.split()
-        if DEBUG:
-            logging.info("volumes %s", volumes)
+        logging.debug("volumes %s", volumes)
         for volume in volumes:
             insert_update_migration_scan({"scan_volume": volume})
-            if DEBUG:
-                logging.info("volume has been scanned %s", has_volume_been_scanned(volume))
+            logging.debug("volume has been scanned %s", has_volume_been_scanned(volume))
             if not has_volume_been_scanned(volume):
                 volumes_need_scanning.add(volume)
 
