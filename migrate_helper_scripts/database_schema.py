@@ -265,8 +265,12 @@ def get_volumes_need_scanning(storage_group):
         logging.info("volumes need scanning results %s", result)
     for row in result:
         volumes = row.destination_volumes.split()
+        if DEBUG:
+            logging.info("volumes %s", volumes)
         for volume in volumes:
             insert_update_migration_scan({"scan_volume": volume})
+            if DEBUG:
+                logging.info("volume has been scanned %s", has_volume_been_scanned(volume))
             if not has_volume_been_scanned(volume):
                 volumes_need_scanning.add(volume)
 
