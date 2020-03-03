@@ -119,11 +119,11 @@ def is_volume_running(volume):
     return False
 
 
-def rerun(volumes, start_rerun=False):
+def rerun(volumes, start_rerun=False, quiet=False):
     """ build rerun script and run if disk space free > 60 % and < 2 processes running """
     volumes_dict = {'added': check_running.main()[0], 'rerun': set(), 'msg': set()}
     commands_dict = {}
-    for log in tqdm(list_logs.get_logs('errors', volumes), desc='Build Rerun:'):
+    for log in tqdm(list_logs.get_logs('errors', volumes), disable=quiet, desc='Build Rerun:'):
         logging.debug("%s", log)
         rerun_dict = {
             'first': list(),

@@ -11,5 +11,5 @@ setup(
     author_email='jeffderb@fnal.gov',
     url='https://hepcloud-git.fnal.gov:8443/jeffderb/migration-helper',
     packages=find_packages(exclude=('tests', 'config', 'db', 'build', 'dist')),
-    install_requires=['click', 'ConfigParser', 'sqlalchemy', 'tqdm']
+    install_requires=['click', 'ConfigParser', 'psycopg2', 'sqlalchemy', 'tqdm']
 )

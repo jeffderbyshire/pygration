@@ -12,12 +12,12 @@ SCAN_DBS = CONFIG['Unity_Import']['scan_dbs'].split('|')
 STATE_DBS = CONFIG['Unity_Import']['state_dbs'].split('|')
 
 
-def db_import():
+def db_import(quiet=False):
     """ main function parse unity db files and insert or update dbs """
     format_date = '%Y%m%d'
     for scan_file in SCAN_DBS:
         with open(UNITY_DIR + scan_file) as file:
-            for line in tqdm(file.readlines(), desc='import ' + scan_file):
+            for line in tqdm(file.readlines(), disable=quiet, desc='import ' + scan_file):
                 record = {}
                 line = line.split(':')
                 record['scan_volume'] = line[0]
@@ -36,7 +36,7 @@ def db_import():
 
     for migration_file in STATE_DBS:
         with open(UNITY_DIR + migration_file) as file:
-            for line in tqdm(file.readlines(), desc='import ' + migration_file):
+            for line in tqdm(file.readlines(), disable=quiet, desc='import ' + migration_file):
                 record = {}
                 line = line.split(':')
                 record['source_volume'] = line[0]

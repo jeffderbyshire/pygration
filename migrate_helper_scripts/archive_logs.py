@@ -21,15 +21,15 @@ def get_year_month(log_name):
     return "/".join(log_name.split('-')[0:2])
 
 
-def remove_db_entries(volumes):
+def remove_db_entries(volumes, quiet):
     """ connect to sqlite db and remove entries with volume serials that were archived """
     total = 0
-    for volume in tqdm(volumes, desc='Delete from db'):
+    for volume in tqdm(volumes, disable=quiet, desc='Delete from db'):
         total += database.delete_volume_name(volume)
     return total
 
 
-def archive(command="archive", volumes=False):
+def archive(command="archive", volumes=False, quiet=False):
     """ main archive function
     make path with LOG Directory / year / month
     gzip log file and mv to archive path and delete log file
@@ -38,7 +38,7 @@ def archive(command="archive", volumes=False):
     totals = collections.Counter()
     volumes = []
     if logs:
-        for log in tqdm(logs, desc='Archive Logs(' + command + '):'):
+        for log in tqdm(logs, disable=quiet, desc='Archive Logs(' + command + '):'):
             year_month = get_year_month(log)
             os.makedirs(LOG_DIRECTORY + ARCHIVE_DIR + year_month, exist_ok=True)
             log_file_path = LOG_DIRECTORY + log
@@ -62,7 +62,7 @@ def archive(command="archive", volumes=False):
     else:
         return {'logs found': logs}
 
-    totals['db_removed'] = remove_db_entries(volumes)
+    totals['db_removed'] = remove_db_entries(volumes, quiet)
 
     return totals
 

@@ -23,10 +23,10 @@ LOG_DIR = CONFIG['Default']['log_dir']
 BFID_CLEANUP = 'found()[]\'\":,(current\'{}'
 
 
-def too_many_logs(server, too_many_list):
+def too_many_logs(server, too_many_list, quiet=False):
     """ Connect to sqlite db and insert server, volume serial, and log file details"""
     all_volumes = {}
-    for volume in tqdm(too_many_list, desc='> 2 Errors:'):
+    for volume in tqdm(too_many_list, disable=quiet, desc='> 2 Errors:'):
         volume_dict = {'bfid': set(), 'pnfs': set(), 'server_id': database.get_node_id(server),
                        'volume_id': database.get_volume_id(volume)}
         error_logs = list_logs.get_logs("errors", {volume})
@@ -94,14 +94,15 @@ def file_migration_status(bfid):
     return status
 
 
-def detail_error_messages(all_dict):
+def detail_error_messages(all_dict, quiet=False):
     """ receive error list and run enstore commands against volume serials, bfids, and pnfs """
     bfids = set()
     for volume in all_dict:
         if bool(all_dict[volume]['bfid']):
             volume_id = database.get_volume_id(volume)
             if not database.volume_id_in_bfid_errors(volume_id):
-                for bfid in tqdm(all_dict[volume]['bfid'], desc='Testing BFIDs on ' + volume):
+                for bfid in tqdm(all_dict[volume]['bfid'], disable=quiet,
+                                 desc='Testing BFIDs on ' + volume):
                     bfid = bfid.strip(BFID_CLEANUP)
                     if not database.does_bfid_exist(bfid):
                         database.insert_bfid_errors(volume_id, bfid, '')
@@ -119,12 +120,12 @@ def process(server, quiet=False, rerun=False):
     output = see_errors.see_errors()
     logs = parse_logs.parse_logs(output)
     if logs['archive']:
-        archive_count = archive_logs.archive("archive-with-errors", sorted(logs['archive']))
+        archive_count = archive_logs.archive("archive-with-errors", sorted(logs['archive']), quiet)
     if logs['rerun']:
-        rerun_logs = build_rerun.rerun(logs['rerun'], rerun)
+        rerun_logs = build_rerun.rerun(logs['rerun'], rerun, quiet)
     if logs['too_many']:
-        all_errors = too_many_logs(server, sorted(logs['too_many']))
-        errors = detail_error_messages(all_errors)
+        all_errors = too_many_logs(server, sorted(logs['too_many']), quiet)
+        errors = detail_error_messages(all_errors, quiet)
 
     if not quiet:
         logging.info("Node: %s", server)

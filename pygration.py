@@ -40,16 +40,17 @@ def main(logs, process, quiet, check, scan):
         pprint.pprint(list_logs.get_logs(logs))
 
     if process in ['all', 'fix', 'status']:
-        migration_status.report_status()
+        if not quiet:
+            migration_status.report_status()
         if process == 'fix':
             fix_archives.main()
-            migration_status.report_status()
         elif process == 'all':
             migration_logs.process(server=server, quiet=quiet, rerun=True)
+        if not quiet:
             migration_status.report_status()
 
     if process in ['import']:
-        unity.db_import()
+        unity.db_import(quiet)
 
     if scan:
         unity.db_import()
