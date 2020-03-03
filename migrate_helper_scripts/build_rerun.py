@@ -113,7 +113,7 @@ def is_volume_running(volume):
     """ check if volume is not in database get running """
     running = database.get_running()
     for volume_running in running:
-        logging.info("volume %s vs running %s", str(volume), str(volume_running))
+        logging.debug("volume %s vs running %s", str(volume), str(volume_running))
         if volume in str(volume_running):
             return True
     return False

@@ -15,7 +15,6 @@ CONFIG.read('config/config.conf')
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 LOG_DIRECTORY = CONFIG['Default']['log_dir']
 ARCHIVE_DIR = CONFIG['Archive']['archive_dir']
-DEBUG = False
 
 
 def get_date_time(log_file):
@@ -64,8 +63,7 @@ def rerun_error_message(message):
     ]
 
     for rerun in rerun_messages:
-        if DEBUG:
-            logging.info("check rerun condition %s message is %s", rerun, message)
+        logging.debug("check rerun condition %s message is %s", rerun, message)
         if rerun in message:
             return True
 
@@ -158,36 +156,25 @@ def parse_logs(logs):
     for line in tqdm(logs, desc='Reading Errors:'):
         if len(line) > 10:
             volume_serial, log_error_message = line.split(" ---- ")
-            if DEBUG:
-                logging.info("%s", volume_serial)
-            # print(split_line)
-            # if len(x) > 0:
+            logging.debug("%s", volume_serial)
             log_error_message_snippet = interpret_error_message(log_error_message)
             if log_error_message_snippet is False:
                 log_error_message_snippet = no_error
             counter[volume_serial, log_error_message_snippet] += 1
-    # leave for debugging pprint.pprint(counter, indent=1)
-    # 1. Archive Logs if No errors found
-    for [vol, msg] in tqdm(list(counter), desc='Archive Check:'):
+
+    for [vol, msg] in tqdm(list(counter), desc='Archive / Rerun / Too Many'):
+        logging.debug("checking volume %s message is %s", vol, msg)
         if database.volume_is_migrated(vol) \
                 or is_vol_archived(vol) \
                 or archive_error_message(msg) \
                 or check_migration_status(vol):
             logs_list['archive'].add(vol)
-            for vol_2, msg_2 in list(counter):
-                if vol == vol_2:
-                    # print(vol_2, msg_2)
-                    key = (vol_2, msg_2)
-                    del counter[key]
-    # leave for debugging pprint.pprint(counter, indent=1)
-    for [vol, msg] in tqdm(list(counter), desc='Rerun Check:'):
-        if DEBUG:
-            logging.info("checking volume %s message is %s", vol, msg)
-        if rerun_error_message(msg):
+        elif rerun_error_message(msg):
             logging.info("volume %s rerun for %s", vol, msg)
             logs_list['rerun'].add(vol)
         else:
+            logging.info("volume %s too many for %s", vol, msg)
             logs_list['too_many'].add(vol)
 
-    logging.info("%s", logs_list)
+    logging.debug("%s", logs_list)
     return logs_list
