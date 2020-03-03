@@ -19,6 +19,7 @@ import migrate_helper_scripts.build_scan as build_scan
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 LOG_DIR = CONFIG['Default']['log_dir']
+DEBUG = True
 
 logging.basicConfig(filename=LOG_DIR + "/reruns/migration.log",
                     format='%(asctime)s %(levelname)s:%(message)s',
@@ -52,7 +53,8 @@ def main(logs, process, quiet, check, scan):
         unity.db_import()
 
     if scan:
-        unity.db_import()
+        if not DEBUG:
+            unity.db_import()
         build_scan.scan(scan)
 
     if check:

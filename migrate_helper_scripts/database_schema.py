@@ -243,7 +243,7 @@ def has_volume_been_scanned(volume):
     """ check scan table for volume and if scan has started """
     session = SESSION()
     return bool(session.query(MigrationScan).filter(
-        MigrationScan.scan_volume == volume, MigrationScan.scan_start.is_(None)).count())
+        MigrationScan.scan_volume == volume, MigrationScan.scan_start.isnot(None)).count())
 
 
 def get_volumes_need_scanning(storage_group):
