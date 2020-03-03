@@ -162,7 +162,7 @@ def parse_logs(logs):
                 log_error_message_snippet = no_error
             counter[volume_serial, log_error_message_snippet] += 1
 
-    for [vol, msg] in tqdm(list(counter), desc='Archive / Rerun / Too Many'):
+    for [vol, msg] in tqdm(list(counter), desc='Sorting: Archive <=> Rerun <=> Too Many'):
         logging.debug("checking volume %s message is %s", vol, msg)
         if database.volume_is_migrated(vol) \
                 or is_vol_archived(vol) \
@@ -173,7 +173,7 @@ def parse_logs(logs):
             logging.info("volume %s rerun for %s", vol, msg)
             logs_list['rerun'].add(vol)
         else:
-            logging.info("volume %s too many for %s", vol, msg)
+            logging.debug("volume %s too many for %s", vol, msg)
             logs_list['too_many'].add(vol)
 
     logging.debug("%s", logs_list)
