@@ -13,7 +13,7 @@ ENGINE = create_engine('postgresql+psycopg2://' + CONFIG['Default']['database'])
 SESSION_FACTORY = sessionmaker(bind=ENGINE)
 SESSION = scoped_session(SESSION_FACTORY)
 BASE = declarative_base()
-DEBUG = False
+DEBUG = True
 
 
 class Servers(BASE):
