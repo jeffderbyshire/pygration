@@ -251,7 +251,8 @@ def get_volumes_need_scanning(storage_group):
     volumes_need_scanning = set()
     session = SESSION()
     file_family_incomplete = session.query(MigrationState.file_family).filter(
-        MigrationState.migration_end.is_(None)).subquery()
+        MigrationState.migration_end.is_(None),
+        MigrationState.storage_group == storage_group).subquery()
     result = \
         session.query(MigrationState).filter(
             MigrationState.migration_type == 'MIG',
