@@ -53,7 +53,6 @@ def main(logs, process, quiet, check, scan):
         unity.db_import(quiet)
 
     if scan:
-        unity.db_import()
         build_scan.scan(scan)
 
     if check:
