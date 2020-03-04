@@ -13,7 +13,7 @@ CONFIG.read('config/config.conf')
 LOG_DIRECTORY = CONFIG['Default']['log_dir']
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 VOLUME_SERIAL_PREFIX = CONFIG['List']['volume_serial_prefix']
-FILE_MTIME_LONG = timedelta(days=2).total_seconds()
+FILE_MTIME_LONG = timedelta(days=1).total_seconds()
 
 
 def check_running_process(file_name):
