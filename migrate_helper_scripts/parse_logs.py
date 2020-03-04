@@ -167,7 +167,8 @@ def parse_logs(logs):
         if database.volume_is_migrated(vol) \
                 or is_vol_archived(vol) \
                 or archive_error_message(msg) \
-                or check_migration_status(vol):
+                or check_migration_status(vol)\
+                or database.has_volume_been_scanned(vol):
             logs_list['archive'].add(vol)
         elif rerun_error_message(msg):
             logging.info("volume %s rerun for %s", vol, msg)
