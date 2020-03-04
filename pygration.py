@@ -22,7 +22,7 @@ LOG_DIR = CONFIG['Default']['log_dir']
 
 logging.basicConfig(filename=LOG_DIR + "/reruns/migration.log",
                     format='%(asctime)s %(levelname)s:%(message)s',
-                    level=logging.DEBUG)
+                    level=logging.INFO)
 
 
 @click.command()
