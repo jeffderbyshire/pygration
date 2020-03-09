@@ -349,6 +349,13 @@ def volume_id_in_bfid_errors(volume_id):
     return bool(session.query(BFIDErrors).filter(BFIDErrors.volume_id == volume_id).count())
 
 
+def volume_in_log_files(volume):
+    """ check if volume in log files """
+    volume_id = get_volume_id(volume)
+    session = SESSION()
+    return bool(session.query(LogFiles).filter(LogFiles.volume_id == volume_id).count())
+
+
 def volume_is_migrated(volume):
     """ check if volume serial exists in migrated table """
     session = SESSION()
