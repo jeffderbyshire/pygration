@@ -21,4 +21,5 @@ unity_dir = /path/to/unity/files
 scan_dbs = scan_db1|scan_db2
 state_dbs = state_db1|state_db2
 
-
+[Scan]
+tape_type = Type1|Type2
