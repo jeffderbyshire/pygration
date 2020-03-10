@@ -56,6 +56,7 @@ def rerun_error_message(message):
         "No Error Found in Log File",
         'Noticed the local file inode changed',
         'pg.ProgrammingError',
+        'SWAPPING_METADATA no file record found',
         "TIMEOUT",
         "TIMEDOUT",
         "TOO MANY RETRIES",

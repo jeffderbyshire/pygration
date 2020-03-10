@@ -2,20 +2,24 @@
 
 import pprint
 from paramiko import client
-from paramiko import ssh_gss
 
-ssh = client.SSHClient()
-ssh.set_missing_host_key_policy(client.AutoAddPolicy())
-ssh.connect(hostname='fdm1801.fnal.gov',
-            username='root',
-            gss_auth=True)
-stdin, stdout, stderr = ssh.exec_command("ps ww", get_pty=True)
-stdin.close()
-output = []
-for line in stdout.readlines():
-    output.append(line.strip())
-exit_status = stdout.channel.recv_exit_status()
-ssh.close()
-if exit_status and raise_error:
-    raise OSError(exit_status, output)
-pprint.pprint(output)
+
+def connect_ssh(node, command):
+    """ connect to node and run command.  Return output """
+    ssh = client.SSHClient()
+    ssh.set_missing_host_key_policy(client.AutoAddPolicy())
+    ssh.connect(hostname=node,
+                username='root',
+                gss_auth=True)
+    stdin, stdout, stderr = ssh.exec_command(command, get_pty=True)
+    stdin.close()
+    output = {"stdout": list(stdout), "stderr": list(stderr)}
+    exit_status = stdout.channel.recv_exit_status()
+    ssh.close()
+    if exit_status:
+        raise OSError(exit_status, output)
+    return output
+
+
+if __name__ == '__main__':
+    pprint.pprint(connect_ssh('fdm1801.fnal.gov', 'df -h'))

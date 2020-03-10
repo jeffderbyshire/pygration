@@ -5,6 +5,7 @@
     count of volume serials with errors
 """
 
+import subprocess
 from shutil import disk_usage
 from configparser import ConfigParser
 from pprint import pprint
@@ -17,6 +18,42 @@ CONFIG.read('config/config.conf')
 LOG_DIRECTORY = CONFIG['Default']['log_dir']
 LOG_PREFIX = CONFIG['Default']['log_prefix']
 ARCHIVE_DIR = CONFIG['Archive']['archive_dir']
+
+
+def fetch_df_mounts():
+    """ fetch df mounts """
+    output = {"pnfs": set(), "var": list(), "header": list(), "data": set()}
+    pnfs_mount = subprocess.run(
+        [
+            'df',
+            '-h'
+        ],
+        timeout=5,
+        caputure_output=True
+    )
+    for row in pnfs_mount.stdout.decode():
+        if 'Filesystem' in row:
+            output['header'] = row.split()
+        elif 'var' in row:
+            output['var'] = row.split()
+        elif 'data' in row:
+            output['data'].add(row.split())
+        elif 'pnfs' in row:
+            output['pnfs'].add((row.split()[0], row.split()[-1]))
+
+    return output
+
+
+def check_uptime():
+    """ check uptime and return """
+    uptime_result = subprocess.run(
+        [
+            'uptime'
+        ],
+        timeout=5,
+        capture_output=True
+    )
+    return uptime_result.stdout.decode()
 
 
 def check_disk_space():
