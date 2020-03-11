@@ -148,13 +148,13 @@ def check_migration_status(volume):
     return False
 
 
-def parse_logs(logs):
+def parse_logs(logs, quiet=False):
     """ Parse logs """
     no_error = "No Error Found in Log File"
     logs_list = {'archive': set([]), 'rerun': set([]), 'too_many': set([])}
     counter = collections.Counter()
 
-    for line in tqdm(logs, desc='Reading Errors:'):
+    for line in tqdm(logs, desc='Reading Errors:', disable=quiet):
         if len(line) > 10:
             volume_serial, log_error_message = line.split(" ---- ")
             logging.debug("%s", volume_serial)
@@ -163,7 +163,8 @@ def parse_logs(logs):
                 log_error_message_snippet = no_error
             counter[volume_serial, log_error_message_snippet] += 1
 
-    for [vol, msg] in tqdm(list(counter), desc='Sorting: Archive <=> Rerun <=> Too Many'):
+    for [vol, msg] in tqdm(list(counter), disable=quiet,
+                           desc='Sorting: Archive <=> Rerun <=> Too Many'):
         logging.debug("checking volume %s message is %s", vol, msg)
         if database.volume_is_migrated(vol) \
                 or is_vol_archived(vol) \

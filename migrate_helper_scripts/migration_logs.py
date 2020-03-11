@@ -124,7 +124,7 @@ def process(server, quiet=False, rerun=False):
     errors = set()
     archive_logs.archive("archive")
     output = see_errors.see_errors()
-    logs = parse_logs.parse_logs(output)
+    logs = parse_logs.parse_logs(output, quiet)
     if logs['archive']:
         archive_count = archive_logs.archive("archive-with-errors", sorted(logs['archive']), quiet)
     if logs['rerun']:
