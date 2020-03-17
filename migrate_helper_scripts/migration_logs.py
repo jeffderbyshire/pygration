@@ -133,11 +133,10 @@ def process(server, quiet=False, rerun=False):
         all_errors = too_many_logs(server, sorted(logs['too_many']), quiet)
         errors = detail_error_messages(all_errors, quiet)
 
-    if not quiet:
-        logging.info("Node: %s", server)
-        logging.info("archive logs %s", len(logs['archive']))
-        logging.info("rerun %s", len(logs['rerun']))
-        logging.info("foobar %s", len(logs['too_many']))
-        logging.info("new bfid errors %s", len(errors))
-        logging.info("archived with errors %s", archive_count)
-        logging.info("Rerun %s volumes", len(rerun_logs['rerun']))
+    logging.info("Node: %s", server)
+    logging.info("archive logs %s", len(logs['archive']))
+    logging.info("rerun %s", len(logs['rerun']))
+    logging.info("foobar %s", len(logs['too_many']))
+    logging.info("new bfid errors %s", len(errors))
+    logging.info("archived with errors %s", archive_count)
+    logging.info("Rerun %s volumes", len(rerun_logs['rerun']))
