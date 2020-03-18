@@ -23,3 +23,4 @@ state_dbs = state_db1|state_db2
 
 [Scan]
 tape_type = Type1|Type2
+scan_script = /path/to/scan/script

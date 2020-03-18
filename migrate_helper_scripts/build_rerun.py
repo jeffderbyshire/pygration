@@ -28,6 +28,7 @@ def write_run_file(commands, script_file, job):
     """ write rerun file with dictionary of commands[volume] = command """
     file = open(script_file, "w")
     file.write("#!/usr/bin/env bash\n{\ncd /var/migration\nsource /home/enstore/.bashrc\n")
+    file.write("# %s\n" % job)
     for volume, command in commands.items():
         file.write("/opt/enstore/Python/bin/python %s %s\n" % (command, volume))
     file.write('\nexit\n}\n')
