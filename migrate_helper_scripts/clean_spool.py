@@ -26,6 +26,7 @@ def clean(quiet=False):
                     if parse_logs.check_migration_status(volume):
                         logging.info("cleaning spool of volume:%s", volume)
                         for file in the_dir:
+                            print(volume, file.name)
                             if volume in file.name:
                                 print(dir_path + file.name)  # unlink(dir_path + file)
 
