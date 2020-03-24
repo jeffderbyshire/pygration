@@ -17,6 +17,7 @@ def clean(quiet=False):
     volume_serials = set()
     for number in range(1, 3):
         dir_path = '/data/data' + str(number) + SPOOL_DIRECTORY
+        print(dir_path)
         if path.isdir(dir_path):
             with scandir(dir_path) as the_dir:
                 for file in tqdm(the_dir, desc='Checking Spool', disable=quiet):
