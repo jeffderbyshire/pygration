@@ -2,7 +2,7 @@
 
 import logging
 import glob
-from os import scandir, path
+from os import scandir, path, unlink
 from configparser import ConfigParser
 from tqdm import tqdm
 import migrate_helper_scripts.parse_logs as parse_logs
@@ -26,11 +26,7 @@ def clean(quiet=False):
                 for volume in tqdm(volume_serials, desc='Checking volumes', disable=quiet):
                     if parse_logs.check_migration_status(volume):
                         logging.info("cleaning spool of volume:%s", volume)
-                        print(glob.glob(dir_path + volume + '*'))
-                        for file in the_dir:
-                            print(volume, file.name)
-                            if volume in file.name:
-                                print(dir_path + file.name)  # unlink(dir_path + file)
+                        map(unlink, glob.glob(dir_path + volume + '*'))
 
 
 if __name__ == "__main__":
