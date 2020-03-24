@@ -313,9 +313,11 @@ def get_log_file_id(server_id, volume_id, log_file, date):
 def insert_migrated(volume):
     """ insert volume into migrated table """
     session = SESSION()
-    migrated_volume = Migrated(volume=volume)
-    session.add(migrated_volume)
-    session.commit()
+    volume_migrated = session.query(Migrated).filter_by(volume=volume).first()
+    if not volume_migrated:
+        migrated_volume = Migrated(volume=volume)
+        session.add(migrated_volume)
+        session.commit()
 
 
 def insert_log_file_detail(log_details):
