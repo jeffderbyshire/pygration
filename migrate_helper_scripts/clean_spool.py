@@ -21,6 +21,7 @@ def clean(quiet=False):
         if path.isdir(dir_path):
             with scandir(dir_path) as the_dir:
                 for file in tqdm(the_dir, desc='Checking Spool', disable=quiet):
+                    print(file)
                     volume_serials.add(file.split(':')[0])
                 logging.info("clean spool of #%s", len(volume_serials))
                 for volume in tqdm(volume_serials, desc='Checking volumes', disable=quiet):
