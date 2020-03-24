@@ -15,7 +15,7 @@ SPOOL_DIRECTORY = CONFIG['Default']['spool_dir']
 def clean(quiet=False):
     """ check migration spool, find volumes and check migration status, then unlink """
     volume_serials = set()
-    for number in range(1, 3):
+    for number in range(1, 4):
         dir_path = '/data/data' + str(number) + SPOOL_DIRECTORY
         print(dir_path)
         if path.isdir(dir_path):
