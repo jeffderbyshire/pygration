@@ -2,6 +2,7 @@
 log_dir = /path/to/logs
 database = user:password@host:port/database
 log_prefix = LogFilePrefix
+spool_dir = /spool/dir/
 
 [Archive]
 archive_dir = archive-log-path/
