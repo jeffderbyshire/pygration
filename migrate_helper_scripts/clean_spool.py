@@ -16,12 +16,14 @@ SPOOL_DIRECTORY = CONFIG['Default']['spool_dir']
 def clean(quiet=False):
     """ check migration spool, find volumes and check migration status, then unlink """
     volume_serials = set()
+    valid_spools = set()
     for number in range(1, 4):
-        try:
-            dir_path = Path('/data/data' + str(number) + SPOOL_DIRECTORY)
-        except OSError:
-            continue
-        for the_dir in dir_path.iterdir():
+        dir_path = Path('/data/data' + str(number) + SPOOL_DIRECTORY)
+        if dir_path.is_dir():
+            valid_spools.add(dir_path)
+
+    for spool in valid_spools:
+        for the_dir in spool.iterdir():
             for file in tqdm(the_dir, desc='Checking Spool', disable=quiet):
                 print(file)
                 exit()
