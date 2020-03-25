@@ -24,6 +24,8 @@ def clean(quiet=False):
 
     for spool in valid_spools:
         for the_dir in spool.iterdir():
+            print(the_dir)
+            exit()
             for file in tqdm(the_dir, desc='Checking Spool', disable=quiet):
                 print(file)
                 exit()
