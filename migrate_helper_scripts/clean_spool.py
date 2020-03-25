@@ -23,7 +23,7 @@ def clean(quiet=False):
             valid_spools.add(dir_path)
 
     for spool in valid_spools:
-        for file in tqdm(spool.iterdir(), desc='Checking Spool', disable=quiet):
+        for file in spool.iterdir():
             volume_serials.add(file.name.split(':')[0])
 
         logging.info("spool contains %s volumes", len(volume_serials))
@@ -32,7 +32,7 @@ def clean(quiet=False):
                     or parse_logs.check_migration_status(volume):
                 logging.info("cleaning spool of volume:%s", volume)
                 for spool_file in \
-                        spool.glob(volume + '*'):
+                        tqdm(spool.glob(volume + '*'), desc='Unlink Files', disable=quiet):
                     spool_file.unlink()
 
 
