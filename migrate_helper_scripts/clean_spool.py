@@ -20,7 +20,7 @@ def clean(quiet=False):
         try:
             dir_path = Path('/data/data' + str(number) + SPOOL_DIRECTORY)
         except OSError:
-            pass
+            break
         for the_dir in dir_path.iterdir():
             for file in tqdm(the_dir, desc='Checking Spool', disable=quiet):
                 print(file)
