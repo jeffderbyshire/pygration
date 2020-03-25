@@ -6,6 +6,7 @@ from os import scandir, path, unlink
 from configparser import ConfigParser
 from tqdm import tqdm
 import migrate_helper_scripts.parse_logs as parse_logs
+import migrate_helper_scripts.database_schema as database
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
@@ -24,7 +25,8 @@ def clean(quiet=False):
                     volume_serials.add(file.name.split(':')[0])
                 logging.info("spool contains %s volumes", len(volume_serials))
                 for volume in tqdm(volume_serials, desc='Checking volumes', disable=quiet):
-                    if parse_logs.check_migration_status(volume):
+                    if database.volume_is_migrated(volume) \
+                            or parse_logs.check_migration_status(volume):
                         logging.info("cleaning spool of volume:%s", volume)
                         map(unlink, glob.glob(dir_path + volume + '*'))
 
