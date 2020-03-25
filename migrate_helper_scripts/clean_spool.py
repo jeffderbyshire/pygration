@@ -32,7 +32,7 @@ def clean(quiet=False):
                     or parse_logs.check_migration_status(volume):
                 logging.info("cleaning spool of volume:%s", volume)
                 for spool_file in \
-                        tqdm(spool.glob(volume + '*'), desc='Unlink Files', disable=quiet):
+                        spool.glob(volume + '*'):
                     spool_file.unlink()
 
 
