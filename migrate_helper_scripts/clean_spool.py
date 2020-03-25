@@ -24,18 +24,20 @@ def clean(quiet=False):
 
     for spool in valid_spools:
         for file in tqdm(spool.iterdir(), desc='Checking Spool', disable=quiet):
-            volume_serials.add(file.name.split('/')[-1].split(':')[0])
-            logging.info("spool contains %s volumes", len(volume_serials))
-            print(volume_serials)
-            for volume in tqdm(volume_serials, desc='Checking volumes', disable=quiet):
-                if database.volume_is_migrated(volume) \
-                        or parse_logs.check_migration_status(volume):
-                    logging.info("cleaning spool of volume:%s", volume)
-                    for spool_file in dir_path.glob('/' + volume + '*'):
-                        print(spool_file)
-                        print(spool_file.name)
-                        exit()
-                        spool_file.unlink()
+            volume_serials.add(file.name.split(':')[0])
+
+        logging.info("spool contains %s volumes", len(volume_serials))
+        print(volume_serials)
+        for volume in tqdm(volume_serials, desc='Checking volumes', disable=quiet):
+            if database.volume_is_migrated(volume) \
+                    or parse_logs.check_migration_status(volume):
+                logging.info("cleaning spool of volume:%s", volume)
+                for spool_file in \
+                        spool.glob(volume + '*'):
+                    print(spool_file)
+                    print(spool_file.name)
+                    exit()
+                    spool_file.unlink()
 
 
 if __name__ == "__main__":
