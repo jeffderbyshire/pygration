@@ -24,7 +24,7 @@ def clean(quiet=False):
 
     for spool in valid_spools:
         for file in tqdm(spool.iterdir(), desc='Checking Spool', disable=quiet):
-            volume_serials.add(file.split('/')[-1].split(':')[0])
+            volume_serials.add(file.name.split('/')[-1].split(':')[0])
             logging.info("spool contains %s volumes", len(volume_serials))
             print(volume_serials)
             for volume in tqdm(volume_serials, desc='Checking volumes', disable=quiet):
@@ -33,6 +33,7 @@ def clean(quiet=False):
                     logging.info("cleaning spool of volume:%s", volume)
                     for spool_file in dir_path.glob('/' + volume + '*'):
                         print(spool_file)
+                        print(spool_file.name)
                         exit()
                         spool_file.unlink()
 
