@@ -27,12 +27,13 @@ def main():
             else:
                 file_size = int(os.path.getsize(file_name))
             handle.seek(-1 * file_size, 2)
-            last = handle.readlines()[-1].decode().split()
-            if len(last) > 8:
-                if (last[7] + last[8]) == "setcomment":
-                    volume = volume
-                else:
-                    volume = volume + error
+            last_lines = handle.readlines()[-6:]
+            for line in last_lines:
+                last = line.decode().split()
+                if len(last) > 8:
+                    if (last[7] + last[8]) == "setcomment":
+                        volume = volume
+                        break
             else:
                 volume = volume + error
 
