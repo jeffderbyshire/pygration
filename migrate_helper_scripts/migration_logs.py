@@ -135,8 +135,8 @@ def process(server, quiet=False, rerun=False):
 
     logging.info("Node: %s", server)
     logging.info("archive logs %s", len(logs['archive']))
-    logging.info("rerun %s", len(logs['rerun']))
-    logging.info("foobar %s", len(logs['too_many']))
+    logging.info("Possible Rerun %s volumes: %s", len(logs['rerun']), logs['rerun'])
+    logging.info("Stuck in Error State %s", len(logs['too_many']))
     logging.info("new bfid errors %s", len(errors))
     logging.info("archived with errors %s", archive_count)
-    logging.info("Rerun %s volumes", len(rerun_logs['rerun']))
+    logging.info("Actual Rerun %s volumes %s", len(rerun_logs['rerun']), rerun_logs['rerun'])

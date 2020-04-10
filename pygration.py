@@ -21,9 +21,12 @@ CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
 LOG_DIR = CONFIG['Default']['log_dir']
 
-logging.basicConfig(filename=LOG_DIR + "/reruns/migration.log",
-                    format='%(asctime)s %(levelname)s:%(message)s',
-                    level=logging.INFO)
+HANDLER = logging.handlers.TimedRotatingFileHandler(LOG_DIR + "/reruns/migration.log",
+                                                    when='W0',
+                                                    backupCount=7)
+HANDLER.setLevel(logging.INFO)
+HANDLER.setFormatter(logging.Formatter('%(asctime)s %(levelname)s:%(message)s'))
+logging.basicConfig(handlers=HANDLER)
 
 
 @click.command()
