@@ -52,6 +52,7 @@ def archive_error_message(message):
 def rerun_error_message(message):
     """ Return True if special rerun error messages are found """
     rerun_messages = [
+        "COPYING_TO_TAPE cleanup lists are not empty",
         "Error after transferring 0 bytes in 1 files",
         "No Error Found in Log File",
         'Noticed the local file inode changed',
