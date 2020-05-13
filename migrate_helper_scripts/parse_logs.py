@@ -142,7 +142,7 @@ def check_migration_status(volume):
         timeout=20
     )
     check = status.stdout.decode()
-    if 'migrated' in check:
+    if 'migrated' in check or 'duplicated' in check:
         database.insert_migrated(volume)
         return True
 
