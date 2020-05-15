@@ -8,6 +8,16 @@ import migrate_helper_scripts.check_running as check_running
 CONFIG = configparser.ConfigParser()
 CONFIG.read('config/config.conf')
 MIGRATION_DIR = CONFIG['Default']['log_dir']
+VOLUME_SERIAL_PREFIX = CONFIG['List']['volume_serial_prefix']
+
+
+def validate_volume(volume_name):
+    """ validate volume name from config file """
+    for vol_prefix in VOLUME_SERIAL_PREFIX.split('|'):
+        if volume_name.startswith(vol_prefix.strip('-')):
+            return True
+
+    return False
 
 
 def main():
@@ -19,9 +29,12 @@ def main():
         file_name = MIGRATION_DIR + file
         output_renames[file_name] = ''
         error = ".0"
+        volume = ''
         with open(file_name, 'rb') as handle:
             first = next(handle).decode().split()
-            volume = first[-1]
+            if validate_volume(first[-1]):
+                volume = first[-1]
+
             if os.path.getsize(file_name) > 1024:
                 file_size = 1024
             else:
