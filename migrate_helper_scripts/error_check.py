@@ -1,6 +1,7 @@
 """ check log files for errors """
 
 import os
+import logging
 import configparser
 import migrate_helper_scripts.list_logs as list_logs
 import migrate_helper_scripts.check_running as check_running
@@ -17,6 +18,7 @@ def validate_volume(volume_name):
         if volume_name.startswith(vol_prefix.strip('-')):
             return True
 
+    logging.info("%s: Cannot validate %s", __file__, volume_name)
     return False
 
 
@@ -33,7 +35,7 @@ def main():
         with open(file_name, 'rb') as handle:
             first = next(handle).decode().split()
             if validate_volume(first[-1]):
-                volume = first[-1]
+                volume = '-' + first[-1]
 
             if os.path.getsize(file_name) > 1024:
                 file_size = 1024
@@ -45,12 +47,10 @@ def main():
                 last = line.decode().split()
                 if len(last) > 8:
                     if (last[7] + last[8]) == "setcomment":
-                        volume = volume
                         break
             else:
                 volume = volume + error
-
-        dst_file_name = file_name + "-" + volume
+        dst_file_name = file_name + volume
         os.rename(file_name, dst_file_name)
         output_renames[file_name] = dst_file_name
 
