@@ -12,14 +12,15 @@ MIGRATION_DIR = CONFIG['Default']['log_dir']
 VOLUME_SERIAL_PREFIX = CONFIG['List']['volume_serial_prefix']
 
 
-def validate_volume(volume_name):
+def validate_volume(head_words):
     """ validate volume name from config file """
     for vol_prefix in VOLUME_SERIAL_PREFIX.split('|'):
-        if volume_name.startswith(vol_prefix.strip('-')):
-            return True
+        for word in reversed(head_words):
+            if word.startswith(vol_prefix.strip('-')):
+                return '-' + word
 
-    logging.info("%s: Cannot validate %s", __file__, volume_name)
-    return False
+    logging.info("%s: Can't find suitable volume in %s", __file__, head_words)
+    return '---'
 
 
 def main():
@@ -31,11 +32,9 @@ def main():
         file_name = MIGRATION_DIR + file
         output_renames[file_name] = ''
         error = ".0"
-        volume = ''
         with open(file_name, 'rb') as handle:
             first = next(handle).decode().split()
-            if validate_volume(first[-1]):
-                volume = '-' + first[-1]
+            volume = validate_volume(first[7:])
 
             if os.path.getsize(file_name) > 1024:
                 file_size = 1024
@@ -50,6 +49,10 @@ def main():
                         break
             else:
                 volume = volume + error
+        # Can be:
+        # file_name + VOL_SER
+        # file_name + VOL_SER + '.0'
+        # file_name + '---' +/- '.0'  Can't find valid VOL_SER in "head -1 log_file"
         dst_file_name = file_name + volume
         os.rename(file_name, dst_file_name)
         output_renames[file_name] = dst_file_name
