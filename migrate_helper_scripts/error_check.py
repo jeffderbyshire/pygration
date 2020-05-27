@@ -45,7 +45,8 @@ def main():
             for line in last_lines:
                 last = line.decode().split()
                 if len(last) > 8:
-                    if (last[7] + last[8]) == "setcomment":
+                    if ((last[7] + last[8]) == "setcomment") or \
+                            (last[6] + last[7] == "successfullymigrated"):
                         break
             else:
                 volume = volume + error
