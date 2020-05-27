@@ -273,6 +273,20 @@ def get_volumes_need_scanning(storage_group):
     return volumes_need_scanning
 
 
+def get_all_storage_groups_for_scanning(filter_storage_group):
+    """ get all storage groups for scanning minus filter """
+    storage_groups = set()
+    session = SESSION()
+    result = session.query(MigrationState).\
+        distinct(MigrationState.storage_group).\
+        filter(MigrationState.storage_group != filter_storage_group).\
+        all()
+    for row in result:
+        storage_groups.add(row.storage_group)
+
+    return storage_groups
+
+
 def get_node_id(node_name):
     """ add node name and return node id """
     session = SESSION()

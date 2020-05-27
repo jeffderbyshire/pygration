@@ -12,17 +12,24 @@ SCAN_SCRIPT = CONFIG['Scan']['scan_script']
 SCAN_VOLUME = CONFIG['Scan']['tape_type']
 
 
-def scan(storage_group):
+def scan(storage_group='all'):
     """ build scan script and run if < 2 processes running """
     commands = {}
-    volumes = database.get_volumes_need_scanning(storage_group)
-    logging.debug("storage group %s volumes %s", storage_group, volumes)
-    for volume in tqdm(volumes, desc='Build Scan'):
-        for valid in SCAN_VOLUME.split('|'):
-            if valid in volume:
-                commands[volume] = '/opt/enstore/src/migrate_chimera.py --scan --check-only-meta'
+    if storage_group == 'all':
+        storage_groups = database.get_all_storage_groups_for_scanning('cms')
+    else:
+        storage_groups = set(storage_group)
+    for group in tqdm(storage_groups, desc='Build Scan'):
+        volumes = database.get_volumes_need_scanning(group)
+        logging.debug("storage group %s volumes %s", group, volumes)
+        for volume in volumes:
+            for valid in SCAN_VOLUME.split('|'):
+                if valid in volume:
+                    commands[volume] = \
+                        '/opt/enstore/src/migrate_chimera.py --scan --check-only-meta'
+        logging.info("file family %s with volumes %s", group, volumes)
+
     build_rerun.write_run_file(commands, SCAN_SCRIPT, storage_group + " scan")
-    logging.info("file family %s with volumes %s", storage_group, volumes)
 
 
 if __name__ == '__main__':
