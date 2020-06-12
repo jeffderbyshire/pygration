@@ -25,7 +25,7 @@ LOG_DIR = CONFIG['Default']['log_dir']
 logging.root.handlers = []
 
 logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
-                    level=logging.INFO,
+                    level=logging.DEBUG,
                     handlers=[logging.handlers.TimedRotatingFileHandler(
                         filename=LOG_DIR + "/reruns/migration.log",
                         when='midnight',
