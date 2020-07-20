@@ -29,7 +29,10 @@ Required options (choose only 1):
             b. Other error messages are marked too many errors and need a bug report or in the case
                 of a new error and its rerun error, need to add error snippet to list of rerun
                 errors: parse_logs.py add message snippet to known errors and rerun errors.
-        2. Process also cleans spool error of volume serials that have already been migrated
+        2. Process also cleans spool error of volume serials that have already been migrated.
+            a. --process spool option to clean spool
+    Add --quiet to suppress all output including errors.  Useful for cron.
+    Add --debug to add extra logging to log file /var/migration/reruns/migration.log
 """
 import logging
 import logging.handlers
