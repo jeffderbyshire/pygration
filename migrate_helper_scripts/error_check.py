@@ -33,7 +33,7 @@ def main():
         output_renames[file_name] = ''
         error = ".0"
         with open(file_name, 'rb') as handle:
-            first = next(handle).decode().split()
+            first = next(handle, 'End of File').decode().split()
             volume = validate_volume(first[7:])
 
             if os.path.getsize(file_name) > 1024:
