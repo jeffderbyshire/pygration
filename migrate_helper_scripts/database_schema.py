@@ -251,7 +251,7 @@ def get_migration_state_report():
     result = \
         session.query(
             MigrationState.storage_group, MigrationState.file_family, MigrationState.media,
-            min(MigrationState.migration_start), max(MigrationState.scanned),
+            func.min(MigrationState.migration_start), func.max(MigrationState.scanned),
             (MigrationState.scanned - MigrationState.migration_start),
             func.count(MigrationState.source_volume)
         ).filter(
