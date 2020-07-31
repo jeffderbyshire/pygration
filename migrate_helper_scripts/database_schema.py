@@ -261,7 +261,8 @@ def get_migration_state_report():
             MigrationState.migration_type == 'MIG',
             MigrationState.scanned.isnot(None)
         ).group_by(
-            MigrationState.storage_group, MigrationState.file_family, MigrationState.media
+            MigrationState.storage_group, MigrationState.file_family, MigrationState.media,
+            MigrationState.scanned, MigrationState.migration_start
         ).order_by(
             MigrationState.storage_group, MigrationState.file_family
         )
