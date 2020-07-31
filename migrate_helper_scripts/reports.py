@@ -1,6 +1,6 @@
 """ reports """
 
-from jinja2 import Environment, PackageLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 import migrate_helper_scripts.database_schema as database
 
@@ -8,7 +8,7 @@ import migrate_helper_scripts.database_schema as database
 def migration():
     """ migration report """
     env = Environment(
-        loader=PackageLoader('migration_helper', 'templates'),
+        loader=FileSystemLoader('../templates'),
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('migration_report.html')
