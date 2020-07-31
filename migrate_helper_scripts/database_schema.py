@@ -252,7 +252,10 @@ def get_migration_state_report():
         session.query(
             MigrationState.storage_group, MigrationState.file_family, MigrationState.media,
             func.min(MigrationState.migration_start), func.max(MigrationState.scanned),
-            (MigrationState.scanned - MigrationState.migration_start),
+            func.trunc(
+                func.extract('epoch', MigrationState.scanned)
+                - func.extract('epoch', MigrationState.migration_start)
+            ),
             func.count(MigrationState.source_volume)
         ).filter(
             MigrationState.migration_type == 'MIG',
