@@ -245,6 +245,26 @@ def has_volume_been_scanned(volume):
         MigrationScan.scan_volume == volume, MigrationScan.scan_end.isnot(None)).count())
 
 
+def get_migration_state_report():
+    """ get migration report data """
+    session = SESSION()
+    result = \
+        session.query(
+            MigrationState.storage_group, MigrationState.file_family, MigrationState.media,
+            min(MigrationState.migration_start), max(MigrationState.scanned),
+            (MigrationState.scanned - MigrationState.migration_start),
+            func.count(MigrationState.source_volume)
+        ).filter(
+            MigrationState.migration_type == 'MIG',
+            MigrationState.scanned.isnot(None)
+        ).group_by(
+            MigrationState.storage_group, MigrationState.file_family, MigrationState.media
+        ).order_by(
+            MigrationState.storage_group, MigrationState.file_family
+        )
+    return result
+
+
 def get_volumes_need_scanning(storage_group):
     """ get volumes to scan based on storage group """
     volumes_need_scanning = set()

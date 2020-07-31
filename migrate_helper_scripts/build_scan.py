@@ -18,7 +18,7 @@ def scan(storage_group='all'):
     if storage_group == 'all':
         storage_groups = database.get_all_storage_groups_for_scanning('cms')
     else:
-        storage_groups = set(storage_group)
+        storage_groups = list(storage_group)
     for group in tqdm(storage_groups, desc='Build Scan'):
         volumes = database.get_volumes_need_scanning(group)
         logging.debug("storage group %s volumes %s", group, volumes)

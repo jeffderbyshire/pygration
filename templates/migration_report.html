@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Migration Report</title>
+    <script>
+        function filterTable(event) {
+            var filter = event.target.value.toUpperCase();
+            var rows = document.querySelector("#myTable tbody").rows;
+
+            for (var i = 0; i < rows.length; i++) {
+                var firstCol = rows[i].cells[0].textContent.toUpperCase();
+                var secondCol = rows[i].cells[1].textContent.toUpperCase();
+                if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+
+        document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+    </script>
+</head>
+<body>
+<input id="myInput" type="text" />
+<table id="myTable">
+ <thead>
+  <tr class="header">
+      <th>Storage Group</th>
+      <th>File Family</th>
+      <th>First Tape Migrated</th>
+      <th>Last Tape Scanned</th>
+      <th>Days</th>
+      <th>Source Tapes</th>
+  </tr>
+ </thead>
+ <tbody>
+ {% for row in result %}
+    <tr>
+        {% for item in row %}
+        <td>{{ item }}</td>
+        {% endfor %}}
+    </tr>
+  {% endfor %}
+</body>
+</html>

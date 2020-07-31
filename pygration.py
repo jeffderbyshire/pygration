@@ -48,6 +48,7 @@ import migrate_helper_scripts.fix_archives as fix_archives
 import migrate_helper_scripts.unity as unity
 import migrate_helper_scripts.build_scan as build_scan
 import migrate_helper_scripts.clean_spool as clean_spool
+import migrate_helper_scripts.reports as reports
 
 CONFIG = ConfigParser()
 CONFIG.read('config/config.conf')
@@ -97,13 +98,19 @@ def process_logs(process_flag=False, quiet_flag=False):
         unity.db_import(quiet_flag)
 
 
+def run_reports(report_flag=False):
+    """ Run reports """
+    if report_flag:
+        reports.migration()
+
+
 def scan_logs(scan_flag=False):
     """ Build scan file if flag is set """
     if scan_flag:
         build_scan.scan(scan_flag)
 
 
-def check_logs(check_flag=True, quiet_flag=False):
+def check_logs(check_flag=False, quiet_flag=False):
     """ Check logs if flag set and observe quiet flag """
     if check_flag:
         output = error_check.main()
@@ -116,8 +123,10 @@ def check_logs(check_flag=True, quiet_flag=False):
 @click.option('--debug', is_flag=True)
 @click.option('--logs', type=click.Choice(['all', 'errors', 'no-errors', 'archive',
                                            'archive-with-errors']))
-@click.option('--process', type=click.Choice(['all', 'fix', 'spool', 'status', 'import']))
+@click.option('--process', type=click.Choice(['all', 'fix', 'spool', 'status', 'import']),
+              default='all')
 @click.option('--quiet', is_flag=True)
+@click.option('--report', is_flag=True)
 @click.option('--scan', nargs=1)
 def main(**kwargs):
     """ Pass command arguments to functions """
@@ -126,6 +135,7 @@ def main(**kwargs):
     process_logs(kwargs['process'], kwargs['quiet'])
     scan_logs(kwargs['scan'])
     check_logs(kwargs['check'], kwargs['quiet'])
+    run_reports(kwargs['report'])
 
 
 main()
