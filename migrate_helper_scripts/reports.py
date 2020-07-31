@@ -7,7 +7,6 @@ import migrate_helper_scripts.database_schema as database
 
 def migration():
     """ migration report """
-    print(os.getcwd() + '/templates')
     env = Environment(
         loader=FileSystemLoader(os.getcwd() + '/templates'),
         autoescape=select_autoescape(['html', 'xml'])
