@@ -123,8 +123,7 @@ def check_logs(check_flag=False, quiet_flag=False):
 @click.option('--debug', is_flag=True)
 @click.option('--logs', type=click.Choice(['all', 'errors', 'no-errors', 'archive',
                                            'archive-with-errors']))
-@click.option('--process', type=click.Choice(['all', 'fix', 'spool', 'status', 'import']),
-              default='all')
+@click.option('--process', type=click.Choice(['all', 'fix', 'spool', 'status', 'import']))
 @click.option('--quiet', is_flag=True)
 @click.option('--report', is_flag=True)
 @click.option('--scan', nargs=1)
