@@ -41,7 +41,7 @@
     <tr>
         {% for item in row %}
         <td class="{{ loop.cycle('odd', 'even') }}">
-            {% if loop.index = 5 %}{{ item / 84600 }}
+            {% if loop.index == 6 %}{{ item / 84600 }}
             {% else %}
             {{ item }}
             {% endif %}
