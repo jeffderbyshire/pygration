@@ -40,7 +40,12 @@
  {% for row in result %}
     <tr>
         {% for item in row %}
-        <td>{{ item[0] }}</td>
+        <td class="{{ loop.cycle('odd', 'even') }}">
+            {% if loop.index is 5 %}{{ item / 84600 }}
+            {% else %}
+            {{ item }}
+            {% endif %}
+        </td>
         {% endfor %}
     </tr>
   {% endfor %}
