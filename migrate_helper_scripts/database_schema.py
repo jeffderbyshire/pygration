@@ -269,6 +269,8 @@ def get_migration_state_report():
         )
 
     for row in result:
+        print(row)
+        exit()
         output.append([
             row.storage_group,
             row.file_family,
