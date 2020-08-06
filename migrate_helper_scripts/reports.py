@@ -14,4 +14,4 @@ def migration():
     template = env.get_template('migration_report.html')
     result = database.get_migration_state_report()
     print(result)
-    print(template.render(knights='that say nih'))
+    print(template.render(knights=result))
