@@ -1,6 +1,7 @@
 """ reports """
 
 import os
+from datetime import datetime
 from configparser import ConfigParser
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import migrate_helper_scripts.database_schema as database
@@ -17,5 +18,8 @@ def migration():
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('migration_report.html')
+    now = datetime.now()
     with open(REPORT, "w") as file:
-        file.write(template.render(result=database.get_migration_state_report()))
+        file.write(template.render(result=database.get_migration_state_report(),
+                                   updated=now.strftime("%m/%d/%Y, %H:%M:%S"),
+                                   report_name='Migration Completion Report'))

@@ -9,8 +9,14 @@
           crossorigin="anonymous">
 </head>
 <body>
-<input id="myInput" type="text" />
-<table id="myTable">
+<h1>{{ report_name }}</h1>
+<h2>{{ updated }}</h2>
+<form class="form-inline">
+  <div class="form-group">
+    <label for="myInput">Search</label><input id="myInput" type="text" />
+  </div>
+</form>
+<table id="myTable" class="table table-hover table-bordered table-responsive">
  <thead>
   <tr class="header">
       <th>Storage Group</th>
