@@ -13,6 +13,9 @@ volume_serial_prefix = prefixes|separated|by|pipes
 [Process]
 running = process_to_check_if_running
 
+[Reports]
+migration_report = /path/to/migration/report
+
 [Rerun]
 rerun_script = /path/to/write/rerun/script
 ignore = --flags|--to|--ignore
