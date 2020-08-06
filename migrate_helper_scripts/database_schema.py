@@ -248,6 +248,7 @@ def has_volume_been_scanned(volume):
 def get_migration_state_report():
     """ get migration report data """
     session = SESSION()
+    output = list()
     result = \
         session.query(
             MigrationState.storage_group, MigrationState.file_family, MigrationState.media,
@@ -266,7 +267,17 @@ def get_migration_state_report():
         ).order_by(
             MigrationState.storage_group, MigrationState.file_family
         )
-    return result
+
+    for row in result:
+        output.append([
+            row.storage_group,
+            row.file_family,
+            row.media,
+            row.min_1,
+            row.max_1,
+            row.trunc_1,
+            row.count_1])
+    return output
 
 
 def get_volumes_need_scanning(storage_group):
