@@ -15,8 +15,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-        <li><a href="{{ navigation.2_url }}">{{ navigation.2_text }}</a></li>
+        <li><a href="{{ navigation.url_two }}">{{ navigation.text_two }}</a></li>
       </ul>
       <form class="navbar-form navbar-left">
         <div class="form-group">
@@ -30,9 +29,9 @@
              aria-haspopup="true" aria-expanded="false">{{ navigation.dropdown_text}}
             <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{{ navigation.dropdown_1_url }}">{{ navigation.dropdown_1_text}}</a></li>
+            <li><a href="{{ navigation.dropdown_a_url }}">{{ navigation.dropdown_a_text}}</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="{{ navigation.dropdown_2_url }}">{{ navigation.dropdown_2_text }}</a></li>
+            <li><a href="{{ navigation.dropdown_b_url }}">{{ navigation.dropdown_b_text }}</a></li>
           </ul>
         </li>
       </ul>

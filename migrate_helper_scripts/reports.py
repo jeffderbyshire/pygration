@@ -16,13 +16,13 @@ def migration():
     navigation = {
         'url_one': CONFIG['Reports']['1_url'],
         'text_one': CONFIG['Reports']['1_text'],
-        '2url': CONFIG['Reports']['2_url'],
-        '2text': CONFIG['Reports']['2_text'],
-        'dropdowntext': CONFIG['Reports']['dropdown_text'],
-        'dropdown1url': CONFIG['Reports']['dropdown_1_url'],
-        'dropdown1text': CONFIG['Reports']['dropdown_1_text'],
-        'dropdown2url': CONFIG['Reports']['dropdown_2_url'],
-        'dropdown2text': CONFIG['Reports']['dropdown_2_text'],
+        'url_two': CONFIG['Reports']['2_url'],
+        'text_two': CONFIG['Reports']['2_text'],
+        'dropdown_text': CONFIG['Reports']['dropdown_text'],
+        'dropdown_a_url': CONFIG['Reports']['dropdown_1_url'],
+        'dropdown_a_text': CONFIG['Reports']['dropdown_1_text'],
+        'dropdown_b_url': CONFIG['Reports']['dropdown_2_url'],
+        'dropdown_b_text': CONFIG['Reports']['dropdown_2_text'],
     }
     env = Environment(
         loader=FileSystemLoader(os.getcwd() + '/templates'),
