@@ -14,15 +14,15 @@ REPORT = CONFIG['Reports']['migration_report']
 def migration():
     """ migration report """
     navigation = {
-        '1_url': CONFIG['Reports']['1_url'],
-        '1_text': CONFIG['Reports']['1_text'],
-        '2_url': CONFIG['Reports']['2_url'],
-        '2_text': CONFIG['Reports']['2_text'],
-        'dropdown_text': CONFIG['Reports']['dropdown_text'],
-        'dropdown_1_url': CONFIG['Reports']['dropdown_1_url'],
-        'dropdown_1_text': CONFIG['Reports']['dropdown_1_text'],
-        'dropdown_2_url': CONFIG['Reports']['dropdown_2_url'],
-        'dropdown_2_text': CONFIG['Reports']['dropdown_2_text'],
+        '1url': CONFIG['Reports']['1_url'],
+        '1text': CONFIG['Reports']['1_text'],
+        '2url': CONFIG['Reports']['2_url'],
+        '2text': CONFIG['Reports']['2_text'],
+        'dropdowntext': CONFIG['Reports']['dropdown_text'],
+        'dropdown1url': CONFIG['Reports']['dropdown_1_url'],
+        'dropdown1text': CONFIG['Reports']['dropdown_1_text'],
+        'dropdown2url': CONFIG['Reports']['dropdown_2_url'],
+        'dropdown2text': CONFIG['Reports']['dropdown_2_text'],
     }
     env = Environment(
         loader=FileSystemLoader(os.getcwd() + '/templates'),
