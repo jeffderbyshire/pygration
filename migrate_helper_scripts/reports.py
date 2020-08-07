@@ -14,8 +14,8 @@ REPORT = CONFIG['Reports']['migration_report']
 def migration():
     """ migration report """
     navigation = {
-        '1url': CONFIG['Reports']['1_url'],
-        '1text': CONFIG['Reports']['1_text'],
+        'url_one': CONFIG['Reports']['1_url'],
+        'text_one': CONFIG['Reports']['1_text'],
         '2url': CONFIG['Reports']['2_url'],
         '2text': CONFIG['Reports']['2_text'],
         'dropdowntext': CONFIG['Reports']['dropdown_text'],
