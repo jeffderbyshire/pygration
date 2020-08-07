@@ -15,6 +15,16 @@ running = process_to_check_if_running
 
 [Reports]
 migration_report = /path/to/migration/report
+1_url = https://site-one.com
+1_text = Link Text
+2_url =
+2_text =
+dropdown_text =
+dropdown_1_url =
+dropdown_1_text =
+dropdown_2_url =
+dropdown_2_text =
+
 
 [Rerun]
 rerun_script = /path/to/write/rerun/script

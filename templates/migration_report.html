@@ -9,6 +9,9 @@
           crossorigin="anonymous">
 </head>
 <body>
+
+{% include 'header.html' %}
+
 <h1>{{ report_name }}</h1>
 <h2>{{ updated }}</h2>
 <form class="form-inline">
@@ -43,6 +46,9 @@
   {% endfor %}
  </tbody>
 </table>
+
+{% include 'footer.html' %}
+
     <script>
         function filterTable(event) {
             var filter = event.target.value.toUpperCase();
